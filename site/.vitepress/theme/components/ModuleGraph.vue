@@ -146,7 +146,7 @@ const sourceUrl = (id: string) => `https://github.com/andrewh/JUCE/tree/master/m
           @keydown.space.prevent="select(m.id)"
         >
           <title>{{ m.id }}: {{ m.description }}</title>
-          <rect :width="nodeW" :height="nodeH" rx="8" />
+          <rect :width="nodeW" :height="nodeH" rx="2" />
           <text :x="nodeW / 2" :y="nodeH / 2 + 4" :class="{ long: short(m.id).length > 20 }">{{ short(m.id) }}</text>
         </g>
       </svg>
@@ -222,7 +222,7 @@ const sourceUrl = (id: string) => `https://github.com/andrewh/JUCE/tree/master/m
   gap: 6px;
   padding: 4px 10px;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 999px;
+  border-radius: 0;
   font-size: 13px;
   background: var(--vp-c-bg-soft);
   transition: opacity 0.2s;
@@ -235,7 +235,7 @@ const sourceUrl = (id: string) => `https://github.com/andrewh/JUCE/tree/master/m
 .mg-dot {
   width: 10px;
   height: 10px;
-  border-radius: 3px;
+  border-radius: 0;
   background: var(--c);
   display: inline-block;
 }
@@ -261,7 +261,7 @@ const sourceUrl = (id: string) => `https://github.com/andrewh/JUCE/tree/master/m
 .mg-scroll {
   overflow-x: auto;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--vp-c-bg-alt);
   padding: 8px;
 }
@@ -316,7 +316,7 @@ svg {
   margin-top: 16px;
   padding: 16px 20px;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--vp-c-bg-soft);
 }
 .mg-detail-head {
