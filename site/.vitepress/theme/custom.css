@@ -399,3 +399,11 @@
 @media (prefers-reduced-motion: reduce) {
   .VPFeature .title::after, .VPHero .VPButton { transition: none; }
 }
+
+/* ---------- links into the Doxygen API reference ---------- */
+.vp-doc a.api-link { text-decoration: none; }
+.vp-doc a.api-link > code {
+  border-bottom: 1px dotted var(--vp-c-brand-1);
+  transition: background 0.15s;
+}
+.vp-doc a.api-link:hover > code { background: var(--vp-c-brand-soft); border-bottom-style: solid; }

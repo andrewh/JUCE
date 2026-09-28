@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import data from '../data/modules.json'
+import { apiLinks } from './apiLinks'
 
 // GitHub Pages serves a project site from /<repo>/. Override with SITE_BASE=/ for a custom domain.
 const base = process.env.SITE_BASE ?? '/JUCE/'
@@ -26,13 +27,18 @@ export default withMermaid(
         }
       ]
     ],
-    markdown: { lineNumbers: false, theme: { light: 'github-dark', dark: 'tokyo-night' } },
+    markdown: {
+      lineNumbers: false,
+      theme: { light: 'github-dark', dark: 'tokyo-night' },
+      config: (md) => apiLinks(md, base)
+    },
     themeConfig: {
       logo: '/favicon.svg',
       nav: [
         { text: 'Guide', link: '/guide/what-is-juce', activeMatch: '/guide/' },
         { text: 'Module map', link: '/reference/module-map' },
         { text: 'Glossary', link: '/reference/glossary' },
+        { text: 'API reference', link: '/api/index.html', target: '_self' },
         { text: 'History', link: '/guide/history' },
         { text: `JUCE ${data.version}`, link: 'https://github.com/andrewh/JUCE' }
       ],
