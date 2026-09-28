@@ -14,8 +14,19 @@ export default withMermaid(
     cleanUrls: false,
     lastUpdated: true,
     srcExclude: ['README.md'],
-    head: [['link', { rel: 'icon', href: `${base}favicon.svg`, type: 'image/svg+xml' }]],
-    markdown: { lineNumbers: false },
+    head: [
+      ['link', { rel: 'icon', href: `${base}favicon.svg`, type: 'image/svg+xml' }],
+      ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+      ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+      [
+        'link',
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Martian+Mono:wdth,wght@75..112,300..800&display=swap'
+        }
+      ]
+    ],
+    markdown: { lineNumbers: false, theme: { light: 'github-dark', dark: 'tokyo-night' } },
     themeConfig: {
       logo: '/favicon.svg',
       nav: [
@@ -67,6 +78,6 @@ export default withMermaid(
     }
   }),
   {
-    mermaid: { securityLevel: 'loose' }
+    mermaid: { securityLevel: 'loose', fontFamily: 'IBM Plex Sans, system-ui, sans-serif' }
   }
 )

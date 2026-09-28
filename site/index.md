@@ -7,7 +7,7 @@ hero:
   tagline: A personal field guide to the JUCE C++ framework, built from reading its source. What it is, how the modules interact, and where it came from.
   image:
     src: /favicon.svg
-    alt: Waveform logo
+    alt: Oscilloscope trace
   actions:
     - theme: brand
       text: Start with the big picture
@@ -20,28 +20,22 @@ hero:
       link: /reference/glossary
 
 features:
-  - icon: 🧭
-    title: The big picture
+  - title: The big picture
     details: What JUCE is for, what you get, and the handful of ideas that make everything else make sense.
     link: /guide/what-is-juce
-  - icon: 🏗️
-    title: Architecture
+  - title: Architecture
     details: Layers, threads, and the paths data takes from a sound card or plug-in host through your code and back.
     link: /guide/architecture
-  - icon: 🕸️
-    title: Interactive module map
+  - title: Interactive module map
     details: All 24 modules, generated from their headers. Click one to trace what it depends on and what depends on it.
     link: /reference/module-map
-  - icon: 🎛️
-    title: Anatomy of a plug-in
+  - title: Anatomy of a plug-in
     details: How one AudioProcessor becomes a VST3, AU, AAX, LV2 and standalone app, and what the host calls when.
     link: /guide/plugin-anatomy
-  - icon: 📖
-    title: Glossary
+  - title: Glossary
     details: Plain-English definitions of JUCE classes, audio jargon, and plug-in formats, cross-linked to the guides.
     link: /reference/glossary
-  - icon: 🕰️
-    title: History
+  - title: History
     details: From Tracktion's utility code in the early 2000s to JUCE 9, and why the codebase looks the way it does.
     link: /guide/history
 ---
