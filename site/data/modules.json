@@ -1,0 +1,433 @@
+{
+  "version": "9.0.3",
+  "modules": [
+    {
+      "id": "juce_analytics",
+      "name": "JUCE analytics classes",
+      "description": "Classes to collect analytics and send to destinations",
+      "dependencies": [
+        "juce_gui_basics"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "services",
+      "headerCount": 4,
+      "layer": 4,
+      "dependents": []
+    },
+    {
+      "id": "juce_animation",
+      "name": "JUCE Animation classes",
+      "description": "Classes for defining and handling animations.",
+      "dependencies": [
+        "juce_gui_basics"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "gui",
+      "headerCount": 8,
+      "layer": 4,
+      "dependents": []
+    },
+    {
+      "id": "juce_audio_basics",
+      "name": "JUCE audio and MIDI data classes",
+      "description": "Classes for audio buffer manipulation, midi message handling, synthesis, etc.",
+      "dependencies": [
+        "juce_core"
+      ],
+      "osxFrameworks": [
+        "Accelerate"
+      ],
+      "linuxPackages": [],
+      "group": "audio",
+      "headerCount": 44,
+      "layer": 1,
+      "dependents": [
+        "juce_audio_devices",
+        "juce_audio_formats",
+        "juce_audio_processors_headless",
+        "juce_midi_ci"
+      ]
+    },
+    {
+      "id": "juce_audio_devices",
+      "name": "JUCE audio and MIDI I/O device classes",
+      "description": "Classes to play and record from audio and MIDI I/O devices",
+      "dependencies": [
+        "juce_audio_basics",
+        "juce_events"
+      ],
+      "osxFrameworks": [
+        "CoreAudio",
+        "CoreMIDI",
+        "AudioToolbox"
+      ],
+      "linuxPackages": [
+        "alsa"
+      ],
+      "group": "audio",
+      "headerCount": 21,
+      "layer": 2,
+      "dependents": [
+        "juce_audio_utils"
+      ]
+    },
+    {
+      "id": "juce_audio_formats",
+      "name": "JUCE audio file format codecs",
+      "description": "Classes for reading and writing various audio file formats.",
+      "dependencies": [
+        "juce_audio_basics"
+      ],
+      "osxFrameworks": [
+        "CoreAudio",
+        "CoreMIDI",
+        "QuartzCore",
+        "AudioToolbox"
+      ],
+      "linuxPackages": [],
+      "group": "audio",
+      "headerCount": 20,
+      "layer": 2,
+      "dependents": [
+        "juce_audio_utils",
+        "juce_dsp"
+      ]
+    },
+    {
+      "id": "juce_audio_plugin_client",
+      "name": "JUCE audio plugin wrapper classes",
+      "description": "Classes for building VST, VST3, AU, AUv3, LV2 and AAX plugins.",
+      "dependencies": [
+        "juce_audio_processors"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "plugins",
+      "headerCount": 0,
+      "layer": 6,
+      "dependents": []
+    },
+    {
+      "id": "juce_audio_processors",
+      "name": "JUCE audio processor classes",
+      "description": "Classes for loading and playing VST, AU, LADSPA, or internally-generated audio processors.",
+      "dependencies": [
+        "juce_gui_extra",
+        "juce_audio_processors_headless"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "plugins",
+      "headerCount": 15,
+      "layer": 5,
+      "dependents": [
+        "juce_audio_plugin_client",
+        "juce_audio_utils"
+      ]
+    },
+    {
+      "id": "juce_audio_processors_headless",
+      "name": "JUCE audio processor classes without UI",
+      "description": "Classes for loading and playing VST, AU, LADSPA, or internally-generated audio processors without UI.",
+      "dependencies": [
+        "juce_audio_basics",
+        "juce_events"
+      ],
+      "osxFrameworks": [
+        "CoreAudio",
+        "CoreMIDI",
+        "AudioToolbox"
+      ],
+      "linuxPackages": [],
+      "group": "plugins",
+      "headerCount": 31,
+      "layer": 2,
+      "dependents": [
+        "juce_audio_processors"
+      ]
+    },
+    {
+      "id": "juce_audio_utils",
+      "name": "JUCE extra audio utility classes",
+      "description": "Classes for audio-related GUI and miscellaneous tasks.",
+      "dependencies": [
+        "juce_audio_processors",
+        "juce_audio_formats",
+        "juce_audio_devices"
+      ],
+      "osxFrameworks": [
+        "CoreAudioKit",
+        "DiscRecording"
+      ],
+      "linuxPackages": [],
+      "group": "audio",
+      "headerCount": 14,
+      "layer": 6,
+      "dependents": []
+    },
+    {
+      "id": "juce_box2d",
+      "name": "JUCE wrapper for the Box2D physics engine",
+      "description": "The Box2D physics engine and some utility classes.",
+      "dependencies": [
+        "juce_graphics"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "gui",
+      "headerCount": 2,
+      "layer": 3,
+      "dependents": []
+    },
+    {
+      "id": "juce_core",
+      "name": "JUCE core classes",
+      "description": "The essential set of basic JUCE classes, as required by all the other JUCE modules. Includes text, container, memory, threading and i/o functionality.",
+      "dependencies": [],
+      "osxFrameworks": [
+        "Cocoa",
+        "Foundation",
+        "IOKit",
+        "Security"
+      ],
+      "linuxPackages": [],
+      "group": "foundation",
+      "headerCount": 141,
+      "layer": 0,
+      "dependents": [
+        "juce_audio_basics",
+        "juce_cryptography",
+        "juce_events",
+        "juce_javascript"
+      ]
+    },
+    {
+      "id": "juce_cryptography",
+      "name": "JUCE cryptography classes",
+      "description": "Classes for various basic cryptography functions, including RSA, Blowfish, MD5, SHA, etc.",
+      "dependencies": [
+        "juce_core"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "foundation",
+      "headerCount": 6,
+      "layer": 1,
+      "dependents": [
+        "juce_product_unlocking"
+      ]
+    },
+    {
+      "id": "juce_data_structures",
+      "name": "JUCE data model helper classes",
+      "description": "Classes for undo/redo management, and smart data structures.",
+      "dependencies": [
+        "juce_events"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "foundation",
+      "headerCount": 9,
+      "layer": 2,
+      "dependents": [
+        "juce_gui_basics"
+      ]
+    },
+    {
+      "id": "juce_dsp",
+      "name": "JUCE DSP classes",
+      "description": "Classes for audio buffer manipulation, digital audio processing, filtering, oversampling, fast math functions etc.",
+      "dependencies": [
+        "juce_audio_formats"
+      ],
+      "osxFrameworks": [
+        "Accelerate"
+      ],
+      "linuxPackages": [],
+      "group": "audio",
+      "headerCount": 42,
+      "layer": 3,
+      "dependents": []
+    },
+    {
+      "id": "juce_events",
+      "name": "JUCE message and event handling classes",
+      "description": "Classes for running an application's main event loop and sending/receiving messages, timers, etc.",
+      "dependencies": [
+        "juce_core"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "foundation",
+      "headerCount": 23,
+      "layer": 1,
+      "dependents": [
+        "juce_audio_devices",
+        "juce_audio_processors_headless",
+        "juce_data_structures",
+        "juce_graphics",
+        "juce_osc"
+      ]
+    },
+    {
+      "id": "juce_graphics",
+      "name": "JUCE graphics classes",
+      "description": "Classes for 2D vector graphics, image loading/saving, font handling, etc.",
+      "dependencies": [
+        "juce_events"
+      ],
+      "osxFrameworks": [
+        "Cocoa",
+        "QuartzCore"
+      ],
+      "linuxPackages": [
+        "freetype2",
+        "fontconfig"
+      ],
+      "group": "gui",
+      "headerCount": 52,
+      "layer": 2,
+      "dependents": [
+        "juce_box2d",
+        "juce_gui_basics"
+      ]
+    },
+    {
+      "id": "juce_gui_basics",
+      "name": "JUCE GUI core classes",
+      "description": "Basic user-interface components and related classes.",
+      "dependencies": [
+        "juce_graphics",
+        "juce_data_structures"
+      ],
+      "osxFrameworks": [
+        "Cocoa",
+        "QuartzCore"
+      ],
+      "linuxPackages": [],
+      "group": "gui",
+      "headerCount": 166,
+      "layer": 3,
+      "dependents": [
+        "juce_analytics",
+        "juce_animation",
+        "juce_gui_extra"
+      ]
+    },
+    {
+      "id": "juce_gui_extra",
+      "name": "JUCE extended GUI classes",
+      "description": "Miscellaneous GUI classes for specialised tasks.",
+      "dependencies": [
+        "juce_gui_basics"
+      ],
+      "osxFrameworks": [
+        "WebKit"
+      ],
+      "linuxPackages": [],
+      "group": "gui",
+      "headerCount": 29,
+      "layer": 4,
+      "dependents": [
+        "juce_audio_processors",
+        "juce_opengl",
+        "juce_video"
+      ]
+    },
+    {
+      "id": "juce_javascript",
+      "name": "JUCE Javascript interpreter",
+      "description": "Javascript interpreter.",
+      "dependencies": [
+        "juce_core"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "foundation",
+      "headerCount": 3,
+      "layer": 1,
+      "dependents": []
+    },
+    {
+      "id": "juce_midi_ci",
+      "name": "JUCE MIDI CI Classes",
+      "description": "Classes facilitating communication via MIDI Capability Inquiry",
+      "dependencies": [
+        "juce_audio_basics"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "audio",
+      "headerCount": 25,
+      "layer": 2,
+      "dependents": []
+    },
+    {
+      "id": "juce_opengl",
+      "name": "JUCE OpenGL classes",
+      "description": "Classes for rendering OpenGL in a JUCE window.",
+      "dependencies": [
+        "juce_gui_extra"
+      ],
+      "osxFrameworks": [
+        "OpenGL"
+      ],
+      "linuxPackages": [
+        "egl",
+        "gl"
+      ],
+      "group": "gui",
+      "headerCount": 16,
+      "layer": 5,
+      "dependents": []
+    },
+    {
+      "id": "juce_osc",
+      "name": "JUCE OSC classes",
+      "description": "Open Sound Control implementation.",
+      "dependencies": [
+        "juce_events"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "audio",
+      "headerCount": 8,
+      "layer": 2,
+      "dependents": []
+    },
+    {
+      "id": "juce_product_unlocking",
+      "name": "JUCE Online marketplace support",
+      "description": "Classes for online product authentication",
+      "dependencies": [
+        "juce_cryptography"
+      ],
+      "osxFrameworks": [],
+      "linuxPackages": [],
+      "group": "services",
+      "headerCount": 5,
+      "layer": 2,
+      "dependents": []
+    },
+    {
+      "id": "juce_video",
+      "name": "JUCE video playback and capture classes",
+      "description": "Classes for playing video and capturing camera input.",
+      "dependencies": [
+        "juce_gui_extra"
+      ],
+      "osxFrameworks": [
+        "AVKit",
+        "AVFoundation",
+        "CoreMedia"
+      ],
+      "linuxPackages": [],
+      "group": "gui",
+      "headerCount": 2,
+      "layer": 5,
+      "dependents": []
+    }
+  ]
+}
