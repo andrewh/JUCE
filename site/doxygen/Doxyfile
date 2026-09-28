@@ -1,0 +1,35 @@
+# Doxygen configuration for the Learning JUCE site.
+#
+# Inherits JUCE's own settings from docs/doxygen/Doxyfile and overrides only what
+# the site needs: where output goes, the header/footer/stylesheet, and a tag file
+# that the markdown build reads to link class names to their reference pages.
+#
+# Run from this directory (site/doxygen), which is the same depth as
+# docs/doxygen, so the relative paths inherited from JUCE still resolve:
+#
+#     doxygen Doxyfile
+#
+# or use `npm run api` from site/.
+
+@INCLUDE               = ../../docs/doxygen/Doxyfile
+
+# Output straight into VitePress's public/ so it is served at <base>/api/.
+OUTPUT_DIRECTORY       = ../public/api
+HTML_OUTPUT            = .
+GENERATE_TAGFILE       = ../data/juce.tag
+
+# Only HTML is needed. JUCE's build.py consumes the XML; the site does not.
+GENERATE_XML           = NO
+GENERATE_LATEX         = NO
+
+# Site chrome and styling. The juce.com header, footer and scripts are replaced.
+HTML_HEADER            = header.html
+HTML_FOOTER            = footer.html
+HTML_STYLESHEET        =
+HTML_EXTRA_STYLESHEET  = css/site-api.css
+HTML_EXTRA_FILES       = js/theme-sync.js
+HTML_COLORSTYLE        = LIGHT
+PROJECT_NUMBER         =
+PROJECT_BRIEF          = "API reference"
+GENERATE_TREEVIEW      = NO
+FULL_SIDEBAR           = NO

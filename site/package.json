@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "gen": "node scripts/gen-modules.mjs",
+    "api": "cd doxygen && doxygen Doxyfile",
     "dev": "npm run gen && vitepress dev",
     "build": "npm run gen && vitepress build",
     "preview": "vitepress preview",

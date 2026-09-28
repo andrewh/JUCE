@@ -1,0 +1,202 @@
+/*
+  Learning JUCE: API reference skin for Doxygen.
+  Same instrument-panel palette as the VitePress theme (site/.vitepress/theme/custom.css).
+  Light by default; theme-sync.js adds html.dark to follow the site's toggle.
+*/
+:root {
+  --jl-display: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --jl-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --jl-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --jl-peak: #d80f5a;
+
+  --bg: #f2f3f8;
+  --bg-alt: #e9ebf3;
+  --bg-elv: #f8f9fc;
+  --bg-soft: #e4e7f1;
+  --text-1: #0c1030;
+  --text-2: #444a6d;
+  --text-3: #6b7295;
+  --border: #b9bfd6;
+  --divider: #cdd1e2;
+  --brand: #3327e6;
+  --brand-soft: rgba(51, 39, 230, 0.09);
+  --code-bg: #0d1024;
+  --code-fg: #d5d9f5;
+  --graph-filter: none;
+}
+html.dark {
+  --jl-peak: #ff4f93;
+  --bg: #090b1a;
+  --bg-alt: #0d1024;
+  --bg-elv: #12162f;
+  --bg-soft: #141834;
+  --text-1: #e8eaff;
+  --text-2: #a6acd2;
+  --text-3: #7f86b0;
+  --border: #2f3564;
+  --divider: #232849;
+  --brand: #a3adff;
+  --brand-soft: rgba(133, 146, 255, 0.14);
+  --graph-filter: invert(0.88) hue-rotate(180deg);
+  color-scheme: dark;
+}
+
+html { background: var(--bg); }
+body, table, div, p, dl, td, th, li, dt, dd, span {
+  font-family: var(--jl-body);
+  color: var(--text-1);
+}
+body { background: var(--bg); font-size: 15px; line-height: 1.65; margin: 0; }
+::selection { background: var(--jl-peak); color: #fff; }
+
+a, a:visited, a.el, a.elRef, a.code, a.codeRef, a:link { color: var(--brand); text-decoration: none; }
+a:hover, a.el:hover { text-decoration: underline; text-underline-offset: 3px; background: none; color: var(--brand); }
+
+/* ---------- site bar ---------- */
+.site-bar {
+  display: flex; align-items: center; gap: 24px; padding: 0 24px; height: 52px;
+  background: var(--bg-elv); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.site-bar__brand {
+  font-family: var(--jl-display); font-variation-settings: 'wdth' 88;
+  font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-1) !important;
+}
+.site-bar__links { display: flex; gap: 20px; flex: 1; flex-wrap: wrap; }
+.site-bar__links a {
+  font-family: var(--jl-display); font-size: 11px; font-weight: 500; letter-spacing: 0.02em;
+  text-transform: lowercase; color: var(--text-2) !important;
+}
+.site-bar__links a:hover, .site-bar__links a.is-current { color: var(--brand) !important; text-decoration: none; }
+.site-bar__theme {
+  background: none; border: 1px solid var(--border); border-radius: 2px; color: var(--text-2);
+  height: 30px; padding: 0 10px; font-family: var(--jl-display); font-size: 11px; text-transform: lowercase; cursor: pointer;
+}
+.site-bar__theme:hover { border-color: var(--brand); color: var(--brand); }
+
+/* ---------- title area and page ---------- */
+#top { background: var(--bg); }
+#titlearea {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 18px 24px 10px; border: 0; background: none;
+}
+#projectname {
+  font-family: var(--jl-display); font-variation-settings: 'wdth' 88;
+  font-size: 22px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-1);
+}
+#projectname span { color: var(--brand); font-weight: 500; }
+.contents, div.header, div.summary, div.ingroups { margin-left: 24px; margin-right: 24px; }
+div.contents { max-width: 1100px; }
+div.header { background: none; border: 0; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+div.headertitle { padding: 8px 0; }
+div.title {
+  font-family: var(--jl-display); font-variation-settings: 'wdth' 88;
+  font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin: 6px 0;
+}
+h1, h2, h3, h4, h5, h6, h2.groupheader {
+  font-family: var(--jl-display); font-variation-settings: 'wdth' 88; letter-spacing: -0.02em; color: var(--text-1);
+}
+h2.groupheader {
+  font-size: 16px; font-weight: 650; border-bottom: 1px solid var(--border); margin-top: 40px; padding-bottom: 6px;
+  position: relative;
+}
+h2.groupheader::after {
+  content: ''; position: absolute; left: 0; bottom: -1px; width: 44px; height: 3px; background: var(--brand);
+}
+hr, hr.footer { border: 0; border-top: 1px solid var(--border); height: 0; }
+div.ingroups, div.summary { color: var(--text-3); font-size: 12px; }
+div.summary a { color: var(--text-2); }
+
+/* ---------- tabs ---------- */
+.tabs, .tabs2, .tabs3 { background: var(--bg-alt) none; border-bottom: 1px solid var(--border); font-family: var(--jl-display); }
+.tabs { font-size: 12px; }
+.tabs2 { font-size: 11px; background-color: var(--bg-elv); }
+.tabs3 { font-size: 10px; }
+.tablist li { background: none; line-height: 34px; }
+.tablist a, .tablist a:visited {
+  background: none; color: var(--text-2); font-weight: 500; text-shadow: none; text-transform: lowercase; letter-spacing: 0.02em;
+  border-bottom: 2px solid transparent;
+}
+.tablist a:hover { background: var(--brand-soft) none; color: var(--brand); text-shadow: none; }
+.tablist li.current a { background: none; color: var(--brand); text-shadow: none; border-bottom-color: var(--brand); }
+.navpath ul { background: var(--bg-alt) none; border: 0; border-bottom: 1px solid var(--border); height: auto; font-size: 12px; }
+.navpath li { color: var(--text-2); background: none; }
+.navpath li.navelem a { color: var(--text-2); text-shadow: none; }
+
+/* ---------- member tables ---------- */
+table.memberdecls { border-spacing: 0; width: 100%; }
+.memberdecls td, .fieldtable td, table.directory td { border-color: var(--divider); }
+tr[class^="memitem"], tr[class^="separator"] { background: none; }
+tr[class^="memitem"]:hover td.memItemLeft, tr[class^="memitem"]:hover td.memItemRight { background: var(--brand-soft); }
+.memItemLeft, .memItemRight, .memTemplItemLeft, .memTemplItemRight, .memTemplParams {
+  background: var(--bg-elv); border: 0; border-bottom: 1px solid var(--divider); font-family: var(--jl-mono); font-size: 13px;
+}
+.memItemLeft, .memTemplItemLeft { white-space: nowrap; color: var(--text-2); }
+.memTemplParams { color: var(--text-3); }
+.mdescLeft, .mdescRight { background: var(--bg-elv); color: var(--text-2); font-size: 13px; border: 0; padding-bottom: 6px; }
+.memSeparator { border-bottom: 0; }
+table.directory { border-top: 1px solid var(--border); }
+table.directory tr.even { background: var(--bg-alt); }
+
+/* ---------- member documentation ---------- */
+.memtitle {
+  background: var(--bg-alt); border: 1px solid var(--border); border-bottom: 0; border-radius: 0;
+  box-shadow: none; padding: 6px 10px; font-family: var(--jl-mono);
+}
+.memproto, dl.reflist dt {
+  background: var(--bg-elv); border: 1px solid var(--border); border-radius: 0; box-shadow: none;
+  text-shadow: none; color: var(--text-1); font-family: var(--jl-mono); font-size: 13px; padding: 8px 10px;
+}
+.memname td, .memname { font-family: var(--jl-mono); font-size: 13px; }
+.memdoc, dl.reflist dd {
+  background: var(--bg); border: 1px solid var(--border); border-top: 0; border-radius: 0; box-shadow: none; padding: 10px 12px;
+}
+.memitem { margin-bottom: 24px; }
+.paramname em, .paramname { color: var(--jl-peak); font-style: normal; font-family: var(--jl-mono); }
+.params .paramname, .retval .paramname { font-weight: 500; }
+dl.section dt, dl.warning dt, dl.note dt, dl.attention dt { font-family: var(--jl-display); font-size: 11px; letter-spacing: 0.02em; text-transform: lowercase; }
+dl.section { margin-left: 0; }
+dl.warning, dl.attention, dl.note, dl.remark, dl.deprecated, dl.bug {
+  border-left: 3px solid var(--brand); background: var(--brand-soft); padding: 6px 12px; margin: 12px 0;
+}
+dl.warning, dl.attention, dl.bug { border-left-color: var(--jl-peak); }
+.mlabel { background: var(--bg-soft); color: var(--text-2); border: 1px solid var(--border); border-radius: 2px; box-shadow: none; text-shadow: none; }
+.fieldtable { border: 1px solid var(--border); box-shadow: none; }
+.fieldtable td.fieldtype, .fieldtable td.fieldname, .fieldtable td.fielddoc, .fieldtable th { background: var(--bg-elv); border-color: var(--divider); }
+.fieldtable th { background: var(--bg-alt); color: var(--text-2); font-family: var(--jl-display); font-size: 11px; }
+
+/* ---------- code ---------- */
+code, tt, .memname code, .memproto code { font-family: var(--jl-mono); }
+div.fragment, pre.fragment {
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: 0; color: var(--code-fg);
+  font-family: var(--jl-mono); font-size: 12.5px; line-height: 1.6; padding: 10px 14px; margin: 12px 0;
+}
+div.line { font-family: var(--jl-mono); color: var(--code-fg); line-height: 1.6; }
+div.line:hover, div.line.glow { background: rgba(154, 164, 255, 0.12); box-shadow: none; }
+span.keyword, span.keywordtype, span.keywordflow { color: #9aa4ff; }
+span.comment { color: #7f86b0; }
+span.preprocessor { color: #ff7ab0; }
+span.stringliteral, span.charliteral { color: #8de3c1; }
+span.lineno, span.lineno a, span.lineno a:hover { background: none; color: #7f86b0; }
+div.fragment a, div.fragment a:visited, div.line a { color: #b7bfff; }
+p code, li code, td code { background: var(--brand-soft); color: var(--brand); border-radius: 2px; padding: 0 3px; }
+
+/* ---------- graphs and images ---------- */
+div.dyncontent iframe, div.dyncontent img, div.center img, object.inheritsvg, object.svg { filter: var(--graph-filter); background: transparent; }
+div.dynheader { color: var(--text-2); }
+.inherit_header { background: var(--bg-alt); border: 0; color: var(--text-2); }
+table.inherit_header td, .inherit_header td { background: var(--bg-alt); }
+
+/* ---------- search ---------- */
+#MSearchBox { background: var(--bg-elv); border: 1px solid var(--border); border-radius: 2px; box-shadow: none; }
+#MSearchField { background: transparent; color: var(--text-1); font-family: var(--jl-body); }
+#MSearchSelectWindow, #MSearchResultsWindow { background: var(--bg-elv); border: 1px solid var(--border); box-shadow: none; }
+.SRPage .SREntry, .SRResult, a.SRSymbol, a.SRScope { font-family: var(--jl-body); }
+a.SRSymbol { color: var(--brand); }
+.SelectItem, a.SelectItem { color: var(--text-2); }
+#MSearchSelectWindow a.SelectItem:hover { background: var(--brand-soft); color: var(--brand); }
+#MSearchResults, .SRPage { background: var(--bg-elv); }
+
+/* ---------- footer ---------- */
+address.footer { text-align: center; color: var(--text-3); padding: 14px 24px 28px; }
+address.footer small, address.footer { font-size: 12px; }
