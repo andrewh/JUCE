@@ -1,0 +1,15 @@
+import{_ as a,o as e,c as n,a4 as t}from"./chunks/framework.YC5CMuPM.js";const h=JSON.parse('{"title":"Attribution for the condensed tutorials","description":"","frontmatter":{},"headers":[],"relativePath":"tutorials/notice.md","filePath":"tutorials/notice.md","lastUpdated":null}'),o={name:"tutorials/notice.md"};function i(r,s,p,l,c,d){return e(),n("div",null,[...s[0]||(s[0]=[t(`<h1 id="attribution-for-the-condensed-tutorials" tabindex="-1">Attribution for the condensed tutorials <a class="header-anchor" href="#attribution-for-the-condensed-tutorials" aria-label="Permalink to &quot;Attribution for the condensed tutorials&quot;">​</a></h1><p><strong>These guides are condensed, rewritten adaptations of the JUCE tutorials published at <a href="https://juce.com/learn/tutorials/" target="_blank" rel="noreferrer">https://juce.com/learn/tutorials/</a>.</strong> The tutorial sources are maintained in the <a href="https://github.com/juce-framework/JUCE-tutorials" target="_blank" rel="noreferrer">JUCE-tutorials</a> repository and are licensed under the ISC licence, reproduced below as that licence requires.</p><p>Multi-part tutorials have been merged, prose has been shortened, and code has been updated for the JUCE version in this repository. Each guide lists the original tutorials it draws from in its &quot;Sources&quot; footer. Refer to the originals for the full step-by-step walkthroughs, screenshots, and exercises.</p><div class="language- vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-dark tokyo-night vp-code" tabindex="0"><code><span class="line"><span>ISC License</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Copyright (c) Raw Material Software Limited</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Permission to use, copy, modify, and/or distribute this software for any</span></span>
+<span class="line"><span>purpose with or without fee is hereby granted, provided that the above</span></span>
+<span class="line"><span>copyright notice and this permission notice appear in all copies.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>THE SOFTWARE IS PROVIDED &quot;AS IS&quot; AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH</span></span>
+<span class="line"><span>REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND</span></span>
+<span class="line"><span>FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,</span></span>
+<span class="line"><span>INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM</span></span>
+<span class="line"><span>LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR</span></span>
+<span class="line"><span>OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR</span></span>
+<span class="line"><span>PERFORMANCE OF THIS SOFTWARE.</span></span></code></pre></div>`,4)])])}const E=a(o,[["render",i]]);export{h as __pageData,E as default};
