@@ -35,7 +35,7 @@ The trade-off: JUCE is a *framework*, so it owns the event loop and the applicat
 4. **An `AudioProcessor` is the unit of audio work.** Plug-ins, graph nodes, and hosted third-party plug-ins all share this interface. → [Anatomy of a plug-in](./plugin-anatomy)
 5. **State lives in trees.** `ValueTree` plus listeners gives you undo, serialisation, and UI binding almost for free. → [Core concepts](./core-concepts#state)
 
-## Who uses it?
+## What is it good for?
 
 JUCE's own README describes it as a framework for desktop and mobile applications, including audio plug-ins and plug-in hosts.[^readme] This site does not survey who uses it. Its strength is audio; you can build general desktop apps with it, but the design choices visible in the source (the message thread, the audio thread, `AudioProcessor`) are made with real-time audio in mind.
 

@@ -1,6 +1,6 @@
 # Learning path
 
-**A route through JUCE in six stages, each pairing a concept page with a real example from `examples/` and a small exercise.** Tick them off as you go; each stage builds on the one before.
+**A route through JUCE in six stages, each pairing a concept page with a real example from `examples/` and a small exercise.** Each stage builds on the one before, so work through them in order.
 
 ::: tip Setup once
 ```sh

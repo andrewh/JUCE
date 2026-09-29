@@ -12,7 +12,7 @@ export default withMermaid(
     base,
     lang: 'en-GB',
     title: 'Learning JUCE',
-    description: 'A field guide to the JUCE C++ framework: what it is, how the parts fit together, and where it came from.',
+    description: 'A personal field guide to the JUCE C++ framework: what it is, how the modules relate, and where it came from.',
     cleanUrls: false,
     lastUpdated: true,
     srcExclude: ['README.md'],
