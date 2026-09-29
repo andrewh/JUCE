@@ -72,7 +72,15 @@ onBeforeUnmount(() => {
   background: var(--vp-c-bg-elv);
 }
 .plot-host { min-height: 240px; }
-.plot-host :deep(svg) { display: block; max-width: 100%; font-family: var(--vp-font-family-base); }
+.plot-host :deep(svg) {
+  display: block;
+  max-width: 100%;
+  font-family: var(--vp-font-family-base);
+  /* Plot's tips fill with --plot-background (default white) and draw text in the inherited
+     colour, so in dark mode they came out light-on-white. Follow the theme instead. */
+  --plot-background: var(--vp-c-bg-elv);
+  color: var(--vp-c-text-1);
+}
 figcaption {
   margin-top: 10px;
   font-size: 13.5px;
