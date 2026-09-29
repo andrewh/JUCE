@@ -9,22 +9,22 @@
 ## A {#a}
 
 ### AAX {#aax}
-Avid Audio eXtension, the plug-in format for **Pro Tools**. JUCE bundles the SDK, but shipping requires signing with PACE tools. → [Plug-in formats](../guide/plugin-anatomy#formats-at-a-glance)
+Avid Audio eXtension, the plug-in format for **Pro Tools**. JUCE bundles the SDK, but shipping requires signing with PACE tools.[^aax] → [Plug-in formats](../guide/plugin-anatomy#formats-at-a-glance)
 
 ### AbstractFifo {#abstractfifo}
-Manages the read and write positions of a lock-free, single-producer, single-consumer ring buffer. You supply the storage. The standard way to stream data between the audio and GUI threads. *juce_core*
+Manages the read and write positions of a lock-free, single-reader, single-writer FIFO. You supply the storage. A common way to stream data between the audio and GUI threads. *juce_core*
 
 ### APVTS (AudioProcessorValueTreeState) {#apvts}
 Owns a plug-in's parameters, keeps them in sync with a `ValueTree` for saving, and provides attachments that bind widgets to parameters. *juce_audio_processors* → [State](../guide/core-concepts#state)
 
 ### ARA {#ara}
-Audio Random Access, a Celemony-led extension that lets a plug-in (such as Melodyne) see a host's whole audio clips and timeline, not only the live stream. Supported since JUCE 7.
+Audio Random Access, an extension developed by Celemony and PreSonus that lets a plug-in (such as Melodyne) see a host's whole audio clips and timeline, not only the live stream. Supported since JUCE 7.[^ara]
 
 ### Attachment {#attachment}
 A small object (`SliderAttachment`, `ButtonAttachment`, `ComboBoxAttachment`, `ParameterAttachment`) that keeps a UI control and a plug-in parameter in sync in both directions, including host automation and undo gestures.
 
 ### AU / AUv3 {#au}
-Apple's **Audio Unit** plug-in formats. AU (v2) is a macOS bundle used by Logic and GarageBand. AUv3 is an app extension, sandboxed, and the only plug-in format on iOS.
+Apple's **Audio Unit** plug-in formats. AU (v2) is a macOS bundle used by Logic and GarageBand. AUv3 is an app extension and is the Audio Unit variant JUCE builds for iOS.
 
 ### Audio thread {#audio-thread}
 The high-priority thread, owned by the driver or host, that calls your processing code every block. It must never wait. → [Threads](../guide/core-concepts#threads)
@@ -92,7 +92,7 @@ The drawing context passed to `Component::paint()`. It fills, strokes, draws tex
 ## H {#h}
 
 ### Headless {#headless}
-Running without a display or GUI, for example on a server, in CI, or on embedded Linux. JUCE 6 added headless Linux support. `juce_audio_processors_headless` provides the plug-in model without `juce_graphics`.
+Running without a display or GUI, for example on a server, in CI, or on embedded Linux. JUCE 6 added headless Linux support.[^cl] `juce_audio_processors_headless` provides the plug-in model without `juce_graphics`.
 
 ### Host {#host}
 The application that loads plug-ins: a DAW such as Ableton Live, Logic, Pro Tools, or Reaper, or JUCE's own AudioPluginHost.
@@ -100,7 +100,7 @@ The application that loads plug-ins: a DAW such as Ableton Live, Logic, Pro Tool
 ## I {#i}
 
 ### Introjucer {#introjucer}
-The Projucer's predecessor, a project generator for the module format. It was merged into the Projucer in JUCE 4.2.
+The Projucer's predecessor, a project generator for the module format. It was merged into the Projucer in JUCE 4.2.[^cl]
 
 ## J {#j}
 
@@ -122,7 +122,7 @@ The delay between sound entering and leaving the system. It is driven by the blo
 An object that draws the built-in widgets. Swap or subclass it (usually `LookAndFeel_V4`) to restyle an app without subclassing each widget.
 
 ### LV2 {#lv2}
-An open, extensible plug-in standard, popular on Linux. JUCE 7 added authoring and hosting.
+An open, extensible plug-in standard. JUCE 7 added authoring and hosting.[^cl]
 
 ## M {#m}
 
@@ -158,7 +158,7 @@ PACE Anti-Piracy, the company that owns JUCE (since 2020). It also makes iLok an
 A host-visible, automatable control of a plug-in, such as `AudioParameterFloat`. Its ID must stay stable across versions.
 
 ### PIP {#pip}
-Projucer Instant Project: a single header with a metadata block that tools turn into a full project. Most JUCE demos are PIPs.
+Projucer Instant Project: a single header with a metadata block that tools turn into a full project. Many JUCE demos are PIPs.
 
 ### prepareToPlay() {#preparetoplay}
 Called before processing starts, with the sample rate and maximum block size. Allocate and reset here, not in the audio callback.
@@ -219,7 +219,7 @@ A reference-counted tree of typed nodes with properties and children. It is obse
 A variant type holding an int, double, bool, string, array, object, or binary data. It is used for `ValueTree` properties and JSON.
 
 ### VST3 {#vst3}
-Steinberg's current plug-in format, supported on macOS, Windows, and Linux. Its SDK is bundled with JUCE and has been MIT-licensed since version 3.8.0.
+Steinberg's current plug-in format, supported on macOS, Windows, and Linux. Its SDK is bundled with JUCE and is MIT-licensed from version 3.8.0.[^cl]
 
 ## W {#w}
 
@@ -228,3 +228,11 @@ A plug-in or app interface written in HTML, CSS, and JavaScript, hosted in a `We
 
 ### Wrapper {#wrapper}
 The code in `juce_audio_plugin_client` that implements a plug-in format's API and forwards calls to your `AudioProcessor`.
+
+## Sources
+
+Definitions of JUCE classes are written from the Doxygen comments in the module headers (search a class with `grep -rlE "^\s*(class|struct)\s+(JUCE_API\s+)?Name\b" modules`, as the [README](https://github.com/andrewh/JUCE/blob/master/README.md) suggests); class names in code spans link to the generated API reference (see the nav bar). Audio terms (sample rate, denormals, and so on) are standard industry terminology and are not individually sourced. Version claims come from [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md).
+
+[^aax]: [`README.md`, "AAX Plug-Ins"](https://github.com/andrewh/JUCE/blob/master/README.md#aax-plug-ins).
+[^ara]: [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md), Version 7.0.0: "Added Audio Random Access (ARA) SDK support". Origin of ARA (read from search-result summaries): [Audio Random Access, Wikipedia](https://en.wikipedia.org/wiki/Audio_Random_Access); [Celemony/ARA_SDK](https://github.com/Celemony/ARA_SDK).
+[^cl]: [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md): 7.0.0 (LV2), 8.0.11 (VST3 SDK 3.8.0, MIT), 6.0.0 (headless Linux), 4.2 (Introjucer merged into the Projucer).

@@ -4,7 +4,7 @@
 
 ## The layer cake
 
-Each module declares its dependencies in its main header, so the framework forms a strict hierarchy with no cycles. Simplified, it looks like this (the [interactive module map](../reference/module-map) has every module and edge):
+Each module declares its dependencies in its main header, so the framework forms a hierarchy with no cycles.[^decl] Simplified, it looks like this (the [interactive module map](../reference/module-map) has every module and edge):
 
 ```mermaid
 flowchart TB
@@ -54,10 +54,10 @@ flowchart TB
 
 Arrows point from a module to what it depends on. Some things to notice:
 
-- **`juce_core` depends on nothing.** It is JUCE's replacement for much of the C++ standard library, plus OS services.
+- **`juce_core` depends on nothing.**[^decl] It is JUCE's replacement for much of the C++ standard library, plus OS services.
 - **`juce_events` is the hinge.** Anything asynchronous (GUI, timers, device change notifications, OSC) needs its message loop.
 - **The audio stack does not need the GUI.** `juce_audio_basics`, `juce_audio_devices`, `juce_audio_formats`, and `juce_dsp` never touch `juce_graphics`. You can build a headless audio tool or server.
-- **Plug-in code is split in two.** `juce_audio_processors_headless` holds the `AudioProcessor` interface, parameters, graph, and format hosting with no GUI dependency. `juce_audio_processors` adds editors and plug-in scanning UI on top. (The split arrived in JUCE 8.0.11, so older tutorials only mention `juce_audio_processors`.)
+- **Plug-in code is split in two.** `juce_audio_processors_headless` holds the `AudioProcessor` interface, parameters, graph, and format hosting with no GUI dependency. `juce_audio_processors` adds editors and plug-in scanning UI on top. (The split arrived in JUCE 8.0.11, so older tutorials only mention `juce_audio_processors`.)[^split]
 - **`juce_audio_utils` sits at the top** because it glues everything together: device selectors, waveform thumbnails, keyboard widgets, and players.
 
 ## The two runtimes
@@ -87,7 +87,7 @@ flowchart LR
 | **Rules** | May block briefly; must not freeze | No locks that can wait, no allocation, no file or network I/O, no GUI calls |
 | **Talking to the other side** | Write atomics or push to a FIFO | Read atomics or pop from a FIFO; never call into Components |
 
-Getting this boundary right is the most important skill in JUCE programming. See [Core concepts → Threads](./core-concepts#threads) for the tools JUCE gives you.
+The thread rules in this table are general real-time audio practice rather than quotations from JUCE, although JUCE's own APIs are built around them (for example `getRawParameterValue()`, described as something "a realtime process can read", and the lock-free `AbstractFifo`).[^rt] Getting this boundary right is the most important skill in JUCE programming. See [Core concepts → Threads](./core-concepts#threads) for the tools JUCE gives you.
 
 ## How audio reaches your code
 
@@ -114,7 +114,7 @@ sequenceDiagram
   P->>Y: releaseResources()
 ```
 
-`AudioAppComponent` (in `juce_audio_utils`) packages this for you. It is a `Component` *and* an `AudioSource`, with its own `AudioDeviceManager` and `AudioSourcePlayer`.
+`AudioAppComponent` (in `juce_audio_utils`) packages this for you. It is a `Component` *and* an `AudioSource`, with its own `AudioDeviceManager` and `AudioSourcePlayer`.[^aac]
 
 ### 2. A plug-in
 
@@ -122,7 +122,7 @@ The host owns the clock. A format wrapper in `juce_audio_plugin_client` translat
 
 ### 3. A plug-in host or modular app
 
-`AudioProcessorGraph` connects many `AudioProcessor`s (your own or loaded third-party plug-ins) into one. An `AudioProcessorPlayer` then feeds it from an audio device. This is how `extras/AudioPluginHost` works.
+`AudioProcessorGraph` connects many `AudioProcessor`s (your own or loaded third-party plug-ins) into one. An `AudioProcessorPlayer` then feeds it from an audio device. This is how `extras/AudioPluginHost` works.[^aph]
 
 ## How the GUI reaches your code
 
@@ -141,7 +141,7 @@ sequenceDiagram
 
 - A **top-level** `Component` (usually a `DocumentWindow`) gets a `ComponentPeer`, the platform-specific native window.
 - **Child** components are lightweight: they have no native window. JUCE hit-tests and clips them itself, so the same UI renders identically everywhere.
-- Drawing goes through `Graphics`, which targets a rendering backend: CoreGraphics, Direct2D, the software renderer, or OpenGL.
+- Drawing goes through `Graphics`, which targets a rendering backend: CoreGraphics, Direct2D, the software renderer, or OpenGL.[^gfx]
 
 ## How an app starts
 
@@ -154,7 +154,7 @@ flowchart LR
   quit --> shutdown["shutdown()<br/>destroy windows"]
 ```
 
-For a plug-in there is no `main()`: the host loads your binary and the wrapper calls `createPluginFilter()`, a function you provide that returns your `AudioProcessor`.
+For a plug-in there is no `main()`: the host loads your binary and the wrapper calls `createPluginFilter()`, a function you provide that returns your `AudioProcessor`.[^cpf]
 
 ## Where the tools fit
 
@@ -180,3 +180,13 @@ flowchart LR
 ```
 
 See [Build systems](./build-systems) for details.
+
+## Sources
+
+[^decl]: The `BEGIN_JUCE_MODULE_DECLARATION` block in each module's main header, for example [`juce_audio_devices.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_devices/juce_audio_devices.h) (`dependencies: juce_audio_basics, juce_events`); format in [`docs/JUCE Module Format.md`](https://github.com/andrewh/JUCE/blob/master/docs/JUCE%20Module%20Format.md). The diagram edges are a simplification: the full generated graph is the [module map](../reference/module-map), built from `site/data/modules.json`.
+[^split]: [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md), Version 8.0.11: "Added a new juce_audio_processors_headless module". Its declared dependencies are in [`juce_audio_processors_headless.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors_headless/juce_audio_processors_headless.h).
+[^rt]: [`juce_AudioProcessorValueTreeState.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors/utilities/juce_AudioProcessorValueTreeState.h) (`getRawParameterValue`); [`juce_AbstractFifo.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_core/containers/juce_AbstractFifo.h) ("lock-free FIFO", "single-reader, single-writer").
+[^aac]: [`juce_AudioAppComponent.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_utils/gui/juce_AudioAppComponent.h): `class AudioAppComponent : public Component, public AudioSource`.
+[^aph]: [`extras/AudioPluginHost/Source/UI/GraphEditorPanel.cpp`](https://github.com/andrewh/JUCE/blob/master/extras/AudioPluginHost/Source/UI/GraphEditorPanel.cpp) uses `AudioProcessorGraph`.
+[^gfx]: Rendering back ends in [`modules/juce_graphics/contexts`](https://github.com/andrewh/JUCE/blob/master/modules/juce_graphics/contexts) and [`native`](https://github.com/andrewh/JUCE/blob/master/modules/juce_graphics/native) (CoreGraphics, Direct2D, `LowLevelGraphicsSoftwareRenderer`); OpenGL is the `juce_opengl` module.
+[^cpf]: Declared in [`juce_audio_processors.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors/juce_audio_processors.h) as `juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter();` and called from [`juce_CreatePluginFilter.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_plugin_client/detail/juce_CreatePluginFilter.h).

@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Learning JUCE
   text: How the framework fits together
-  tagline: A personal field guide to the JUCE C++ framework, built from reading its source. What it is, how the modules interact, and where it came from.
+  tagline: A personal field guide to the JUCE C++ framework, built from reading its source, with sources cited on each page. What it is, how the modules interact, and where it came from.
   image:
     src: /favicon.svg
     alt: Oscilloscope trace
@@ -39,3 +39,5 @@ features:
     details: From Tracktion's utility code in the early 2000s to JUCE 9, and why the codebase looks the way it does.
     link: /guide/history
 ---
+
+

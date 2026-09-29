@@ -40,3 +40,12 @@ git add -A ../docs . && git commit -m "Update docs site"
 ```
 
 Then, in the GitHub repository settings: **Pages → Build and deployment → Deploy from a branch → `master` / `/docs`**.
+
+## Sources and accuracy
+
+- Claims carry numbered footnotes that link to a file in this repository or a public web page. Each page ends with a **Sources** section.
+- Version and feature claims cite `CHANGE_LIST.md` and `BREAKING_CHANGES.md`. Release dates come from this fork's git history, which begins in January 2025, so earlier dates are approximate or omitted.
+- Company history (Tracktion, ROLI, PACE) cites public write-ups, with retrieval dates. Where no source was found, the page says so instead of guessing.
+- Some web sources were read only as search-result summaries and are marked as such in the footnote.
+- General audio-programming terms and rules of thumb (real-time rules, sample rate, denormals) are not individually sourced, and the pages say when a statement is this site's own reading.
+- Corrections are welcome. See the [changelog](./changelog) for what has been fixed so far.
