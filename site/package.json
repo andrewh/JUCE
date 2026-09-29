@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "gen": "node scripts/gen-modules.mjs",
+    "gen": "node scripts/gen-modules.mjs && node scripts/gen-tutorials.mjs",
     "api": "cd doxygen && doxygen Doxyfile",
     "dev": "npm run gen && vitepress dev",
     "build": "npm run gen && vitepress build",

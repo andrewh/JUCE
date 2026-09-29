@@ -8,10 +8,11 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
 
 ## This site
 
-### 2026-09-29: Copy review
+### 2026-09-29: Copy review and tutorials
 
 - History: fixed the opening sentence of the lede.
 - About this site: corrected the hosting description (the site is deployed by the Pages workflow, not by serving `docs/`) and the publishing steps.
+- Tutorials: added fourteen condensed guides under a new Tutorials section (nav item, sidebar, and home page entry). They are generated at build time from `docs/tutorials/`, so the Markdown stays readable on GitHub, and they credit the ISC-licensed JUCE tutorials they adapt.
 - Rebuilt the static copy in `docs/`, which was missing the API reference nav entry and this changelog.
 
 ### 2026-09-29: Sources and changelog

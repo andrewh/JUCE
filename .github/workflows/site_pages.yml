@@ -9,6 +9,7 @@ on:
     branches: [master]
     paths:
       - 'site/**'
+      - 'docs/tutorials/**'
       - 'docs/doxygen/**'
       - 'modules/**'
       - '.github/workflows/site_pages.yml'

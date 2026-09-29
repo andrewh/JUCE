@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import data from '../data/modules.json'
+import tutorials from '../data/tutorials.json'
 import footnote from 'markdown-it-footnote'
 import { apiLinks } from './apiLinks'
 
@@ -40,6 +41,7 @@ export default withMermaid(
       logo: '/favicon.svg',
       nav: [
         { text: 'Guide', link: '/guide/what-is-juce', activeMatch: '/guide/' },
+        { text: 'Tutorials', link: '/tutorials/', activeMatch: '/tutorials/' },
         { text: 'Module map', link: '/reference/module-map' },
         { text: 'Glossary', link: '/reference/glossary' },
         { text: 'API reference', link: '/api/index.html', target: '_self' },
@@ -47,35 +49,48 @@ export default withMermaid(
         { text: 'Changelog', link: '/changelog' },
         { text: `JUCE ${data.version}`, link: 'https://github.com/andrewh/JUCE' }
       ],
-      sidebar: [
-        {
-          text: 'Understand',
-          items: [
-            { text: 'What is JUCE?', link: '/guide/what-is-juce' },
-            { text: 'Architecture', link: '/guide/architecture' },
-            { text: 'Core concepts', link: '/guide/core-concepts' },
-            { text: 'Anatomy of a plug-in', link: '/guide/plugin-anatomy' },
-            { text: 'Build systems', link: '/guide/build-systems' },
-            { text: 'History', link: '/guide/history' }
-          ]
-        },
-        {
-          text: 'Reference',
-          items: [
-            { text: 'Module map', link: '/reference/module-map' },
-            { text: 'Modules', link: '/reference/modules' },
-            { text: 'Glossary', link: '/reference/glossary' }
-          ]
-        },
-        {
-          text: 'Learn',
-          items: [
-            { text: 'Learning path', link: '/guide/learning-path' },
-            { text: 'Changelog', link: '/changelog' },
-            { text: 'About this site', link: '/about' }
-          ]
-        }
-      ],
+      sidebar: {
+        '/tutorials/': [
+          {
+            text: 'Tutorials',
+            items: [
+              { text: 'Overview', link: '/tutorials/' },
+              ...tutorials.guides.map((g) => ({ text: g.label, link: `/tutorials/${g.slug}` })),
+              { text: 'Attribution', link: '/tutorials/notice' }
+            ]
+          }
+        ],
+        '/': [
+          {
+            text: 'Understand',
+            items: [
+              { text: 'What is JUCE?', link: '/guide/what-is-juce' },
+              { text: 'Architecture', link: '/guide/architecture' },
+              { text: 'Core concepts', link: '/guide/core-concepts' },
+              { text: 'Anatomy of a plug-in', link: '/guide/plugin-anatomy' },
+              { text: 'Build systems', link: '/guide/build-systems' },
+              { text: 'History', link: '/guide/history' }
+            ]
+          },
+          {
+            text: 'Reference',
+            items: [
+              { text: 'Module map', link: '/reference/module-map' },
+              { text: 'Modules', link: '/reference/modules' },
+              { text: 'Glossary', link: '/reference/glossary' }
+            ]
+          },
+          {
+            text: 'Learn',
+            items: [
+              { text: 'Learning path', link: '/guide/learning-path' },
+              { text: 'Tutorials', link: '/tutorials/' },
+              { text: 'Changelog', link: '/changelog' },
+              { text: 'About this site', link: '/about' }
+            ]
+          }
+        ]
+      },
       outline: { level: [2, 3] },
       search: { provider: 'local' },
       socialLinks: [{ icon: 'github', link: 'https://github.com/andrewh/JUCE' }],

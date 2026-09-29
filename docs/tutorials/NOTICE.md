@@ -1,6 +1,6 @@
 # Attribution for the condensed tutorials
 
-The guides in this directory are condensed, rewritten adaptations of the JUCE
+These guides are condensed, rewritten adaptations of the JUCE
 tutorials published at <https://juce.com/learn/tutorials/>. The tutorial sources
 are maintained in the
 [JUCE-tutorials](https://github.com/juce-framework/JUCE-tutorials) repository

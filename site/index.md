@@ -20,6 +20,12 @@ features:
   - title: History
     details: From the Tracktion DAW's utility code in the early 2000s to JUCE 9, and why the codebase looks the way it does.
     link: /guide/history
+  - title: Tutorials
+    details: Fourteen condensed guides adapted from the tutorials on juce.com, from a first window to plug-ins, DSP, and OpenGL, with code updated for JUCE 9.
+    link: /tutorials/
+  - title: Learning path
+    details: Six stages, each pairing a concept page with an example from the repository and a small exercise.
+    link: /guide/learning-path
 ---
 
 
