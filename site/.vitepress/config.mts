@@ -44,6 +44,7 @@ export default withMermaid(
         { text: 'Tutorials', link: '/tutorials/', activeMatch: '/tutorials/' },
         { text: 'Module map', link: '/reference/module-map' },
         { text: 'Glossary', link: '/reference/glossary' },
+        { text: 'Tips & Tricks', link: '/guide/tips-and-tricks' },
         { text: 'API reference', link: '/api/index.html', target: '_self' },
         { text: 'History', link: '/guide/history' },
         { text: 'Changelog', link: '/changelog' },
