@@ -90,6 +90,10 @@ The JUCE tutorials are available online
 format in the [JUCE-tutorials](https://github.com/juce-framework/JUCE-tutorials)
 repository.
 
+A condensed set of these tutorials, with multi-part tutorials merged into single
+guides and code updated for this version of JUCE, is available in
+[docs/tutorials](docs/tutorials/README.md).
+
 ## Minimum System Requirements
 
 #### Building JUCE Projects
