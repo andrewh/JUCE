@@ -69,6 +69,7 @@ export default withMermaid(
               { text: 'Core concepts', link: '/guide/core-concepts' },
               { text: 'Anatomy of a plug-in', link: '/guide/plugin-anatomy' },
               { text: 'Build systems', link: '/guide/build-systems' },
+              { text: 'Tips and tricks', link: '/guide/tips-and-tricks' },
               { text: 'History', link: '/guide/history' }
             ]
           },
