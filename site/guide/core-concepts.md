@@ -10,6 +10,12 @@ A JUCE program usually has:
 - **The audio thread.** It is owned by the audio driver or plug-in host and calls you every few milliseconds with a buffer. If it is late, the listener hears a click.
 - **Any background threads you create** (`Thread`, `ThreadPool`, `TimeSliceThread`) for file loading, analysis, or network work.
 
+### How long does the audio thread have?
+
+The driver or host asks for one buffer at a time, and the next request arrives a fixed time later. That duration is the deadline for your whole `processBlock()`, including everything else in the signal chain.
+
+<LatencyChart />
+
 ### Real-time rules for the audio thread
 
 Inside `processBlock()` or `getNextAudioBlock()`, avoid anything whose running time is unbounded:
@@ -35,6 +41,8 @@ flowchart LR
 - **"Do this on the message thread soon"**: `MessageManager::callAsync()`, `AsyncUpdater::triggerAsyncUpdate()`, or `ChangeBroadcaster::sendChangeMessage()`. Avoid calling these from the audio thread in tight loops, as they may allocate (this is general practice, not a JUCE-documented rule).
 - **Polling**: a `Timer` (message thread, typically 30–60 Hz) reading atomics or a FIFO is the simplest way to drive meters and visualisers.
 - **Smoothing**: `SmoothedValue` ramps parameter changes over a few milliseconds to avoid zipper noise.[^sv]
+
+<SmoothingChart />
 
 ## Components {#components}
 

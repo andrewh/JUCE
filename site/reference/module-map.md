@@ -19,6 +19,10 @@ Click (or tab to and press Enter on) a module to highlight what it **depends on*
 - **`juce_events` is the junction.** Almost every branch passes through it, because almost everything needs the message loop.
 - **Some modules are leaves** (`juce_dsp`, `juce_osc`, `juce_midi_ci`, `juce_javascript`, `juce_video`, `juce_opengl`…). You can add or skip them freely.
 
+## How big is each module?
+
+<ModuleSizeChart />
+
 ## Questions to explore
 
 1. Which module would you need for a command-line tool that converts WAV files to FLAC? What does it pull in?
