@@ -8,6 +8,12 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
 
 ## This site
 
+### 2026-09-29: Copy review
+
+- History: fixed the opening sentence of the lede.
+- About this site: corrected the hosting description (the site is deployed by the Pages workflow, not by serving `docs/`) and the publishing steps.
+- Rebuilt the static copy in `docs/`, which was missing the API reference nav entry and this changelog.
+
 ### 2026-09-29: Sources and changelog
 
 - Added this changelog.

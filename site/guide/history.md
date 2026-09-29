@@ -1,6 +1,6 @@
 # History
 
-**JUCE began in the early 2000s as the in-house toolkit behind the Tracktion DAW, became a public framework, changed owners twice, and grew from one monolithic library into today's 24 modules.** Knowing this history explains many of its quirks: its own `String` and containers, its Projucer, and its naming conventions.
+**JUCE began in the early 2000s as the in-house toolkit behind the Tracktion DAW, became a public framework, changed owners twice, and grew from one monolithic library into today's 24 modules.** This history explains many of its quirks: its own `String` and containers, its Projucer, and its naming conventions.
 
 ::: info Sources
 Numbered footnotes link each claim to its source. Version features and module arrival dates come from this repository's `CHANGE_LIST.md` and git history. Company events cite public write-ups. Release years for JUCE 4 to 8 are approximate, because this fork's git history only starts in January 2025 and `CHANGE_LIST.md` records versions rather than dates. Where a claim could not be sourced, the page says so.
