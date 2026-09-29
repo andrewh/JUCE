@@ -1,7 +1,8 @@
 # JUCE Documentation
 
 This directory contains files documenting the JUCE Module Format, and the JUCE
-CMake API.
+CMake API, along with [condensed tutorials](tutorials/README.md) adapted from the
+tutorials on the JUCE website.
 
 The JUCE modules themselves can be found in the `modules` subdirectory of the
 JUCE repository.
