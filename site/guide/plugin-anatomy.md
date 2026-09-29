@@ -36,9 +36,11 @@ flowchart TB
   ed -. "reads/writes parameters" .-> proc
 ```
 
-The build produces one shared-code static library containing your processor and editor. It then links that library into one small target per format (see [Build systems](./build-systems)). This is why a JUCE plug-in project has targets like `MyPlugin_VST3`, `MyPlugin_AU`, and `MyPlugin_Standalone`.
+The build produces one shared-code static library containing your processor and editor. It then links that library into one small target per format (see [Build systems](./build-systems)).[^cmake] This is why a JUCE plug-in project has targets like `MyPlugin_VST3`, `MyPlugin_AU`, and `MyPlugin_Standalone`.
 
 ## The `AudioProcessor` contract
+
+The method names and their purposes come from `AudioProcessor`.[^ap] The "Thread" column is this site's summary of common host behaviour; JUCE does not guarantee it, hence the footnote below the table.
 
 | Method | Thread | Called when | Your job |
 | --- | --- | --- | --- |
@@ -52,7 +54,7 @@ The build produces one shared-code static library containing your processor and 
 | `createEditor()` / `hasEditor()` | message | the user opens the plug-in window | return a new editor |
 | `getName()`, `acceptsMidi()`, `getTailLengthSeconds()` … | any | the host asks | describe the plug-in |
 
-\* *Usually* the message thread, but hosts vary. Treat these as "not the audio thread, but not guaranteed to be the GUI thread either".
+\* *Usually* the message thread, but hosts vary. Treat these as "not the audio thread, but not guaranteed to be the GUI thread either". This is a cautious reading, not a documented guarantee.
 
 ## A plug-in's life, from the host's point of view
 
@@ -92,8 +94,8 @@ Parameters are how the host sees your plug-in's controls: for automation lanes, 
 
 - Each is a subclass of `AudioProcessorParameter`: usually `AudioParameterFloat`, `AudioParameterInt`, `AudioParameterBool`, or `AudioParameterChoice` (all `RangedAudioParameter`s).
 - Most plug-ins create them through **`AudioProcessorValueTreeState`**, then bind editor widgets with attachments.
-- The audio thread reads the current value via `getRawParameterValue()` (an `std::atomic<float>*`) or directly from the parameter object.
-- Parameter IDs are part of your saved-state format and automation data. **Never rename them after release.** A `ParameterID` also carries a `versionHint`, which keeps Audio Unit parameter ordering backwards-compatible in Logic and GarageBand when you add parameters in a later release.
+- The audio thread reads the current value via `getRawParameterValue()` (an `std::atomic<float>*`)[^apvts] or directly from the parameter object.
+- Parameter IDs are part of your saved-state format and automation data. **Never rename them after release.** A `ParameterID` also carries a `versionHint`, which keeps Audio Unit parameter ordering backwards-compatible in Logic and GarageBand when you add parameters in a later release.[^pid]
 
 ## Buses and channels
 
@@ -103,21 +105,38 @@ A *bus* is a group of channels, such as a stereo main input, a mono side-chain, 
 
 | Format | Owner | Platforms | Notes |
 | --- | --- | --- | --- |
-| **VST3** | Steinberg | macOS, Windows, Linux | SDK bundled with JUCE |
-| **AU** (Audio Unit v2) | Apple | macOS | Needed for Logic Pro and GarageBand |
-| **AUv3** | Apple | macOS, iOS | App extension, sandboxed; the only plug-in format on iOS |
-| **AAX** | Avid | macOS, Windows | Pro Tools only; release builds need PACE signing (see the README) |
-| **LV2** | Open standard | mainly Linux | Authoring and hosting added in JUCE 7 |
-| **Standalone** | JUCE | desktop | Your plug-in in its own app window with an audio settings dialog |
-| **Unity** | Unity | desktop | Native audio plug-in for the Unity game engine |
-| **VST** (VST2) | Steinberg | — | Legacy. Steinberg no longer licenses the SDK to new developers. |
+| **VST3** | Steinberg | macOS, Windows, Linux[^vst3] | SDK bundled with JUCE[^sdk] |
+| **AU** (Audio Unit v2) | Apple | macOS[^cmake] | JUCE's docs mention Logic and GarageBand AU compatibility[^pid] |
+| **AUv3** | Apple | macOS, iOS | App extension. Built only with the Xcode generator[^cmake] |
+| **AAX** | Avid | macOS, Windows | Pro Tools; commercially available Pro Tools needs PACE-signed plug-ins[^aax] |
+| **LV2** | Open standard | not checked | Authoring and hosting added in JUCE 7[^cl7] |
+| **Standalone** | JUCE | desktop | Your plug-in in its own app window (`StandalonePluginHolder`)[^sa] |
+| **Unity** | Unity | not checked | Native audio plug-in for the Unity game engine[^wt] |
+| **VST** (VST2) | Steinberg | — | Legacy. Steinberg discontinued VST 2[^vst2]; JUCE needs you to supply the SDK path |
+
+Platforms marked "not checked", and the owner column generally, come from common knowledge of each format rather than a source in this repository.
 
 ## Hosting other plug-ins
 
-The same abstractions work in reverse. `AudioPluginFormatManager` knows the formats. `KnownPluginList` and `PluginListComponent` scan for and list installed plug-ins, and `createPluginInstance()` gives you an `AudioPluginInstance` (an `AudioProcessor`). You can then put it in an `AudioProcessorGraph`. `extras/AudioPluginHost` is a complete working example.
+The same abstractions work in reverse. `AudioPluginFormatManager` knows the formats. `KnownPluginList` and `PluginListComponent` scan for and list installed plug-ins, and `createPluginInstance()` gives you an `AudioPluginInstance` (an `AudioProcessor`). You can then put it in an `AudioProcessorGraph`. `extras/AudioPluginHost` is a complete working example.[^host]
 
 ## Try it
 
 1. Build `examples/CMake/AudioPlugin` (see [Learning path](./learning-path)).
 2. Open the Standalone target, then load the VST3 into `AudioPluginHost`.
 3. Put a breakpoint in `prepareToPlay()` and `processBlock()` and watch the order of calls.
+
+## Sources
+
+[^cmake]: [`docs/CMake API.md`](https://github.com/andrewh/JUCE/blob/master/docs/CMake%20API.md), `FORMATS`: valid values `Standalone Unity VST3 AU AUv3 AAX VST LV2`; "`AU` and `AUv3` plugins will only be enabled when building on macOS; `AUv3` plugins will only be enabled when using the Xcode generator"; one target per format, for example `MyPlugin_VST3`.
+[^ap]: [`juce_AudioProcessor.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors_headless/processors/juce_AudioProcessor.h): `prepareToPlay`, `processBlock`, `releaseResources`, `createEditor`, `getTailLengthSeconds`, `getBusBuffer`, and the `wrapperType_*` enum (VST, VST3, AudioUnit, AudioUnitv3, AAX, Standalone, Unity, LV2).
+[^pid]: [`juce_AudioProcessorParameterWithID.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors_headless/utilities/juce_AudioProcessorParameterWithID.h): `versionHint` "Influences parameter ordering in Audio Unit plugins. Used to provide backwards compatibility of Audio Unit plugins in Logic and GarageBand."
+[^apvts]: [`juce_AudioProcessorValueTreeState.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors/utilities/juce_AudioProcessorValueTreeState.h).
+[^vst3]: [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md), Version 6.0.0: "Added VST3 support on Linux"; [`README.md`](https://github.com/andrewh/JUCE/blob/master/README.md) deployment targets list macOS, Windows, and Linux.
+[^sdk]: `CHANGE_LIST.md`, Version 8.0.11: "Updated the VST3 SDK to 3.8.0 (MIT license)"; JUCE 8.0.0: "Bundled the AAX SDK". See also the [SPDX bill of materials](https://github.com/andrewh/JUCE/blob/master/JUCE.spdx.json).
+[^aax]: [`README.md`, "AAX Plug-Ins"](https://github.com/andrewh/JUCE/blob/master/README.md#aax-plug-ins): AAX plug-ins must be signed with PACE tools "before they will run in commercially available versions of Pro Tools". Avid as the owner of AAX is named in the same section.
+[^cl7]: `CHANGE_LIST.md`, Version 7.0.0: "Added support for authoring and hosting LV2 plug-ins".
+[^sa]: [`juce_StandaloneFilterWindow.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_plugin_client/Standalone/juce_StandaloneFilterWindow.h).
+[^wt]: `CHANGE_LIST.md` mentions "Unity native plug-in support" (Version 5.4.0); the Unity wrapper type is in `juce_AudioProcessor.h`. That Unity is a game engine is general knowledge.
+[^vst2]: [VST 2 Discontinued, Steinberg Help Center](https://helpcenter.steinberg.de/hc/en-us/articles/4409561018258-VST-2-Discontinued); [Steinberg closing down VST2 for good, JUCE Forum](https://forum.juce.com/t/steinberg-closing-down-vst2-for-good/27722); the `juce_set_vst2_sdk_path` requirement is in [`docs/CMake API.md`](https://github.com/andrewh/JUCE/blob/master/docs/CMake%20API.md). Retrieved 2026-09-29 from search-result summaries; the Steinberg page itself was not opened.
+[^host]: [`extras/AudioPluginHost`](https://github.com/andrewh/JUCE/blob/master/extras/AudioPluginHost); the scanning and format classes are in [`juce_KnownPluginList.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors/scanning/juce_KnownPluginList.h) and [`juce_PluginListComponent.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors/scanning/juce_PluginListComponent.h).

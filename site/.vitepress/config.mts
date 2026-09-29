@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import data from '../data/modules.json'
+import footnote from 'markdown-it-footnote'
 import { apiLinks } from './apiLinks'
 
 // GitHub Pages serves a project site from /<repo>/. Override with SITE_BASE=/ for a custom domain.
@@ -30,7 +31,10 @@ export default withMermaid(
     markdown: {
       lineNumbers: false,
       theme: { light: 'github-dark', dark: 'tokyo-night' },
-      config: (md) => apiLinks(md, base)
+      config: (md) => {
+        md.use(footnote)
+        apiLinks(md, base)
+      }
     },
     themeConfig: {
       logo: '/favicon.svg',
@@ -40,6 +44,7 @@ export default withMermaid(
         { text: 'Glossary', link: '/reference/glossary' },
         { text: 'API reference', link: '/api/index.html', target: '_self' },
         { text: 'History', link: '/guide/history' },
+        { text: 'Changelog', link: '/changelog' },
         { text: `JUCE ${data.version}`, link: 'https://github.com/andrewh/JUCE' }
       ],
       sidebar: [
@@ -66,6 +71,7 @@ export default withMermaid(
           text: 'Learn',
           items: [
             { text: 'Learning path', link: '/guide/learning-path' },
+            { text: 'Changelog', link: '/changelog' },
             { text: 'About this site', link: '/about' }
           ]
         }
