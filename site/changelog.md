@@ -20,6 +20,7 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
   - Glossary and Anatomy of a plug-in: removed "AUv3 is sandboxed and the only plug-in format on iOS", "LV2 is popular on Linux", and the AbstractFifo "single-producer, single-consumer" wording (the header says single-reader, single-writer).
   - Build systems: removed the "template wizard" and "most new projects and tutorials use CMake" claims.
 - Added a "Sources and accuracy" section to [About this site](./about).
+- Footer: the licence line now says the JUCE *modules* are AGPLv3 or commercial, that examples are ISC, and that bundled third-party code keeps its own licence, per [`LICENSE.md`](https://github.com/andrewh/JUCE/blob/master/LICENSE.md). The copyright holder was already correct ("Copyright (c) Raw Material Software Limited" in the module headers).
 
 ### 2026-09-28: CI publishing
 

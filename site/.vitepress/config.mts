@@ -85,7 +85,7 @@ export default withMermaid(
       },
       footer: {
         message: 'Personal study notes on JUCE. Not affiliated with or endorsed by the JUCE team.',
-        copyright: 'JUCE is © Raw Material Software Limited, licensed under AGPLv3 or a commercial licence.'
+        copyright: 'JUCE is Copyright © Raw Material Software Limited. The JUCE modules are dual-licensed under AGPLv3 and the commercial JUCE licence; examples are ISC and bundled third-party code keeps its own licence. See <a href="https://github.com/andrewh/JUCE/blob/master/LICENSE.md">LICENSE.md</a>.'
       }
     }
   }),
