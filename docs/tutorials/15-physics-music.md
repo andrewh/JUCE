@@ -387,7 +387,8 @@ JUCE. Compare the current licences yourself before shipping.
 | Jolt Physics | 3D | Modern C++ with multithreading, used in games. Larger. |
 | PhysX | 3D | Very capable, large dependency. |
 
-**Using a newer Box2D yourself.** Fetch it with CMake (`FetchContent`) or add it as a
+**Using a newer Box2D yourself.** [Guide 16](16-box2d-v3.md) does exactly this, and
+[guide 17](17-modal-physics-audio.md) builds a richer audio engine on top of it. In short: fetch it with CMake (`FetchContent`) or add it as a
 submodule, and link it to your target. Do not link the `juce_box2d` module at the same
 time, because both define the same `b2...` symbols. Wrap the engine behind a small
 class like `PhysicsMusicWorld`, whose only output is `NoteEvent`s, so that swapping the

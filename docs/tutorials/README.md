@@ -1,7 +1,7 @@
 # JUCE tutorials, condensed
 
 Fourteen guides that distil the tutorials at <https://juce.com/learn/tutorials/>
-into one page per topic, plus a fifteenth, original guide on Box2D physics. Multi-part tutorials are merged, prose is shortened, and
+into one page per topic, plus three original guides on Box2D physics and music (15 to 17). Multi-part tutorials are merged, prose is shortened, and
 code is updated for the JUCE version in this repository (for example `FontOptions`
 instead of the deprecated `Font` constructors, `ParameterID` for parameters,
 CMake-first project setup). For the full step-by-step walkthroughs, screenshots,
@@ -35,6 +35,8 @@ documentation in the main [README](../../README.md#api-documentation), and check
 | 13 | [Rendering with OpenGL](13-opengl.md)                              | `OpenGLAppComponent`, shaders, matrices                               | Advanced     |
 | 14 | [Mobile and app services](14-mobile-and-app-services.md)           | Android setup and screen sizes, purchases, notifications, analytics, licensing | Intermediate to advanced |
 | 15 | [Physics as a musical instrument](15-physics-music.md)             | `juce_box2d`, contact listeners, thread-safe hand-off to the audio thread, mapping collisions to notes | Intermediate to advanced |
+| 16 | [Integrating Box2D v3](16-box2d-v3.md)                            | `FetchContent`, ids instead of pointers, hit and sensor events, threading | Advanced |
+| 17 | [A physical audio engine](17-modal-physics-audio.md)               | Modal synthesis, contact-driven excitation, rolling noise, voice management, lock-free hand-off | Advanced |
 
 ## Where each original tutorial went
 
@@ -103,8 +105,9 @@ documentation in the main [README](../../README.md#api-documentation), and check
 | App analytics collection                                            | 14    |
 | Unlock your plugins through online registration                     | 14    |
 
-Guide 15 is written for this repository and has no juce.com original. Its
-companion app is [`examples/Box2DMusic`](../../examples/Box2DMusic).
+Guides 15 to 17 are written for this repository and have no juce.com original. The
+companion apps are [`examples/Box2DMusic`](../../examples/Box2DMusic) (guide 15) and
+[`examples/Box2DAudioV3`](../../examples/Box2DAudioV3) (guides 16 and 17).
 
 ## Notes on the examples
 
