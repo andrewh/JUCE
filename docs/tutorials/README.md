@@ -1,7 +1,7 @@
 # JUCE tutorials, condensed
 
 Fourteen guides that distil the tutorials at <https://juce.com/learn/tutorials/>
-into one page per topic. Multi-part tutorials are merged, prose is shortened, and
+into one page per topic, plus a fifteenth, original guide on Box2D physics. Multi-part tutorials are merged, prose is shortened, and
 code is updated for the JUCE version in this repository (for example `FontOptions`
 instead of the deprecated `Font` constructors, `ParameterID` for parameters,
 CMake-first project setup). For the full step-by-step walkthroughs, screenshots,
@@ -34,6 +34,7 @@ documentation in the main [README](../../README.md#api-documentation), and check
 | 12 | [Core utilities](12-utilities.md)                                  | `Random`, `BigInteger`, `File` and streams, OSC                       | Beginner to intermediate |
 | 13 | [Rendering with OpenGL](13-opengl.md)                              | `OpenGLAppComponent`, shaders, matrices                               | Advanced     |
 | 14 | [Mobile and app services](14-mobile-and-app-services.md)           | Android setup and screen sizes, purchases, notifications, analytics, licensing | Intermediate to advanced |
+| 15 | [Physics as a musical instrument](15-physics-music.md)             | `juce_box2d`, contact listeners, thread-safe hand-off to the audio thread, mapping collisions to notes | Intermediate to advanced |
 
 ## Where each original tutorial went
 
@@ -101,6 +102,9 @@ documentation in the main [README](../../README.md#api-documentation), and check
 | Push Notifications on desktop and mobile devices                    | 14    |
 | App analytics collection                                            | 14    |
 | Unlock your plugins through online registration                     | 14    |
+
+Guide 15 is written for this repository and has no juce.com original. Its
+companion app is [`examples/Box2DMusic`](../../examples/Box2DMusic).
 
 ## Notes on the examples
 
