@@ -13,10 +13,13 @@ tutorial covers Box2D.
 
 ## What JUCE ships
 
-- **The engine:** [`modules/juce_box2d/box2d`](../../modules/juce_box2d/box2d) is
-  Box2D **2.2.1**, vendored into a JUCE module. It uses the upstream API, including
-  the `float32` typedef and `b2World (gravity)` construction. Newer Box2D manuals
-  describe a slightly different API, so trust the headers here first.
+- **The engine:** [`modules/juce_box2d/box2d`](../../modules/juce_box2d/box2d) is a
+  vendored Box2D snapshot that reports itself as **2.2.1** (`b2_version`). It uses the
+  upstream API, including the `float32` typedef and `b2World (gravity)` construction.
+  It is a little newer than the 2.2.1 release, since it already has chain shapes,
+  `b2RopeJoint`, `b2WheelJoint`, and gravity scale. Newer Box2D manuals describe a
+  different API, so trust the headers here first. See
+  [The bundled Box2D is old](#the-bundled-box2d-is-old).
 - **A debug renderer:** `juce::Box2DRenderer` in
   [`juce_Box2DRenderer.h`](../../modules/juce_box2d/utils/juce_Box2DRenderer.h)
   draws a world into a `juce::Graphics`.
@@ -327,6 +330,69 @@ host's tempo and transport to quantise events, if you want them in time.
 `Tumbler.h`'s rotating container as a generative sequencer, edge and chain shapes
 for ramps, and collision filtering (`b2Filter`) so different ball colours only
 trigger certain bodies.
+
+## The bundled Box2D is old
+
+**Why.** The module's own `README.txt` says JUCE took the upstream source, changed
+include paths, guarded a couple of headers, and cleaned up compiler warnings. It has
+been carried along since then. The repository does not record why it was never
+updated, so the following is inference:
+
+- Every upgrade means re-applying those local edits and re-checking every warning
+  flag JUCE builds with, on every supported platform and compiler.
+- Upstream changed its API between releases (the 2.4 series dropped the `float32`
+  typedef, and version 3 is a rewrite in C with a different API). An upgrade would
+  break user code, and JUCE's `BREAKING_CHANGES.md` is reserved for changes that earn
+  it.
+- Box2D is a peripheral module. One demo uses it, and JUCE's focus is audio, UI, and
+  plug-in formats.
+
+**What is missing.** The list below comes from memory of the upstream release
+notes, so check them before relying on a specific version number.
+
+Compared with Box2D 2.3 and 2.4:
+
+- `b2MotorJoint`, which drives one body toward a target position or angle.
+- Ghost vertices for chain and edge shapes, which prevent bodies snagging on the
+  seams of terrain built from many edges.
+- Bug fixes to the solver, continuous collision, and joints accumulated since 2011.
+- Later API conveniences, such as shifting the world origin for large worlds.
+
+Compared with Box2D 3.x:
+
+- A multithreaded solver, and a much faster one for large piles of bodies.
+- Event queues. Version 3 gives you begin, end, and *hit* events, with approach speed,
+  after each step, and sensor events, instead of callbacks that fire inside `Step()`.
+  Hit events with approach speed are close to what this guide builds by hand from
+  `PostSolve`, and would make the threading simpler.
+- Better determinism, including a stated goal of matching results across platforms.
+  The bundled version gives no such guarantee, so a saved "performance" may not
+  replay identically on another machine or compiler.
+
+What no version of Box2D gives you, and which affects musical use:
+
+- It is 2D and rigid-body only: no soft bodies or fluids, and no 3D.
+- It simulates at control rate. It does not model the *sound* of anything. That is
+  what the synth is for, and physical-modelling synthesis is a different discipline.
+- Its numbers are in floats, and stepping must be fixed and off the audio thread.
+
+**Alternatives.** All of these are permissively licensed, which is compatible with
+JUCE. Compare the current licences yourself before shipping.
+
+| Engine | Dimensions | Notes |
+| ------ | ---------- | ----- |
+| Box2D 3.x (upstream) | 2D | Same author. C API, multithreaded, event queues. Closest upgrade path. |
+| Chipmunk2D | 2D | C, small, easy to embed. A long-standing alternative. |
+| Bullet | 3D (and 2D-constrained) | Mature and widely used. Larger. |
+| Jolt Physics | 3D | Modern C++ with multithreading, used in games. Larger. |
+| PhysX | 3D | Very capable, large dependency. |
+
+**Using a newer Box2D yourself.** Fetch it with CMake (`FetchContent`) or add it as a
+submodule, and link it to your target. Do not link the `juce_box2d` module at the same
+time, because both define the same `b2...` symbols. Wrap the engine behind a small
+class like `PhysicsMusicWorld`, whose only output is `NoteEvent`s, so that swapping the
+engine changes one file. A plug-in that steps on its own thread must also decide how
+many worker threads the engine may create. Keep them away from the audio thread.
 
 ## Checklist
 
