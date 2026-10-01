@@ -196,18 +196,23 @@ const sourceUrl = (id: string) => `https://github.com/andrewh/JUCE/tree/master/m
 
 <style scoped>
 .mg {
-  --c-foundation: #64748b;
-  --c-gui: #3b82f6;
-  --c-audio: #10b981;
-  --c-plugins: #f59e0b;
-  --c-services: #a855f7;
-  --c-up: #2563eb;
-  --c-down: #ea580c;
+  --c-foundation: #6f6e69;
+  --c-gui: #205ea6;
+  --c-audio: #66800b;
+  --c-plugins: #ad8301;
+  --c-services: #5e409d;
+  --c-up: #205ea6;
+  --c-down: #bc5215;
   margin: 16px 0 24px;
 }
 .dark .mg {
-  --c-up: #60a5fa;
-  --c-down: #fb923c;
+  --c-foundation: #878580;
+  --c-gui: #4385be;
+  --c-audio: #879a39;
+  --c-plugins: #d0a215;
+  --c-services: #8b7ec8;
+  --c-up: #4385be;
+  --c-down: #da702c;
 }
 .mg-legend {
   display: flex;
@@ -308,7 +313,7 @@ svg {
 .node:hover rect,
 .node:focus-visible rect { stroke-width: 3.5; }
 .node.selected rect { fill: var(--c); }
-.node.selected text { fill: #fff; font-weight: 600; }
+.node.selected text { fill: #fffcf0; font-weight: 600; }
 .node.upstream rect { stroke: var(--c-up); stroke-width: 3; }
 .node.downstream rect { stroke: var(--c-down); stroke-width: 3; }
 .node.dim { opacity: 0.3; }
