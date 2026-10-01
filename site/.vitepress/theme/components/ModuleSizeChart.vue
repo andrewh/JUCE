@@ -17,7 +17,7 @@ const build = (Plot: any, width: number, c: any) =>
     style: { background: 'transparent', color: c.ink, fontSize: '12px' },
     x: { label: 'Headers listed in the module →', grid: true },
     y: { label: null, domain: rows.map((r) => r.id) },
-    color: { domain: groups, range: [c.muted, c.brand, '#2a9d8f', c.peak, '#b58900'], legend: true },
+    color: { domain: groups, range: [c.muted, c.brand, c.cyan, c.peak, c.yellow], legend: true },
     marks: [
       Plot.barX(rows, { y: 'id', x: 'headers', fill: 'group', tip: true }),
       Plot.text(rows, { y: 'id', x: 'headers', text: 'headers', dx: 4, textAnchor: 'start', fill: c.ink }),

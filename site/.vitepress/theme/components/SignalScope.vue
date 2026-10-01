@@ -6,11 +6,11 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 const canvas = ref<HTMLCanvasElement | null>(null)
 
 const BLOCKS = 4
-const IN_COLOUR = '#9aa4ff'
-const OUT_COLOUR = '#ff4f93'
-const GRID = 'rgba(154, 164, 255, 0.13)'
-const GRID_AXIS = 'rgba(154, 164, 255, 0.32)'
-const LABEL = 'rgba(190, 197, 240, 0.72)'
+const IN_COLOUR = '#4385be'
+const OUT_COLOUR = '#ce5d97'
+const GRID = 'rgba(206, 205, 195, 0.12)'
+const GRID_AXIS = 'rgba(206, 205, 195, 0.3)'
+const LABEL = 'rgba(206, 205, 195, 0.7)'
 
 let raf = 0
 let observer: ResizeObserver | null = null
@@ -184,9 +184,9 @@ onBeforeUnmount(() => {
 .scope {
   margin: 8px 0 0;
   width: 100%;
-  border: 1px solid #2b3163;
+  border: 1px solid #343331;
   background:
-    radial-gradient(120% 100% at 50% 0%, #10153a 0%, #070919 70%);
+    radial-gradient(120% 100% at 50% 0%, #1c1b1a 0%, #100f0f 70%);
   box-shadow: 0 0 0 4px var(--vp-c-bg), 0 0 0 5px var(--vp-c-divider);
 }
 canvas {

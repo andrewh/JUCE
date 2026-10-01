@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { flexoki } from './flexoki'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import data from '../data/modules.json'
 import tutorials from '../data/tutorials.json'
@@ -31,7 +32,7 @@ export default withMermaid(
     ],
     markdown: {
       lineNumbers: false,
-      theme: { light: 'github-dark', dark: 'tokyo-night' },
+      theme: { light: flexoki as any, dark: flexoki as any },
       config: (md) => {
         md.use(footnote)
         apiLinks(md, base)

@@ -1,42 +1,43 @@
 /*
   Learning JUCE: API reference skin for Doxygen.
-  Same instrument-panel palette as the VitePress theme (site/.vitepress/theme/custom.css).
+  Same Flexoki palette as the VitePress theme (site/.vitepress/theme/custom.css).
   Light by default; theme-sync.js adds html.dark to follow the site's toggle.
 */
 :root {
   --jl-display: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --jl-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --jl-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --jl-peak: #d80f5a;
+  --jl-peak: #a02f6f;
 
-  --bg: #f2f3f8;
-  --bg-alt: #e9ebf3;
-  --bg-elv: #f8f9fc;
-  --bg-soft: #e4e7f1;
-  --text-1: #0c1030;
-  --text-2: #444a6d;
-  --text-3: #6b7295;
-  --border: #b9bfd6;
-  --divider: #cdd1e2;
-  --brand: #3327e6;
-  --brand-soft: rgba(51, 39, 230, 0.09);
-  --code-bg: #0d1024;
-  --code-fg: #d5d9f5;
+  --bg: #fffcf0;
+  --bg-alt: #f2f0e5;
+  --bg-elv: #fffcf0;
+  --bg-soft: #e6e4d9;
+  --text-1: #100f0f;
+  --text-2: #575653;
+  --text-3: #6f6e69;
+  --border: #cecdc3;
+  --divider: #dad8ce;
+  --brand: #205ea6;
+  --brand-soft: rgba(32, 94, 166, 0.1);
+  --code-bg: #100f0f;
+  --code-fg: #cecdc3;
   --graph-filter: none;
 }
 html.dark {
-  --jl-peak: #ff4f93;
-  --bg: #090b1a;
-  --bg-alt: #0d1024;
-  --bg-elv: #12162f;
-  --bg-soft: #141834;
-  --text-1: #e8eaff;
-  --text-2: #a6acd2;
-  --text-3: #7f86b0;
-  --border: #2f3564;
-  --divider: #232849;
-  --brand: #a3adff;
-  --brand-soft: rgba(133, 146, 255, 0.14);
+  --jl-peak: #ce5d97;
+  --bg: #100f0f;
+  --bg-alt: #1c1b1a;
+  --bg-elv: #1c1b1a;
+  --bg-soft: #282726;
+  --text-1: #cecdc3;
+  --text-2: #b7b5ac;
+  --text-3: #878580;
+  --border: #343331;
+  --divider: #282726;
+  --brand: #4385be;
+  --brand-soft: rgba(67, 133, 190, 0.16);
+  --code-bg: #1c1b1a;
   --graph-filter: invert(0.88) hue-rotate(180deg);
   color-scheme: dark;
 }
@@ -47,7 +48,7 @@ body, table, div, p, dl, td, th, li, dt, dd, span {
   color: var(--text-1);
 }
 body { background: var(--bg); font-size: 15px; line-height: 1.65; margin: 0; }
-::selection { background: var(--jl-peak); color: #fff; }
+::selection { background: var(--jl-peak); color: #fffcf0; }
 
 a, a:visited, a.el, a.elRef, a.code, a.codeRef, a:link { color: var(--brand); text-decoration: none; }
 a:hover, a.el:hover { text-decoration: underline; text-underline-offset: 3px; background: none; color: var(--brand); }
@@ -172,13 +173,13 @@ div.fragment, pre.fragment {
   font-family: var(--jl-mono); font-size: 12.5px; line-height: 1.6; padding: 10px 14px; margin: 12px 0;
 }
 div.line { font-family: var(--jl-mono); color: var(--code-fg); line-height: 1.6; }
-div.line:hover, div.line.glow { background: rgba(154, 164, 255, 0.12); box-shadow: none; }
-span.keyword, span.keywordtype, span.keywordflow { color: #9aa4ff; }
-span.comment { color: #7f86b0; }
-span.preprocessor { color: #ff7ab0; }
-span.stringliteral, span.charliteral { color: #8de3c1; }
-span.lineno, span.lineno a, span.lineno a:hover { background: none; color: #7f86b0; }
-div.fragment a, div.fragment a:visited, div.line a { color: #b7bfff; }
+div.line:hover, div.line.glow { background: rgba(206, 205, 195, 0.1); box-shadow: none; }
+span.keyword, span.keywordtype, span.keywordflow { color: #879a39; }
+span.comment { color: #878580; }
+span.preprocessor { color: #ce5d97; }
+span.stringliteral, span.charliteral { color: #3aa99f; }
+span.lineno, span.lineno a, span.lineno a:hover { background: none; color: #878580; }
+div.fragment a, div.fragment a:visited, div.line a { color: #92bfdb; }
 p code, li code, td code { background: var(--brand-soft); color: var(--brand); border-radius: 2px; padding: 0 3px; }
 
 /* ---------- graphs and images ---------- */

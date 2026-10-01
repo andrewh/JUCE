@@ -9,6 +9,8 @@ export interface Palette {
   grid: string
   brand: string
   peak: string
+  cyan: string
+  yellow: string
 }
 const props = defineProps<{
   build: (Plot: typeof import('@observablehq/plot'), width: number, c: Palette) => Element
@@ -29,7 +31,9 @@ function palette(el: HTMLElement): Palette {
     muted: v('--vp-c-text-2'),
     grid: v('--vp-c-divider'),
     brand: v('--vp-c-brand-1'),
-    peak: v('--jl-peak')
+    peak: v('--jl-peak'),
+    cyan: v('--jl-cyan'),
+    yellow: v('--jl-yellow')
   }
 }
 
