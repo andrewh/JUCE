@@ -11,9 +11,9 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
 ### 2026-10-01: Box2D tutorials
 
 - Tutorials: added three original guides to the Tutorials section, with sidebar labels. They are Markdown in `docs/tutorials/`, so the build picks them up. The home page and About page no longer call every guide a condensed adaptation of a juce.com tutorial.
-  - 15, Physics as a musical instrument: the bundled `juce_box2d` module, turning contact callbacks into notes, the threading design, and why the bundled Box2D is old and what it lacks. Companion app: `examples/Box2DMusic`, added to the examples build. ([`8aa43908`](https://github.com/juce-framework/JUCE/commit/8aa43908), [`6e30cdf7`](https://github.com/juce-framework/JUCE/commit/6e30cdf7))
-  - 16, Integrating Box2D v3: fetching v3.1.1 with CMake `FetchContent`, ids instead of pointers, hit and sensor events. Companion app: `MusicV3` in `examples/Box2DAudioV3`. ([`8748cf59`](https://github.com/juce-framework/JUCE/commit/8748cf59))
-  - 17, A physical audio engine: modal synthesis driven by contact events, rolling noise, voice management. Companion app: `Modal` in `examples/Box2DAudioV3`. ([`8748cf59`](https://github.com/juce-framework/JUCE/commit/8748cf59))
+  - 15, Physics as a musical instrument: the bundled `juce_box2d` module, turning contact callbacks into notes, the threading design, and why the bundled Box2D is old and what it lacks. Companion app: `examples/Box2DMusic`, added to the examples build. ([`8aa43908`](https://github.com/andrewh/JUCE/commit/8aa43908), [`6e30cdf7`](https://github.com/andrewh/JUCE/commit/6e30cdf7))
+  - 16, Integrating Box2D v3: fetching v3.1.1 with CMake `FetchContent`, ids instead of pointers, hit and sensor events. Companion app: `MusicV3` in `examples/Box2DAudioV3`. ([`8748cf59`](https://github.com/andrewh/JUCE/commit/8748cf59))
+  - 17, A physical audio engine: modal synthesis driven by contact events, rolling noise, voice management. Companion app: `Modal` in `examples/Box2DAudioV3`. ([`8748cf59`](https://github.com/andrewh/JUCE/commit/8748cf59))
 - `examples/Box2DAudioV3` is a separate CMake project that downloads Box2D, so ordinary JUCE builds do not need network access.
 
 ### 2026-09-29: Copy review and tutorials
@@ -39,19 +39,19 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
 
 ### 2026-09-28: CI publishing
 
-- Added a GitHub Pages workflow that runs Doxygen and the VitePress build, and stopped `npm run deploy` copying the roughly 150 MB `api/` output into `docs/`. ([`a724f0c`](https://github.com/juce-framework/JUCE/commit/a724f0ca))
+- Added a GitHub Pages workflow that runs Doxygen and the VitePress build, and stopped `npm run deploy` copying the roughly 150 MB `api/` output into `docs/`. ([`a724f0c`](https://github.com/andrewh/JUCE/commit/a724f0ca))
 
 ### 2026-09-28: API reference
 
-- Embedded a themed Doxygen API reference, linked class names in inline code to their Doxygen pages, and added an "API reference" nav entry. ([`8311f35`](https://github.com/juce-framework/JUCE/commit/8311f356))
+- Embedded a themed Doxygen API reference, linked class names in inline code to their Doxygen pages, and added an "API reference" nav entry. ([`8311f35`](https://github.com/andrewh/JUCE/commit/8311f356))
 
 ### 2026-09-28: Instrument-panel theme
 
-- Restyled the site with a new palette, type, a live oscilloscope hero, and matching Mermaid, code, and table styling. ([`73eb9b4`](https://github.com/juce-framework/JUCE/commit/73eb9b49))
+- Restyled the site with a new palette, type, a live oscilloscope hero, and matching Mermaid, code, and table styling. ([`73eb9b4`](https://github.com/andrewh/JUCE/commit/73eb9b49))
 
 ### 2026-09-28: Initial site
 
-- Added the VitePress learning site: overview, architecture, core concepts, plug-in anatomy, build systems, history, modules reference, glossary, learning path, and an interactive module dependency graph. ([`74ac78f`](https://github.com/juce-framework/JUCE/commit/74ac78f8))
+- Added the VitePress learning site: overview, architecture, core concepts, plug-in anatomy, build systems, history, modules reference, glossary, learning path, and an interactive module dependency graph. ([`74ac78f`](https://github.com/andrewh/JUCE/commit/74ac78f8))
 
 ## JUCE releases in this checkout
 

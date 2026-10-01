@@ -96,7 +96,7 @@ export default withMermaid(
       search: { provider: 'local' },
       socialLinks: [{ icon: 'github', link: 'https://github.com/juce-framework/JUCE' }],
       editLink: {
-        pattern: 'https://github.com/juce-framework/JUCE/edit/master/site/:path',
+        pattern: 'https://github.com/andrewh/JUCE/edit/master/site/:path',
         text: 'Edit this page'
       },
       footer: {
