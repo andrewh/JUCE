@@ -100,7 +100,7 @@ const toggleGroup = (g: string) => {
 const select = (id: string) => (selected.value = selected.value === id ? null : id)
 
 const current = computed(() => (selected.value ? byId[selected.value] : null))
-const sourceUrl = (id: string) => `https://github.com/andrewh/JUCE/tree/master/modules/${id}`
+const sourceUrl = (id: string) => `https://github.com/juce-framework/JUCE/tree/master/modules/${id}`
 </script>
 
 <template>

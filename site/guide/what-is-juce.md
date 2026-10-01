@@ -46,7 +46,7 @@ The JUCE modules are dual-licensed:[^lic]
 - **AGPLv3.** Free to use, but if you distribute your software (or let people use it over a network), you must release its source under the AGPLv3 as well.[^agpltext]
 - **Commercial JUCE licence.** Governed by the [JUCE 9 End User Licence Agreement](https://juce.com/legal/juce-9-licence/). You need this for closed-source products. The [licensing FAQ](https://juce.com/get-juce/#licensing-faq) explains the available tiers.
 
-The examples use the permissive ISC licence. Bundled third-party code keeps its own licence, listed in the SPDX bill of materials (`JUCE.spdx.json`). Plug-in SDKs such as AAX have their own agreements too.[^aax] See [`LICENSE.md`](https://github.com/andrewh/JUCE/blob/master/LICENSE.md).
+The examples use the permissive ISC licence. Bundled third-party code keeps its own licence, listed in the SPDX bill of materials (`JUCE.spdx.json`). Plug-in SDKs such as AAX have their own agreements too.[^aax] See [`LICENSE.md`](https://github.com/juce-framework/JUCE/blob/master/LICENSE.md).
 
 ::: warning Not legal advice
 This is a summary of the licence files, not legal advice. The JUCE team says it cannot confirm compliance for specific usage, so read the EULA and licensing FAQ and take your own advice before shipping a product.[^lic]
@@ -60,12 +60,12 @@ This is a summary of the licence files, not legal advice. The JUCE team says it 
 
 ## Sources
 
-[^readme]: [`README.md`](https://github.com/andrewh/JUCE/blob/master/README.md): opening paragraph (VST, VST3, AU, AUv3, AAX and LV2 plug-ins and hosts; desktop and mobile applications) and "Deployment Targets" (macOS, Windows, Linux, iOS, Android).
+[^readme]: [`README.md`](https://github.com/juce-framework/JUCE/blob/master/README.md): opening paragraph (VST, VST3, AU, AUv3, AAX and LV2 plug-ins and hosts; desktop and mobile applications) and "Deployment Targets" (macOS, Windows, Linux, iOS, Android).
 [^hist]: See the sourced timeline on [History](./history), which cites Wikipedia, MusicRadar, and Synthtopia for the 2020 sale from ROLI to PACE.
-[^backends]: Backends present under [`modules/juce_audio_devices/native/`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_devices/native): CoreAudio, WASAPI, ASIO, DirectSound, ALSA, JACK, Oboe, OpenSL and iOS audio. The description of each having its own API is this site's summary.
+[^backends]: Backends present under [`modules/juce_audio_devices/native/`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_audio_devices/native): CoreAudio, WASAPI, ASIO, DirectSound, ALSA, JACK, Oboe, OpenSL and iOS audio. The description of each having its own API is this site's summary.
 [^count]: `ls modules/` in this repository lists 24 `juce_*` folders (JUCE 9.0.3). See the [module map](../reference/module-map), generated from the headers. Modules ship as source: the README's CMake and Projucer sections describe building them into your project.
-[^extras]: The [`extras/`](https://github.com/andrewh/JUCE/blob/master/extras) folder contains `Projucer`, `AudioPluginHost`, `UnitTestRunner`, `BinaryBuilder`, and `AudioPerformanceTest`, among others.
-[^cmake]: [`docs/CMake API.md`](https://github.com/andrewh/JUCE/blob/master/docs/CMake%20API.md), and the examples in [`examples/`](https://github.com/andrewh/JUCE/blob/master/examples) including `examples/DemoRunner`.
-[^lic]: [`LICENSE.md`](https://github.com/andrewh/JUCE/blob/master/LICENSE.md): dual licence, the JUCE 9 EULA and licensing FAQ links, the ISC licence for examples, the SPDX bill of materials, and the statement that the JUCE team cannot provide compliance confirmations or legal advice.
+[^extras]: The [`extras/`](https://github.com/juce-framework/JUCE/blob/master/extras) folder contains `Projucer`, `AudioPluginHost`, `UnitTestRunner`, `BinaryBuilder`, and `AudioPerformanceTest`, among others.
+[^cmake]: [`docs/CMake API.md`](https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md), and the examples in [`examples/`](https://github.com/juce-framework/JUCE/blob/master/examples) including `examples/DemoRunner`.
+[^lic]: [`LICENSE.md`](https://github.com/juce-framework/JUCE/blob/master/LICENSE.md): dual licence, the JUCE 9 EULA and licensing FAQ links, the ISC licence for examples, the SPDX bill of materials, and the statement that the JUCE team cannot provide compliance confirmations or legal advice.
 [^agpltext]: [GNU AGPLv3 text](https://www.gnu.org/licenses/agpl-3.0.en.html), section 13 (remote network interaction).
-[^aax]: [`LICENSE.md`](https://github.com/andrewh/JUCE/blob/master/LICENSE.md) says bundled third-party software keeps its own terms; the AAX signing requirement is in [`README.md`, "AAX Plug-Ins"](https://github.com/andrewh/JUCE/blob/master/README.md#aax-plug-ins).
+[^aax]: [`LICENSE.md`](https://github.com/juce-framework/JUCE/blob/master/LICENSE.md) says bundled third-party software keeps its own terms; the AAX signing requirement is in [`README.md`, "AAX Plug-Ins"](https://github.com/juce-framework/JUCE/blob/master/README.md#aax-plug-ins).

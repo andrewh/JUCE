@@ -15,7 +15,7 @@ const repoRoot = join(here, '..', '..')
 const srcDir = join(repoRoot, 'docs', 'tutorials')
 const outDir = join(here, '..', 'tutorials')
 const dataFile = join(here, '..', 'data', 'tutorials.json')
-const github = 'https://github.com/andrewh/JUCE'
+const github = 'https://github.com/juce-framework/JUCE'
 
 // Short sidebar labels. A guide missing from this list falls back to its title.
 const labels = {

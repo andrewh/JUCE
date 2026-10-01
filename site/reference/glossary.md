@@ -231,8 +231,8 @@ The code in `juce_audio_plugin_client` that implements a plug-in format's API an
 
 ## Sources
 
-Definitions of JUCE classes are written from the Doxygen comments in the module headers (search a class with `grep -rlE "^\s*(class|struct)\s+(JUCE_API\s+)?Name\b" modules`, as the [README](https://github.com/andrewh/JUCE/blob/master/README.md) suggests); class names in code spans link to the generated API reference (see the nav bar). Audio terms (sample rate, denormals, and so on) are standard industry terminology and are not individually sourced. Version claims come from [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md).
+Definitions of JUCE classes are written from the Doxygen comments in the module headers (search a class with `grep -rlE "^\s*(class|struct)\s+(JUCE_API\s+)?Name\b" modules`, as the [README](https://github.com/juce-framework/JUCE/blob/master/README.md) suggests); class names in code spans link to the generated API reference (see the nav bar). Audio terms (sample rate, denormals, and so on) are standard industry terminology and are not individually sourced. Version claims come from [`CHANGE_LIST.md`](https://github.com/juce-framework/JUCE/blob/master/CHANGE_LIST.md).
 
-[^aax]: [`README.md`, "AAX Plug-Ins"](https://github.com/andrewh/JUCE/blob/master/README.md#aax-plug-ins).
-[^ara]: [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md), Version 7.0.0: "Added Audio Random Access (ARA) SDK support". Origin of ARA (read from search-result summaries): [Audio Random Access, Wikipedia](https://en.wikipedia.org/wiki/Audio_Random_Access); [Celemony/ARA_SDK](https://github.com/Celemony/ARA_SDK).
-[^cl]: [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md): 7.0.0 (LV2), 8.0.11 (VST3 SDK 3.8.0, MIT), 6.0.0 (headless Linux), 4.2 (Introjucer merged into the Projucer).
+[^aax]: [`README.md`, "AAX Plug-Ins"](https://github.com/juce-framework/JUCE/blob/master/README.md#aax-plug-ins).
+[^ara]: [`CHANGE_LIST.md`](https://github.com/juce-framework/JUCE/blob/master/CHANGE_LIST.md), Version 7.0.0: "Added Audio Random Access (ARA) SDK support". Origin of ARA (read from search-result summaries): [Audio Random Access, Wikipedia](https://en.wikipedia.org/wiki/Audio_Random_Access); [Celemony/ARA_SDK](https://github.com/Celemony/ARA_SDK).
+[^cl]: [`CHANGE_LIST.md`](https://github.com/juce-framework/JUCE/blob/master/CHANGE_LIST.md): 7.0.0 (LV2), 8.0.11 (VST3 SDK 3.8.0, MIT), 6.0.0 (headless Linux), 4.2 (Introjucer merged into the Projucer).

@@ -27,7 +27,7 @@ BEGIN_JUCE_MODULE_DECLARATION
 END_JUCE_MODULE_DECLARATION
 ```
 
-Platform-specific files use suffixes (`_mac`, `_windows`, `_linux`, `_android`, `_ios`). The full rules are in [`docs/JUCE Module Format.md`](https://github.com/andrewh/JUCE/blob/master/docs/JUCE%20Module%20Format.md).[^fmt] You can write your own modules in the same format.
+Platform-specific files use suffixes (`_mac`, `_windows`, `_linux`, `_android`, `_ios`). The full rules are in [`docs/JUCE Module Format.md`](https://github.com/juce-framework/JUCE/blob/master/docs/JUCE%20Module%20Format.md).[^fmt] You can write your own modules in the same format.
 
 ## CMake (recommended)
 
@@ -66,7 +66,7 @@ target_link_libraries(MyPlugin
 
 Linking `juce::juce_<module>` pulls in that module *and its dependencies*, which is why the module graph matters.[^cmake]
 
-Starting points: `examples/CMake/GuiApp`, `examples/CMake/ConsoleApp`, and `examples/CMake/AudioPlugin`. The full reference is [`docs/CMake API.md`](https://github.com/andrewh/JUCE/blob/master/docs/CMake%20API.md).
+Starting points: `examples/CMake/GuiApp`, `examples/CMake/ConsoleApp`, and `examples/CMake/AudioPlugin`. The full reference is [`docs/CMake API.md`](https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md).
 
 ## The Projucer
 
@@ -106,9 +106,9 @@ In CMake, set them with `target_compile_definitions(MyTarget PUBLIC JUCE_WEB_BRO
 
 ## Sources
 
-[^readme]: [`README.md`](https://github.com/andrewh/JUCE/blob/master/README.md): "JUCE projects can be managed with either CMake or the Projucer", and the Projucer section (exports for Xcode, Visual Studio, Android Studio, and Linux Makefiles, plus a source code editor).
-[^fmt]: [`docs/JUCE Module Format.md`](https://github.com/andrewh/JUCE/blob/master/docs/JUCE%20Module%20Format.md) and the module declaration blocks in headers such as [`juce_audio_devices.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_devices/juce_audio_devices.h). The reasons given for unity builds are this site's reading of the layout, not a quotation.
-[^cl6]: [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md), Version 6.0.0: "Added support for building JUCE projects with CMake".
-[^cmake]: [`docs/CMake API.md`](https://github.com/andrewh/JUCE/blob/master/docs/CMake%20API.md) (functions `juce_add_plugin`, `juce_add_binary_data`, `juce_add_module`, `juce_generate_juce_header`, and the format list `Standalone Unity VST3 AU AUv3 AAX VST LV2`) and the examples in [`examples/CMake`](https://github.com/andrewh/JUCE/blob/master/examples/CMake). The `extras/Build/CMake` path is [in the repository](https://github.com/andrewh/JUCE/blob/master/extras/Build/CMake).
-[^pip]: [`docs/CMake API.md`](https://github.com/andrewh/JUCE/blob/master/docs/CMake%20API.md), `juce_add_pip`: "parses the PIP metadata block in the provided header".
-[^flags]: `JUCE_WEB_BROWSER`: [`juce_gui_extra.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_gui_extra/juce_gui_extra.h) (default 1) and [`examples/CMake/AudioPlugin/CMakeLists.txt`](https://github.com/andrewh/JUCE/blob/master/examples/CMake/AudioPlugin/CMakeLists.txt). `JUCE_USE_CURL`: [`juce_core.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_core/juce_core.h). `JUCE_ASIO`: [`juce_audio_devices.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_devices/juce_audio_devices.h) (default 0). `JUCE_VST3_CAN_REPLACE_VST2`: [`juce_audio_plugin_client.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_plugin_client/juce_audio_plugin_client.h).
+[^readme]: [`README.md`](https://github.com/juce-framework/JUCE/blob/master/README.md): "JUCE projects can be managed with either CMake or the Projucer", and the Projucer section (exports for Xcode, Visual Studio, Android Studio, and Linux Makefiles, plus a source code editor).
+[^fmt]: [`docs/JUCE Module Format.md`](https://github.com/juce-framework/JUCE/blob/master/docs/JUCE%20Module%20Format.md) and the module declaration blocks in headers such as [`juce_audio_devices.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_audio_devices/juce_audio_devices.h). The reasons given for unity builds are this site's reading of the layout, not a quotation.
+[^cl6]: [`CHANGE_LIST.md`](https://github.com/juce-framework/JUCE/blob/master/CHANGE_LIST.md), Version 6.0.0: "Added support for building JUCE projects with CMake".
+[^cmake]: [`docs/CMake API.md`](https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md) (functions `juce_add_plugin`, `juce_add_binary_data`, `juce_add_module`, `juce_generate_juce_header`, and the format list `Standalone Unity VST3 AU AUv3 AAX VST LV2`) and the examples in [`examples/CMake`](https://github.com/juce-framework/JUCE/blob/master/examples/CMake). The `extras/Build/CMake` path is [in the repository](https://github.com/juce-framework/JUCE/blob/master/extras/Build/CMake).
+[^pip]: [`docs/CMake API.md`](https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md), `juce_add_pip`: "parses the PIP metadata block in the provided header".
+[^flags]: `JUCE_WEB_BROWSER`: [`juce_gui_extra.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_gui_extra/juce_gui_extra.h) (default 1) and [`examples/CMake/AudioPlugin/CMakeLists.txt`](https://github.com/juce-framework/JUCE/blob/master/examples/CMake/AudioPlugin/CMakeLists.txt). `JUCE_USE_CURL`: [`juce_core.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_core/juce_core.h). `JUCE_ASIO`: [`juce_audio_devices.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_audio_devices/juce_audio_devices.h) (default 0). `JUCE_VST3_CAN_REPLACE_VST2`: [`juce_audio_plugin_client.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_audio_plugin_client/juce_audio_plugin_client.h).
