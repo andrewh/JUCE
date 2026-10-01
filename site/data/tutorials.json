@@ -70,6 +70,21 @@
       "slug": "14-mobile-and-app-services",
       "label": "Mobile and app services",
       "title": "Mobile and app services: Android, purchases, notifications, analytics, and licensing"
+    },
+    {
+      "slug": "15-physics-music",
+      "label": "Physics as an instrument",
+      "title": "Physics as a musical instrument with Box2D"
+    },
+    {
+      "slug": "16-box2d-v3",
+      "label": "Box2D v3",
+      "title": "Integrating Box2D v3"
+    },
+    {
+      "slug": "17-modal-physics-audio",
+      "label": "Modal physics audio",
+      "title": "A physical audio engine: modal synthesis driven by physics"
     }
   ]
 }
