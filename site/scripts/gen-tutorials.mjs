@@ -32,7 +32,10 @@ const labels = {
   '11-dsp': 'DSP',
   '12-utilities': 'Core utilities',
   '13-opengl': 'OpenGL',
-  '14-mobile-and-app-services': 'Mobile and app services'
+  '14-mobile-and-app-services': 'Mobile and app services',
+  '15-physics-music': 'Physics as an instrument',
+  '16-box2d-v3': 'Box2D v3',
+  '17-modal-physics-audio': 'Modal physics audio'
 }
 
 if (!existsSync(srcDir)) throw new Error(`No tutorials found at ${srcDir}`)

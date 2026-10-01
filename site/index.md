@@ -21,7 +21,7 @@ features:
     details: From the Tracktion DAW's utility code in the early 2000s to JUCE 9, and why the codebase looks the way it does.
     link: /guide/history
   - title: Tutorials
-    details: Fourteen condensed guides adapted from the tutorials on juce.com, from a first window to plug-ins, DSP, and OpenGL, with code updated for JUCE 9.
+    details: Fourteen condensed guides adapted from the tutorials on juce.com, from a first window to plug-ins, DSP, and OpenGL, with code updated for JUCE 9, plus three original guides on Box2D physics and music.
     link: /tutorials/
   - title: Learning path
     details: Six stages, each pairing a concept page with an example from the repository and a small exercise.
