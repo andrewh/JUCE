@@ -21,6 +21,7 @@
 
 set(CMAKE_FOLDER examples)
 
+add_subdirectory(Box2DMusic)
 add_subdirectory(CMake)
 add_subdirectory(DemoRunner)
 
