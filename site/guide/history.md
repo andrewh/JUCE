@@ -89,7 +89,7 @@ Reconstructed from `CHANGE_LIST.md`.[^mods] Modules without an entry predate the
 
 ## Why history matters when you read code
 
-- **Old tutorials use old APIs.** Before trusting a forum post, check [`BREAKING_CHANGES.md`](https://github.com/andrewh/JUCE/blob/master/BREAKING_CHANGES.md) for the versions in between. It lists breaking changes per release with a workaround.
+- **Old tutorials use old APIs.** Before trusting a forum post, check [`BREAKING_CHANGES.md`](https://github.com/juce-framework/JUCE/blob/master/BREAKING_CHANGES.md) for the versions in between. It lists breaking changes per release with a workaround.
 - **Look-and-feel versions** (`LookAndFeel_V1` to `V4`) are fossils of past visual styles, kept for compatibility.
 - **Parallel APIs** often coexist, such as `ScopedPointer` (gone) and `std::unique_ptr`, or listener interfaces and `std::function` callbacks (`onClick`). The newer one is usually preferred.
 
@@ -97,10 +97,10 @@ Reconstructed from `CHANGE_LIST.md`.[^mods] Modules without an entry predate the
 
 [^wiki]: [JUCE, Wikipedia](https://en.wikipedia.org/wiki/JUCE): name "Jules' Utility Class Extensions"; first released to the public in 2004; created from the code underneath the Tracktion DAW. Retrieved 2026-09-29; Wikipedia was opened, MusicRadar and Synthtopia were read as search-result summaries.
 [^roli]: ROLI acquisition in November 2014 and sale to PACE in April 2020: [JUCE, Wikipedia](https://en.wikipedia.org/wiki/JUCE); [PACE acquires JUCE from ROLI, MusicRadar](https://www.musicradar.com/news/ilok-developer-pace-acquires-the-juce-development-framework-from-roli); [PACE Acquires JUCE, Synthtopia](https://www.synthtopia.com/content/2020/04/22/pace-acquires-juce-audio-development-platform-from-roli/). Retrieved 2026-09-29; Wikipedia was opened, MusicRadar and Synthtopia were read as search-result summaries.
-[^pace]: iLok: [MusicRadar headline, "iLok developer Pace acquires the JUCE development framework from ROLI"](https://www.musicradar.com/news/ilok-developer-pace-acquires-the-juce-development-framework-from-roli). AAX signing: [`README.md`, "AAX Plug-Ins"](https://github.com/andrewh/JUCE/blob/master/README.md#aax-plug-ins).
-[^licence]: [`LICENSE.md`](https://github.com/andrewh/JUCE/blob/master/LICENSE.md): "dual-licensed under the AGPLv3 and the commercial JUCE licence".
+[^pace]: iLok: [MusicRadar headline, "iLok developer Pace acquires the JUCE development framework from ROLI"](https://www.musicradar.com/news/ilok-developer-pace-acquires-the-juce-development-framework-from-roli). AAX signing: [`README.md`, "AAX Plug-Ins"](https://github.com/juce-framework/JUCE/blob/master/README.md#aax-plug-ins).
+[^licence]: [`LICENSE.md`](https://github.com/juce-framework/JUCE/blob/master/LICENSE.md): "dual-licensed under the AGPLv3 and the commercial JUCE licence".
 [^agpl]: `LICENSE.md` at [tag 7.0.12](https://raw.githubusercontent.com/juce-framework/JUCE/7.0.12/LICENSE.md) and [tag 8.0.0](https://raw.githubusercontent.com/juce-framework/JUCE/8.0.0/LICENSE.md) in the upstream repository.
-[^cl3]: [`CHANGE_LIST.md`, Version 3.3.0](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md): "New command-line options in the introjucer".
+[^cl3]: [`CHANGE_LIST.md`, Version 3.3.0](https://github.com/juce-framework/JUCE/blob/master/CHANGE_LIST.md): "New command-line options in the introjucer".
 [^cl401]: `CHANGE_LIST.md`, Version 4.0.1: "Initial release of the Projucer!" and "Full OSC support!".
 [^cl41]: `CHANGE_LIST.md`, Version 4.1: "Added multi-bus support for audio plug-in clients".
 [^cl42]: `CHANGE_LIST.md`, Version 4.2: simplified module format, Introjucer deleted and unified with the Projucer.

@@ -31,5 +31,5 @@ Click (or tab to and press Enter on) a module to highlight what it **depends on*
 
 ## Sources
 
-[^gen]: [`site/scripts/gen-modules.mjs`](https://github.com/andrewh/JUCE/blob/master/site/scripts/gen-modules.mjs) parses the declaration blocks into `site/data/modules.json`. The block format is in [`docs/JUCE Module Format.md`](https://github.com/andrewh/JUCE/blob/master/docs/JUCE%20Module%20Format.md). The observations under "Reading the graph" are read off that generated graph for the checked-out version and may change as JUCE does.
-[^cmake]: [`docs/CMake API.md`](https://github.com/andrewh/JUCE/blob/master/docs/CMake%20API.md): linking a module target brings in its dependencies.
+[^gen]: [`site/scripts/gen-modules.mjs`](https://github.com/andrewh/JUCE/blob/master/site/scripts/gen-modules.mjs) parses the declaration blocks into `site/data/modules.json`. The block format is in [`docs/JUCE Module Format.md`](https://github.com/juce-framework/JUCE/blob/master/docs/JUCE%20Module%20Format.md). The observations under "Reading the graph" are read off that generated graph for the checked-out version and may change as JUCE does.
+[^cmake]: [`docs/CMake API.md`](https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md): linking a module target brings in its dependencies.

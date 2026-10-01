@@ -140,12 +140,12 @@ JUCE predates widespread C++11, so it has its own smart types. Modern JUCE inter
 
 ## Sources
 
-[^mm]: [`juce_MessageManager.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_events/messages/juce_MessageManager.h) (`callAsync`, message thread) and [`juce_Component.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_gui_basics/components/juce_Component.h). The "only thread allowed to touch Components" rule is the usual JUCE convention; the exact wording is in those headers' comments.
-[^apvts]: [`juce_AudioProcessorValueTreeState.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_processors/utilities/juce_AudioProcessorValueTreeState.h): `std::atomic<float>* getRawParameterValue (StringRef parameterID) const noexcept`.
-[^fifo]: [`juce_AbstractFifo.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_core/containers/juce_AbstractFifo.h): "lock-free FIFO", "single-reader, single-writer FIFO", "It doesn't actually hold any data itself".
-[^sv]: [`juce_SmoothedValue.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_audio_basics/utilities/juce_SmoothedValue.h). "Zipper noise" is standard audio terminology.
-[^laf]: [`juce_LookAndFeel_V4.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_gui_basics/lookandfeel/juce_LookAndFeel_V4.h).
-[^grid]: [`juce_Grid.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_gui_basics/layout/juce_Grid.h) and `juce_FlexBox.h` in the same folder.
-[^web]: [`juce_WebControlRelays.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_gui_extra/misc/juce_WebControlRelays.h) (`WebSliderRelay`); [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md), Version 8.0.0: "Added support for WebView based UIs".
-[^vt]: [`juce_ValueTree.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_data_structures/values/juce_ValueTree.h): "a lightweight reference to a shared data container", optional `UndoManager` on setters.
-[^str]: [`juce_String.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_core/text/juce_String.h): "Using a reference-counted internal representation".
+[^mm]: [`juce_MessageManager.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_events/messages/juce_MessageManager.h) (`callAsync`, message thread) and [`juce_Component.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_gui_basics/components/juce_Component.h). The "only thread allowed to touch Components" rule is the usual JUCE convention; the exact wording is in those headers' comments.
+[^apvts]: [`juce_AudioProcessorValueTreeState.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_audio_processors/utilities/juce_AudioProcessorValueTreeState.h): `std::atomic<float>* getRawParameterValue (StringRef parameterID) const noexcept`.
+[^fifo]: [`juce_AbstractFifo.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_core/containers/juce_AbstractFifo.h): "lock-free FIFO", "single-reader, single-writer FIFO", "It doesn't actually hold any data itself".
+[^sv]: [`juce_SmoothedValue.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_audio_basics/utilities/juce_SmoothedValue.h). "Zipper noise" is standard audio terminology.
+[^laf]: [`juce_LookAndFeel_V4.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_gui_basics/lookandfeel/juce_LookAndFeel_V4.h).
+[^grid]: [`juce_Grid.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_gui_basics/layout/juce_Grid.h) and `juce_FlexBox.h` in the same folder.
+[^web]: [`juce_WebControlRelays.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_gui_extra/misc/juce_WebControlRelays.h) (`WebSliderRelay`); [`CHANGE_LIST.md`](https://github.com/juce-framework/JUCE/blob/master/CHANGE_LIST.md), Version 8.0.0: "Added support for WebView based UIs".
+[^vt]: [`juce_ValueTree.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_data_structures/values/juce_ValueTree.h): "a lightweight reference to a shared data container", optional `UndoManager` on setters.
+[^str]: [`juce_String.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_core/text/juce_String.h): "Using a reference-counted internal representation".

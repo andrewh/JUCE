@@ -48,7 +48,7 @@ export default withMermaid(
         { text: 'API reference', link: '/api/index.html', target: '_self' },
         { text: 'History', link: '/guide/history' },
         { text: 'Changelog', link: '/changelog' },
-        { text: `JUCE ${data.version}`, link: 'https://github.com/andrewh/JUCE' }
+        { text: `JUCE ${data.version}`, link: 'https://github.com/juce-framework/JUCE' }
       ],
       sidebar: {
         '/tutorials/': [
@@ -94,14 +94,14 @@ export default withMermaid(
       },
       outline: { level: [2, 3] },
       search: { provider: 'local' },
-      socialLinks: [{ icon: 'github', link: 'https://github.com/andrewh/JUCE' }],
+      socialLinks: [{ icon: 'github', link: 'https://github.com/juce-framework/JUCE' }],
       editLink: {
         pattern: 'https://github.com/andrewh/JUCE/edit/master/site/:path',
         text: 'Edit this page'
       },
       footer: {
         message: 'Personal study notes on JUCE. Not affiliated with or endorsed by the JUCE team.',
-        copyright: 'JUCE is dual-licensed under AGPLv3 and a commercial licence; see <a href="https://github.com/andrewh/JUCE/blob/master/LICENSE.md">LICENSE.md</a> for the details and third-party terms.'
+        copyright: 'JUCE is dual-licensed under AGPLv3 and a commercial licence; see <a href="https://github.com/juce-framework/JUCE/blob/master/LICENSE.md">LICENSE.md</a> for the details and third-party terms.'
       }
     }
   }),

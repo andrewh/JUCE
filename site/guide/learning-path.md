@@ -8,7 +8,7 @@ cd /path/to/JUCE
 cmake . -B cmake-build -DJUCE_BUILD_EXAMPLES=ON -DJUCE_BUILD_EXTRAS=ON
 cmake --build cmake-build --target DemoRunner
 ```
-The **DemoRunner** app lets you browse and run the bundled demos, with their source alongside.[^demo] On Linux, install the packages in [`docs/Linux Dependencies.md`](https://github.com/andrewh/JUCE/blob/master/docs/Linux%20Dependencies.md) first.
+The **DemoRunner** app lets you browse and run the bundled demos, with their source alongside.[^demo] On Linux, install the packages in [`docs/Linux Dependencies.md`](https://github.com/juce-framework/JUCE/blob/master/docs/Linux%20Dependencies.md) first.
 :::
 
 ## 1. Foundations: `juce_core` and `juce_events`
@@ -64,4 +64,4 @@ Each stage is a chance to add to these docs:
 
 ## Sources
 
-[^demo]: Build commands from [`README.md`](https://github.com/andrewh/JUCE/blob/master/README.md#building-examples-using-cmake); demos and CMake starting points are in [`examples/`](https://github.com/andrewh/JUCE/blob/master/examples). Every example path on this page was checked against the repository at JUCE 9.0.3, so re-check after upgrading. The exercises are this site's own suggestions.
+[^demo]: Build commands from [`README.md`](https://github.com/juce-framework/JUCE/blob/master/README.md#building-examples-using-cmake); demos and CMake starting points are in [`examples/`](https://github.com/juce-framework/JUCE/blob/master/examples). Every example path on this page was checked against the repository at JUCE 9.0.3, so re-check after upgrading. The exercises are this site's own suggestions.

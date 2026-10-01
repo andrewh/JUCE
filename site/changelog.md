@@ -3,7 +3,7 @@
 **What changed on this site, newest first, and which JUCE version the content describes.** Entries come from this repository's git history, so each one links to its commit.
 
 ::: info Current content baseline
-The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_VERSION` and `JUCE_BUILDNUMBER` in [`juce_StandardHeader.h`](https://github.com/andrewh/JUCE/blob/master/modules/juce_core/system/juce_StandardHeader.h). The module map and module table regenerate from the headers on every build, so they follow the checked-out version. Hand-written pages do not, so check the JUCE release notes below when you upgrade.
+The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_VERSION` and `JUCE_BUILDNUMBER` in [`juce_StandardHeader.h`](https://github.com/juce-framework/JUCE/blob/master/modules/juce_core/system/juce_StandardHeader.h). The module map and module table regenerate from the headers on every build, so they follow the checked-out version. Hand-written pages do not, so check the JUCE release notes below when you upgrade.
 :::
 
 ## This site
@@ -35,7 +35,7 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
   - Glossary and Anatomy of a plug-in: removed "AUv3 is sandboxed and the only plug-in format on iOS", "LV2 is popular on Linux", and the AbstractFifo "single-producer, single-consumer" wording (the header says single-reader, single-writer).
   - Build systems: removed the "template wizard" and "most new projects and tutorials use CMake" claims.
 - Added a "Sources and accuracy" section to [About this site](./about).
-- Footer: dropped the company name and shortened the licence line to a pointer to [`LICENSE.md`](https://github.com/andrewh/JUCE/blob/master/LICENSE.md), which holds the licence scope (modules AGPLv3 or commercial, examples ISC, third-party code under its own terms).
+- Footer: dropped the company name and shortened the licence line to a pointer to [`LICENSE.md`](https://github.com/juce-framework/JUCE/blob/master/LICENSE.md), which holds the licence scope (modules AGPLv3 or commercial, examples ISC, third-party code under its own terms).
 
 ### 2026-09-28: CI publishing
 
@@ -55,7 +55,7 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
 
 ## JUCE releases in this checkout
 
-Headline changes, condensed from [`CHANGE_LIST.md`](https://github.com/andrewh/JUCE/blob/master/CHANGE_LIST.md). Release dates are those of the "JUCE version x.y.z" commits in this repository's git history. For anything that can break your code, read [`BREAKING_CHANGES.md`](https://github.com/andrewh/JUCE/blob/master/BREAKING_CHANGES.md).
+Headline changes, condensed from [`CHANGE_LIST.md`](https://github.com/juce-framework/JUCE/blob/master/CHANGE_LIST.md). Release dates are those of the "JUCE version x.y.z" commits in this repository's git history. For anything that can break your code, read [`BREAKING_CHANGES.md`](https://github.com/juce-framework/JUCE/blob/master/BREAKING_CHANGES.md).
 
 | Version | Date | Headlines |
 | --- | --- | --- |
