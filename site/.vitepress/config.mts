@@ -3,6 +3,7 @@ import { flexoki } from './flexoki'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import data from '../data/modules.json'
 import tutorials from '../data/tutorials.json'
+import examples from '../data/examples.json'
 import footnote from 'markdown-it-footnote'
 import { apiLinks } from './apiLinks'
 
@@ -43,6 +44,7 @@ export default withMermaid(
       nav: [
         { text: 'Guide', link: '/guide/what-is-juce', activeMatch: '/guide/' },
         { text: 'Tutorials', link: '/tutorials/', activeMatch: '/tutorials/' },
+        { text: 'Examples', link: '/examples/', activeMatch: '/examples/' },
         { text: 'Module map', link: '/reference/module-map' },
         { text: 'Glossary', link: '/reference/glossary' },
         { text: 'API reference', link: '/api/index.html', target: '_self' },
@@ -60,6 +62,10 @@ export default withMermaid(
               { text: 'Attribution', link: '/tutorials/notice' }
             ]
           }
+        ],
+        '/examples/': [
+          { text: 'Examples', items: [{ text: 'Overview', link: '/examples/' }] },
+          ...examples.groups
         ],
         '/': [
           {
@@ -86,6 +92,7 @@ export default withMermaid(
             items: [
               { text: 'Learning path', link: '/guide/learning-path' },
               { text: 'Tutorials', link: '/tutorials/' },
+              { text: 'Example browser', link: '/examples/' },
               { text: 'Changelog', link: '/changelog' },
               { text: 'About this site', link: '/about' }
             ]

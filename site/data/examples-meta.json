@@ -1,0 +1,274 @@
+{
+  "cats": [
+    "Starters",
+    "Plug-ins",
+    "Audio",
+    "DSP",
+    "GUI",
+    "Utilities"
+  ],
+  "projects": [
+    {
+      "id": "gui-app",
+      "cat": "Starters",
+      "name": "GUI App",
+      "blurb": "The smallest windowed application: a DocumentWindow hosting one Component.",
+      "learn": [
+        "JUCEApplication lifecycle",
+        "Component paint and resized",
+        "CMake setup with juce_add_gui_app"
+      ],
+      "path": "examples/CMake/GuiApp",
+      "files": [
+        "MainComponent.h",
+        "MainComponent.cpp",
+        "Main.cpp",
+        "CMakeLists.txt"
+      ]
+    },
+    {
+      "id": "audio-plugin",
+      "cat": "Starters",
+      "name": "Audio Plugin Skeleton",
+      "blurb": "A minimal plug-in with a processor and editor, ready to build as VST3, AU, or Standalone.",
+      "learn": [
+        "AudioProcessor and AudioProcessorEditor split",
+        "prepareToPlay and processBlock",
+        "CMake setup with juce_add_plugin"
+      ],
+      "path": "examples/CMake/AudioPlugin",
+      "files": [
+        "PluginProcessor.h",
+        "PluginProcessor.cpp",
+        "PluginEditor.h",
+        "PluginEditor.cpp",
+        "CMakeLists.txt"
+      ]
+    },
+    {
+      "id": "console-app",
+      "cat": "Starters",
+      "name": "Console App",
+      "blurb": "A command-line program that uses JUCE core classes with no GUI.",
+      "learn": [
+        "ConsoleApplication setup",
+        "Using juce_core on its own"
+      ],
+      "path": "examples/CMake/ConsoleApp",
+      "files": [
+        "Main.cpp",
+        "CMakeLists.txt"
+      ]
+    },
+    {
+      "id": "gain-plugin",
+      "cat": "Plug-ins",
+      "name": "Gain Plugin",
+      "blurb": "A single-parameter plug-in with a slider, written as one header.",
+      "learn": [
+        "AudioParameterFloat",
+        "Saving and restoring state",
+        "Generic parameter editor"
+      ],
+      "path": "examples/Plugins",
+      "files": [
+        "GainPluginDemo.h"
+      ]
+    },
+    {
+      "id": "arpeggiator",
+      "cat": "Plug-ins",
+      "name": "Arpeggiator",
+      "blurb": "A MIDI effect that turns held chords into rhythmic note sequences.",
+      "learn": [
+        "Rewriting a MidiBuffer in processBlock",
+        "Timing notes from the sample rate",
+        "One AudioParameterFloat for speed"
+      ],
+      "path": "examples/Plugins",
+      "files": [
+        "ArpeggiatorPluginDemo.h"
+      ]
+    },
+    {
+      "id": "noise-gate",
+      "cat": "Plug-ins",
+      "name": "Noise Gate",
+      "blurb": "A gate with threshold and alpha parameters and a sidechain input.",
+      "learn": [
+        "Bus layouts with a sidechain",
+        "Per-sample processing",
+        "Two AudioParameterFloat controls"
+      ],
+      "path": "examples/Plugins",
+      "files": [
+        "NoiseGatePluginDemo.h"
+      ]
+    },
+    {
+      "id": "audio-app",
+      "cat": "Audio",
+      "name": "Audio App",
+      "blurb": "A simple audio application built on AudioAppComponent.",
+      "learn": [
+        "AudioAppComponent",
+        "Shared AudioDeviceManager",
+        "prepareToPlay and getNextAudioBlock"
+      ],
+      "path": "examples/Audio",
+      "files": [
+        "AudioAppDemo.h"
+      ]
+    },
+    {
+      "id": "simple-fft",
+      "cat": "Audio",
+      "name": "Simple FFT",
+      "blurb": "A spectrogram built from the live input using juce::dsp::FFT.",
+      "learn": [
+        "dsp::FFT with a windowing function",
+        "Filling a FIFO on the audio thread",
+        "Drawing into an Image from a Timer"
+      ],
+      "path": "examples/Audio",
+      "files": [
+        "SimpleFFTDemo.h"
+      ]
+    },
+    {
+      "id": "synthesiser",
+      "cat": "Audio",
+      "name": "Audio Synthesiser",
+      "blurb": "A polyphonic synth with sine-wave and sampler sounds, played from an on-screen keyboard.",
+      "learn": [
+        "SynthesiserSound and SynthesiserVoice",
+        "MidiKeyboardState and MidiKeyboardComponent",
+        "SamplerSound"
+      ],
+      "path": "examples/Audio",
+      "files": [
+        "AudioSynthesiserDemo.h"
+      ]
+    },
+    {
+      "id": "dsp-gain",
+      "cat": "DSP",
+      "name": "Gain and Ramp",
+      "blurb": "A gain stage built with the juce::dsp module.",
+      "learn": [
+        "dsp::Gain<float>",
+        "ProcessSpec and prepare",
+        "Hosting a DSP processor in a demo"
+      ],
+      "path": "examples/DSP",
+      "files": [
+        "GainDemo.h"
+      ]
+    },
+    {
+      "id": "svf",
+      "cat": "DSP",
+      "name": "State Variable Filter",
+      "blurb": "A low, band, and high pass filter with cutoff and resonance controls.",
+      "learn": [
+        "dsp::StateVariableTPTFilter",
+        "Switching filter type from the UI",
+        "AudioBlock processing"
+      ],
+      "path": "examples/DSP",
+      "files": [
+        "StateVariableFilterDemo.h"
+      ]
+    },
+    {
+      "id": "hello-world",
+      "cat": "GUI",
+      "name": "Hello World",
+      "blurb": "The classic first window.",
+      "learn": [
+        "Component basics",
+        "Graphics drawing calls",
+        "A first paint and resized pair"
+      ],
+      "path": "examples/GUI",
+      "files": [
+        "HelloWorldDemo.h"
+      ]
+    },
+    {
+      "id": "flexbox",
+      "cat": "GUI",
+      "name": "FlexBox Layout",
+      "blurb": "Interactive playground for FlexBox properties.",
+      "learn": [
+        "FlexBox and FlexItem",
+        "Responsive layout in resized",
+        "Property panels"
+      ],
+      "path": "examples/GUI",
+      "files": [
+        "FlexBoxDemo.h"
+      ]
+    },
+    {
+      "id": "look-and-feel",
+      "cat": "GUI",
+      "name": "Look and Feel",
+      "blurb": "Custom look and feel classes shown across a range of widgets.",
+      "learn": [
+        "Subclassing LookAndFeel",
+        "Overriding drawing methods",
+        "Applying a look and feel at runtime"
+      ],
+      "path": "examples/GUI",
+      "files": [
+        "LookAndFeelDemo.h"
+      ]
+    },
+    {
+      "id": "value-trees",
+      "cat": "Utilities",
+      "name": "Value Trees",
+      "blurb": "A tree view backed by ValueTree, with undo and redo.",
+      "learn": [
+        "ValueTree and listeners",
+        "UndoManager",
+        "TreeView data binding"
+      ],
+      "path": "examples/Utilities",
+      "files": [
+        "ValueTreesDemo.h"
+      ]
+    },
+    {
+      "id": "multithreading",
+      "cat": "Utilities",
+      "name": "Multithreading",
+      "blurb": "Bouncing balls driven by dedicated threads and by a thread pool.",
+      "learn": [
+        "Thread and ThreadPoolJob",
+        "Moving work off the message thread",
+        "Starting and stopping threads safely"
+      ],
+      "path": "examples/Utilities",
+      "files": [
+        "MultithreadingDemo.h"
+      ]
+    },
+    {
+      "id": "xml-json",
+      "cat": "Utilities",
+      "name": "XML and JSON",
+      "blurb": "Reads XML and JSON files and shows the parsed result.",
+      "learn": [
+        "XmlDocument and XmlElement",
+        "JSON::parse and var",
+        "Displaying parsed trees"
+      ],
+      "path": "examples/Utilities",
+      "files": [
+        "XMLandJSONDemo.h"
+      ]
+    }
+  ]
+}

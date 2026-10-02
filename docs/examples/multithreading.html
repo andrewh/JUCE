@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en-GB" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Multithreading | Learning JUCE</title>
+    <meta name="description" content="A personal field guide to the JUCE C++ framework: what it is, how the modules relate, and where it came from.">
+    <meta name="generator" content="VitePress v1.6.4">
+    <link rel="preload stylesheet" href="/JUCE/assets/style.DC4nZIWZ.css" as="style">
+    <link rel="preload stylesheet" href="/JUCE/vp-icons.css" as="style">
+    
+    <script type="module" src="/JUCE/assets/app.Ct7lGPhY.js"></script>
+    <link rel="preload" href="/JUCE/assets/inter-roman-latin.Di8DUHzh.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/framework.YC5CMuPM.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/transform.CzvybxN6.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/theme.DVz5LPMV.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/katex.C5jXJg4s.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/sizeCapture-INFHLROL.BqfJvAJY.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/dagre-GXQ25YYZ.Bxs8Ytf7.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/swimlanes-42K2YHIH.DMgoC-mZ.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/cose-bilkent-JH36ORCC.CZZl5rCu.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/c4Diagram-7LVT6UL2.r3CYfggR.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/flowDiagram-HODETNUW.BIEVCBsx.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/swimlanesDiagram-VR7AAH4N.CCyPXmfa.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/erDiagram-RLTQ6QDP.wpqs8LAF.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/gitGraphDiagram-WWUBYQGX.Cf_cXY5Q.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/ganttDiagram-EL5Y4UJY.6CQuo-jE.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/infoDiagram-27XIBGKW.CssqkXyu.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/pieDiagram-E7YTZNPT.BDymdY1v.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/quadrantDiagram-AXDQQJYC.1FIY-8HX.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/xychartDiagram-S5SC5T6Z.CNe1GCRt.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/requirementDiagram-BXWQKSXE.CwTr8RUl.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/sequenceDiagram-WJ2MYXX4.DTxsKy4A.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/classDiagram-ZZMXUADV.tVzym_of.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/classDiagram-v2-VYDZK3BY.tVzym_of.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/stateDiagram-D77RDMKH.uLHSXPmB.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/stateDiagram-v2-MP3YSRHH.DqGIvy6N.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/journeyDiagram-3NMN7TZE.DrP8eLFq.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/timeline-definition-24CTP7MA.CwOJfvdQ.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/mindmap-definition-YA3MSWOX.BtOLpJbM.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/kanban-definition-UXKFOSKX.BSviyvZF.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/sankeyDiagram-P5KCCOFB.3pWvqW-o.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/diagram-Z3DM3KII.DSQS9Xqt.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/diagram-UQ7AKVKN.DqTnHKMj.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/blockDiagram-I7D4REHJ.AYsGC9hb.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/diagram-S7CK7UJ4.WsgrEEey.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/architectureDiagram-5GKGNRK7.DELHSOEj.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/diagram-VSXAHHWV.DjNGE-wU.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/ishikawaDiagram-5VMMS53U.CtVn1x2A.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/vennDiagram-4TSXK5OY.DbsEuIB8.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/diagram-VX7I27RA.DBfUoU9V.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/wardleyDiagram-VM6X3IG4.BYDPv8OP.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/cynefinDiagram-5FMLGOSQ.Gwg4l0ne.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/railroadDiagram-O6MQD6OU.d8C1X1Y5.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/ebnfDiagram-PWID7BFC.CRMwtZrz.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/abnfDiagram-VCTEODGH.DlTAkk59.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/pegDiagram-XKGWAZYB.Da-ZO2Vo.js">
+    <link rel="modulepreload" href="/JUCE/assets/chunks/virtual_mermaid-config.DDnGl6nM.js">
+    <link rel="modulepreload" href="/JUCE/assets/examples_multithreading.md.BPWl7-2X.lean.js">
+    <link rel="icon" href="/JUCE/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=JetBrains+Mono:wght@400;500&amp;family=Martian+Mono:wdth,wght@75..112,300..800&amp;display=swap">
+    <script id="check-dark-mode">(()=>{const e=localStorage.getItem("vitepress-theme-appearance")||"auto",a=window.matchMedia("(prefers-color-scheme: dark)").matches;(!e||e==="auto"?a:e==="dark")&&document.documentElement.classList.add("dark")})();</script>
+    <script id="check-mac-os">document.documentElement.classList.toggle("mac",/Mac|iPhone|iPod|iPad/i.test(navigator.platform));</script>
+  </head>
+  <body>
+    <div id="app"><div class="Layout" data-v-d8b57b2d><!--[--><!--]--><!--[--><span tabindex="-1" data-v-fcbfc0e0></span><a href="#VPContent" class="VPSkipLink visually-hidden" data-v-fcbfc0e0>Skip to content</a><!--]--><!----><header class="VPNav" data-v-d8b57b2d data-v-7ad780c2><div class="VPNavBar" data-v-7ad780c2 data-v-9fd4d1dd><div class="wrapper" data-v-9fd4d1dd><div class="container" data-v-9fd4d1dd><div class="title" data-v-9fd4d1dd><div class="VPNavBarTitle has-sidebar" data-v-9fd4d1dd data-v-9f43907a><a class="title" href="/JUCE/" data-v-9f43907a><!--[--><!--]--><!--[--><img class="VPImage logo" src="/JUCE/favicon.svg" alt data-v-ab19afbb><!--]--><span data-v-9f43907a>Learning JUCE</span><!--[--><!--]--></a></div></div><div class="content" data-v-9fd4d1dd><div class="content-body" data-v-9fd4d1dd><!--[--><!--]--><div class="VPNavBarSearch search" data-v-9fd4d1dd><!--[--><!----><div id="local-search"><button type="button" class="DocSearch DocSearch-Button" aria-label="Search"><span class="DocSearch-Button-Container"><span class="vp-icon DocSearch-Search-Icon"></span><span class="DocSearch-Button-Placeholder">Search</span></span><span class="DocSearch-Button-Keys"><kbd class="DocSearch-Button-Key"></kbd><kbd class="DocSearch-Button-Key">K</kbd></span></button></div><!--]--></div><nav aria-labelledby="main-nav-aria-label" class="VPNavBarMenu menu" data-v-9fd4d1dd data-v-afb2845e><span id="main-nav-aria-label" class="visually-hidden" data-v-afb2845e> Main Navigation </span><!--[--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/JUCE/guide/what-is-juce.html" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>Guide</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/JUCE/tutorials/" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>Tutorials</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink active" href="/JUCE/examples/" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>Examples</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/JUCE/reference/module-map.html" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>Module map</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/JUCE/reference/glossary.html" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>Glossary</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/JUCE/api/index.html" target="_self" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>API reference</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/JUCE/guide/history.html" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>History</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/JUCE/changelog.html" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>Changelog</span><!--]--></a><!--]--><!--[--><a class="VPLink link vp-external-link-icon VPNavBarMenuLink" href="https://github.com/juce-framework/JUCE" target="_blank" rel="noreferrer" tabindex="0" data-v-afb2845e data-v-815115f5><!--[--><span data-v-815115f5>JUCE 9.0.3</span><!--]--></a><!--]--><!--]--></nav><!----><div class="VPNavBarAppearance appearance" data-v-9fd4d1dd data-v-3f90c1a5><button class="VPSwitch VPSwitchAppearance" type="button" role="switch" title aria-checked="false" data-v-3f90c1a5 data-v-be9742d9 data-v-b4ccac88><span class="check" data-v-b4ccac88><span class="icon" data-v-b4ccac88><!--[--><span class="vpi-sun sun" data-v-be9742d9></span><span class="vpi-moon moon" data-v-be9742d9></span><!--]--></span></span></button></div><div class="VPSocialLinks VPNavBarSocialLinks social-links" data-v-9fd4d1dd data-v-ef6192dc data-v-e71e869c><!--[--><a class="VPSocialLink no-icon" href="https://github.com/juce-framework/JUCE" aria-label="github" target="_blank" rel="noopener" data-v-e71e869c data-v-60a9a2d3><span class="vpi-social-github"></span></a><!--]--></div><div class="VPFlyout VPNavBarExtra extra" data-v-9fd4d1dd data-v-f953d92f data-v-bfe7971f><button type="button" class="button" aria-haspopup="true" aria-expanded="false" aria-label="extra navigation" data-v-bfe7971f><span class="vpi-more-horizontal icon" data-v-bfe7971f></span></button><div class="menu" data-v-bfe7971f><div class="VPMenu" data-v-bfe7971f data-v-20ed86d6><!----><!--[--><!--[--><!----><div class="group" data-v-f953d92f><div class="item appearance" data-v-f953d92f><p class="label" data-v-f953d92f>Appearance</p><div class="appearance-action" data-v-f953d92f><button class="VPSwitch VPSwitchAppearance" type="button" role="switch" title aria-checked="false" data-v-f953d92f data-v-be9742d9 data-v-b4ccac88><span class="check" data-v-b4ccac88><span class="icon" data-v-b4ccac88><!--[--><span class="vpi-sun sun" data-v-be9742d9></span><span class="vpi-moon moon" data-v-be9742d9></span><!--]--></span></span></button></div></div></div><div class="group" data-v-f953d92f><div class="item social-links" data-v-f953d92f><div class="VPSocialLinks social-links-list" data-v-f953d92f data-v-e71e869c><!--[--><a class="VPSocialLink no-icon" href="https://github.com/juce-framework/JUCE" aria-label="github" target="_blank" rel="noopener" data-v-e71e869c data-v-60a9a2d3><span class="vpi-social-github"></span></a><!--]--></div></div></div><!--]--><!--]--></div></div></div><!--[--><!--]--><button type="button" class="VPNavBarHamburger hamburger" aria-label="mobile navigation" aria-expanded="false" aria-controls="VPNavScreen" data-v-9fd4d1dd data-v-6bee1efd><span class="container" data-v-6bee1efd><span class="top" data-v-6bee1efd></span><span class="middle" data-v-6bee1efd></span><span class="bottom" data-v-6bee1efd></span></span></button></div></div></div></div><div class="divider" data-v-9fd4d1dd><div class="divider-line" data-v-9fd4d1dd></div></div></div><!----></header><div class="VPLocalNav has-sidebar empty" data-v-d8b57b2d data-v-2488c25a><div class="container" data-v-2488c25a><button class="menu" aria-expanded="false" aria-controls="VPSidebarNav" data-v-2488c25a><span class="vpi-align-left menu-icon" data-v-2488c25a></span><span class="menu-text" data-v-2488c25a>Menu</span></button><div class="VPLocalNavOutlineDropdown" style="--vp-vh:0px;" data-v-2488c25a data-v-6b867909><button data-v-6b867909>Return to top</button><!----></div></div></div><aside class="VPSidebar" data-v-d8b57b2d data-v-42c4c606><div class="curtain" data-v-42c4c606></div><nav class="nav" id="VPSidebarNav" aria-labelledby="sidebar-aria-label" tabindex="-1" data-v-42c4c606><span class="visually-hidden" id="sidebar-aria-label" data-v-42c4c606> Sidebar Navigation </span><!--[--><!--]--><!--[--><div class="no-transition group" data-v-51288d80><section class="VPSidebarItem level-0" data-v-51288d80 data-v-0009425e><div class="item" role="button" tabindex="0" data-v-0009425e><div class="indicator" data-v-0009425e></div><h2 class="text" data-v-0009425e>Examples</h2><!----></div><div class="items" data-v-0009425e><!--[--><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Overview</p><!--]--></a><!----></div><!----></div><!--]--></div></section></div><div class="no-transition group" data-v-51288d80><section class="VPSidebarItem level-0" data-v-51288d80 data-v-0009425e><div class="item" role="button" tabindex="0" data-v-0009425e><div class="indicator" data-v-0009425e></div><h2 class="text" data-v-0009425e>Starters</h2><!----></div><div class="items" data-v-0009425e><!--[--><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/gui-app.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>GUI App</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/audio-plugin.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Audio Plugin Skeleton</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/console-app.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Console App</p><!--]--></a><!----></div><!----></div><!--]--></div></section></div><div class="no-transition group" data-v-51288d80><section class="VPSidebarItem level-0" data-v-51288d80 data-v-0009425e><div class="item" role="button" tabindex="0" data-v-0009425e><div class="indicator" data-v-0009425e></div><h2 class="text" data-v-0009425e>Plug-ins</h2><!----></div><div class="items" data-v-0009425e><!--[--><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/gain-plugin.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Gain Plugin</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/arpeggiator.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Arpeggiator</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/noise-gate.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Noise Gate</p><!--]--></a><!----></div><!----></div><!--]--></div></section></div><div class="no-transition group" data-v-51288d80><section class="VPSidebarItem level-0" data-v-51288d80 data-v-0009425e><div class="item" role="button" tabindex="0" data-v-0009425e><div class="indicator" data-v-0009425e></div><h2 class="text" data-v-0009425e>Audio</h2><!----></div><div class="items" data-v-0009425e><!--[--><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/audio-app.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Audio App</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/simple-fft.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Simple FFT</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/synthesiser.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Audio Synthesiser</p><!--]--></a><!----></div><!----></div><!--]--></div></section></div><div class="no-transition group" data-v-51288d80><section class="VPSidebarItem level-0" data-v-51288d80 data-v-0009425e><div class="item" role="button" tabindex="0" data-v-0009425e><div class="indicator" data-v-0009425e></div><h2 class="text" data-v-0009425e>DSP</h2><!----></div><div class="items" data-v-0009425e><!--[--><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/dsp-gain.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Gain and Ramp</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/svf.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>State Variable Filter</p><!--]--></a><!----></div><!----></div><!--]--></div></section></div><div class="no-transition group" data-v-51288d80><section class="VPSidebarItem level-0" data-v-51288d80 data-v-0009425e><div class="item" role="button" tabindex="0" data-v-0009425e><div class="indicator" data-v-0009425e></div><h2 class="text" data-v-0009425e>GUI</h2><!----></div><div class="items" data-v-0009425e><!--[--><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/hello-world.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Hello World</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/flexbox.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>FlexBox Layout</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/look-and-feel.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Look and Feel</p><!--]--></a><!----></div><!----></div><!--]--></div></section></div><div class="no-transition group" data-v-51288d80><section class="VPSidebarItem level-0 has-active" data-v-51288d80 data-v-0009425e><div class="item" role="button" tabindex="0" data-v-0009425e><div class="indicator" data-v-0009425e></div><h2 class="text" data-v-0009425e>Utilities</h2><!----></div><div class="items" data-v-0009425e><!--[--><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/value-trees.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Value Trees</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/multithreading.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>Multithreading</p><!--]--></a><!----></div><!----></div><div class="VPSidebarItem level-1 is-link" data-v-0009425e><div class="item" data-v-0009425e><div class="indicator" data-v-0009425e></div><a class="VPLink link link" href="/JUCE/examples/xml-json.html" data-v-0009425e><!--[--><p class="text" data-v-0009425e>XML and JSON</p><!--]--></a><!----></div><!----></div><!--]--></div></section></div><!--]--><!--[--><!--]--></nav></aside><div class="VPContent has-sidebar" id="VPContent" data-v-d8b57b2d data-v-9a6c75ad><div class="VPDoc has-sidebar has-aside" data-v-9a6c75ad data-v-e6f2a212><!--[--><!--]--><div class="container" data-v-e6f2a212><div class="aside" data-v-e6f2a212><div class="aside-curtain" data-v-e6f2a212></div><div class="aside-container" data-v-e6f2a212><div class="aside-content" data-v-e6f2a212><div class="VPDocAside" data-v-e6f2a212 data-v-cb998dce><!--[--><!--]--><!--[--><!--]--><nav aria-labelledby="doc-outline-aria-label" class="VPDocAsideOutline" data-v-cb998dce data-v-f610f197><div class="content" data-v-f610f197><div class="outline-marker" data-v-f610f197></div><div aria-level="2" class="outline-title" id="doc-outline-aria-label" role="heading" data-v-f610f197>On this page</div><ul class="VPDocOutlineItem root" data-v-f610f197 data-v-53c99d69><!--[--><!--]--></ul></div></nav><!--[--><!--]--><div class="spacer" data-v-cb998dce></div><!--[--><!--]--><!----><!--[--><!--]--><!--[--><!--]--></div></div></div></div><div class="content" data-v-e6f2a212><div class="content-container" data-v-e6f2a212><!--[--><!--]--><main class="main" data-v-e6f2a212><div style="position:relative;" class="vp-doc _JUCE_examples_multithreading" data-v-e6f2a212><div><h1 id="multithreading" tabindex="-1">Multithreading <a class="header-anchor" href="#multithreading" aria-label="Permalink to &quot;Multithreading&quot;">​</a></h1><p><strong>Bouncing balls driven by dedicated threads and by a thread pool.</strong></p><ul><li>Thread and ThreadPoolJob</li><li>Moving work off the message thread</li><li>Starting and stopping threads safely</li></ul><p>Source: <a href="https://github.com/juce-framework/JUCE/tree/master/examples/Utilities/MultithreadingDemo.h" target="_blank" rel="noreferrer">examples/Utilities/MultithreadingDemo.h</a> on GitHub.</p><div class="vp-code-group vp-adaptive-theme"><div class="tabs"><input type="radio" name="group-tpH10" id="tab-wlb2fZ0" checked><label data-title="MultithreadingDemo.h" for="tab-wlb2fZ0">MultithreadingDemo.h</label></div><div class="blocks"><div class="language-cpp vp-adaptive-theme active"><button title="Copy Code" class="copy"></button><span class="lang">cpp</span><pre class="shiki shiki-themes flexoki flexoki vp-code" tabindex="0"><code><span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">/*******************************************************************************</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> The block below describes the properties of this PIP. A PIP is a short snippet</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> of code that can be read by the Projucer and used to generate a JUCE project.</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> BEGIN_JUCE_PIP_METADATA</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> name:             MultithreadingDemo</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> version:          1.0.0</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> vendor:           JUCE</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> website:          http://juce.com</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> description:      Demonstrates multi-threading.</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> dependencies:     juce_core, juce_data_structures, juce_events, juce_graphics,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                   juce_gui_basics</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> exporters:        xcode_mac, vs2022, vs2026, linux_make, androidstudio,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                   xcode_iphone</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> moduleFlags:      JUCE_STRICT_REFCOUNTEDPOINTER=1</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> type:             Component</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> mainClass:        MultithreadingDemo</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> useLocalCopy:     1</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> END_JUCE_PIP_METADATA</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">*******************************************************************************/</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">#pragma once</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">#include </span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">&quot;../Assets/DemoUtilities.h&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">//==============================================================================</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">class BouncingBall : private ComponentListener</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">{</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">public:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    BouncingBall (Component&amp; comp)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        : containerComponent (comp)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        containerComponent.addComponentListener (this);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        auto speed = 5.0f;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> // give each ball a fixed speed so we can</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                           // see the effects of thread priority on how fast</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                           // they actually go.</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        auto angle = Random::getSystemRandom().nextFloat() * MathConstants&lt;float&gt;::twoPi;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        dx = std::sin (angle) * speed;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        dy = std::cos (angle) * speed;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        colour = Colour ((juce::uint32) Random::getSystemRandom().nextInt())</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                    .withAlpha (0.5f)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                    .withBrightness (0.7f);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        updateParentSize (comp);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        x = Random::getSystemRandom().nextFloat() * parentWidth;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        y = Random::getSystemRandom().nextFloat() * parentHeight;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    ~BouncingBall() override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        containerComponent.removeComponentListener (this);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    // This will be called from the message thread</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void draw (Graphics&amp; g)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        const ScopedLock lock (drawing);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        g.setColour (colour);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        g.fillEllipse (x, y, size, size);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        g.setColour (Colours::black);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        g.setFont (10.0f);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        g.drawText (String::toHexString ((int64) threadId), Rectangle&lt;float&gt; (x, y, size, size), Justification::centred, false);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void moveBall()</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        const ScopedLock lock (drawing);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        threadId = Thread::getCurrentThreadId();</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> // this is so the component can print the thread ID inside the ball</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        x += dx;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        y += dy;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        if (x &lt; 0)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            dx = std::abs (dx);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        if (x &gt; parentWidth)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            dx = -std::abs (dx);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        if (y &lt; 0)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            dy = std::abs (dy);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        if (y &gt; parentHeight)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            dy = -std::abs (dy);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">private:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void updateParentSize (Component&amp; comp)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        const ScopedLock lock (drawing);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        parentWidth  = (float) comp.getWidth()  - size;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        parentHeight = (float) comp.getHeight() - size;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void componentMovedOrResized (Component&amp; comp, bool, bool) override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        updateParentSize (comp);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    float x = 0.0f, y = 0.0f,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">          size = Random::getSystemRandom().nextFloat() * 30.0f + 30.0f,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">          dx = 0.0f, dy = 0.0f,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">          parentWidth = 50.0f, parentHeight = 50.0f;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    Colour colour;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    Thread::ThreadID threadId = {};</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    CriticalSection drawing;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    Component&amp; containerComponent;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BouncingBall)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">//==============================================================================</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">class DemoThread final : public BouncingBall,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                         public Thread</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">{</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">public:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    DemoThread (Component&amp; containerComp)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        : BouncingBall (containerComp),</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">          Thread (</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">&quot;JUCE Demo Thread&quot;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        startThread();</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    ~DemoThread() override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // allow the thread 2 seconds to stop cleanly - should be plenty of time.</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        stopThread (2000);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void run() override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // this is the code that runs this thread - we&#39;ll loop continuously,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // updating the coordinates of our blob.</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // threadShouldExit() returns true when the stopThread() method has been</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // called, so we should check it often, and exit as soon as it gets flagged.</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        while (! threadShouldExit())</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            // sleep a bit so the threads don&#39;t all grind the CPU to a halt..</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            wait (interval);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            // because this is a background thread, we mustn&#39;t do any UI work without</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            // first grabbing a MessageManagerLock..</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            const MessageManagerLock mml (Thread::getCurrentThread());</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            if (! mml.lockWasGained())</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">  // if something is trying to kill this job, the lock</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                return;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                 // will fail, in which case we&#39;d better return..</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            // now we&#39;ve got the UI thread locked, we can mess about with the components</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            moveBall();</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        }</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">private:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    int interval = Random::getSystemRandom().nextInt (50) + 6;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DemoThread)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">};</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">//==============================================================================</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">class DemoThreadPoolJob final : public BouncingBall,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                                public ThreadPoolJob</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">{</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">public:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    DemoThreadPoolJob (Component&amp; containerComp)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        : BouncingBall (containerComp),</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">          ThreadPoolJob (</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">&quot;Demo Threadpool Job&quot;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {}</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    JobStatus runJob() override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // this is the code that runs this job. It&#39;ll be repeatedly called until we return</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // jobHasFinished instead of jobNeedsRunningAgain.</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        Thread::sleep (30);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // because this is a background thread, we mustn&#39;t do any UI work without</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // first grabbing a MessageManagerLock..</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        const MessageManagerLock mml (this);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // before moving the ball, we need to check whether the lock was actually gained, because</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // if something is trying to stop this job, it will have failed..</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        if (mml.lockWasGained())</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            moveBall();</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        return jobNeedsRunningAgain;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void removedFromQueue()</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // This is called to tell us that our job has been removed from the pool.</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        // In this case there&#39;s no need to do anything here.</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">private:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DemoThreadPoolJob)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">//==============================================================================</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">class MultithreadingDemo final : public Component,</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                                 private Timer</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">{</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">public:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    //==============================================================================</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    MultithreadingDemo()</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        setOpaque (true);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        addAndMakeVisible (controlButton);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        controlButton.changeWidthToFitText (24);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        controlButton.setTopLeftPosition (20, 20);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        controlButton.setTriggeredOnMouseDown (true);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        controlButton.setAlwaysOnTop (true);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        controlButton.onClick = [this] { showMenu(); };</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        setSize (500, 500);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        resetAllBalls();</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        startTimerHz (60);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    ~MultithreadingDemo() override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        pool.removeAllJobs (true, 2000);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void resetAllBalls()</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        pool.removeAllJobs (true, 4000);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        balls.clear();</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        for (int i = 0; i &lt; 5; ++i)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            addABall();</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void paint (Graphics&amp; g) override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        g.fillAll (getUIColourIfAvailable (LookAndFeel_V4::ColourScheme::UIColour::windowBackground));</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        for (auto* ball : balls)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            ball-&gt;draw (g);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">private:</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    //==============================================================================</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void setUsingPool (bool usePool)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        isUsingPool = usePool;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        resetAllBalls();</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void addABall()</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        if (isUsingPool)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            auto newBall = std::make_unique&lt;DemoThreadPoolJob&gt; (*this);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            pool.addJob (newBall.get(), false);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            balls.add (newBall.release());</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        }</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        else</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            balls.add (new DemoThread (*this));</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        }</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void timerCallback() override</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        repaint();</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    void showMenu()</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        PopupMenu m;</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        m.addItem (1, </span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">&quot;Use one thread per ball&quot;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">, true, ! isUsingPool);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        m.addItem (2, </span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">&quot;Use a thread pool&quot;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">,       true,   isUsingPool);</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        m.showMenuAsync (PopupMenu::Options().withTargetComponent (controlButton),</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                         ModalCallbackFunction::forComponent (menuItemChosenCallback, this));</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    static void menuItemChosenCallback (int result, MultithreadingDemo* demoComponent)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    {</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">        if (result != 0 &amp;&amp; demoComponent != nullptr)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">            demoComponent-&gt;setUsingPool (result == 2);</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    //==============================================================================</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    ThreadPool pool           { ThreadPoolOptions{}.withThreadName (</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">&quot;Demo thread pool&quot;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">                                                   .withNumberOfThreads (3) };</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    TextButton controlButton  { </span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">&quot;Thread type&quot;</span><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;"> };</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    bool isUsingPool = false;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    OwnedArray&lt;BouncingBall&gt; balls;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MultithreadingDemo)</span></span>
+<span class="line"><span style="--shiki-light:#CECDC3;--shiki-dark:#CECDC3;">};</span></span></code></pre></div></div></div></div></div></main><footer class="VPDocFooter" data-v-e6f2a212 data-v-1bcd8184><!--[--><!--]--><div class="edit-info" data-v-1bcd8184><div class="edit-link" data-v-1bcd8184><a class="VPLink link vp-external-link-icon no-icon edit-link-button" href="https://github.com/andrewh/JUCE/edit/master/site/examples/multithreading.md" target="_blank" rel="noreferrer" data-v-1bcd8184><!--[--><span class="vpi-square-pen edit-link-icon" data-v-1bcd8184></span> Edit this page<!--]--></a></div><!----></div><nav class="prev-next" aria-labelledby="doc-footer-aria-label" data-v-1bcd8184><span class="visually-hidden" id="doc-footer-aria-label" data-v-1bcd8184>Pager</span><div class="pager" data-v-1bcd8184><a class="VPLink link pager-link prev" href="/JUCE/examples/value-trees.html" data-v-1bcd8184><!--[--><span class="desc" data-v-1bcd8184>Previous page</span><span class="title" data-v-1bcd8184>Value Trees</span><!--]--></a></div><div class="pager" data-v-1bcd8184><a class="VPLink link pager-link next" href="/JUCE/examples/xml-json.html" data-v-1bcd8184><!--[--><span class="desc" data-v-1bcd8184>Next page</span><span class="title" data-v-1bcd8184>XML and JSON</span><!--]--></a></div></nav></footer><!--[--><!--]--></div></div></div><!--[--><!--]--></div></div><footer class="VPFooter has-sidebar" data-v-d8b57b2d data-v-566314d4><div class="container" data-v-566314d4><p class="message" data-v-566314d4>Personal study notes on JUCE. Not affiliated with or endorsed by the JUCE team.</p><p class="copyright" data-v-566314d4>JUCE is dual-licensed under AGPLv3 and a commercial licence; see <a href="https://github.com/juce-framework/JUCE/blob/master/LICENSE.md">LICENSE.md</a> for the details and third-party terms.</p></div></footer><!--[--><!--]--></div></div>
+    <script>window.__VP_HASH_MAP__=JSON.parse("{\"about.md\":\"TmDzmTAp\",\"changelog.md\":\"Ch3TfrgP\",\"examples_arpeggiator.md\":\"DRhQeO64\",\"examples_audio-app.md\":\"D6egDLeh\",\"examples_audio-plugin.md\":\"BPpYCpOM\",\"examples_console-app.md\":\"CHQlSITx\",\"examples_dsp-gain.md\":\"Cg-wveds\",\"examples_flexbox.md\":\"DywctS_I\",\"examples_gain-plugin.md\":\"BUzdbfGX\",\"examples_gui-app.md\":\"YkTXuvR4\",\"examples_hello-world.md\":\"BBrIxnUv\",\"examples_index.md\":\"Dqkzerrd\",\"examples_look-and-feel.md\":\"Dac5CwcA\",\"examples_multithreading.md\":\"BPWl7-2X\",\"examples_noise-gate.md\":\"GoHhFqbY\",\"examples_simple-fft.md\":\"ChVU-qze\",\"examples_svf.md\":\"C4m2T96w\",\"examples_synthesiser.md\":\"DFlKX8hD\",\"examples_value-trees.md\":\"BZARtAbl\",\"examples_xml-json.md\":\"TDK9kTnh\",\"guide_architecture.md\":\"BloQ7yVK\",\"guide_build-systems.md\":\"CZYvzcRt\",\"guide_core-concepts.md\":\"DlJgZT5c\",\"guide_history.md\":\"nFiruLHf\",\"guide_learning-path.md\":\"Dg4Qu_hh\",\"guide_plugin-anatomy.md\":\"DSIiD0NW\",\"guide_what-is-juce.md\":\"BckFmqh_\",\"index.md\":\"DIkQVyhO\",\"reference_glossary.md\":\"9jIINhgU\",\"reference_module-map.md\":\"RoWMdf3R\",\"reference_modules.md\":\"83mX3f48\",\"tutorials_01-getting-started.md\":\"DBAFz7cJ\",\"tutorials_02-graphics-and-layout.md\":\"BX--BMS4\",\"tutorials_03-widgets.md\":\"CeE76ajr\",\"tutorials_04-listeners-and-state.md\":\"ClcxjNCp\",\"tutorials_05-audio-io-and-playback.md\":\"BKtWmpcm\",\"tutorials_06-synthesis.md\":\"B6W6p5uz\",\"tutorials_07-midi-and-mpe.md\":\"3-kNLQW9\",\"tutorials_08-plugin-basics.md\":\"DkZDQC9B\",\"tutorials_09-plugin-parameters.md\":\"BGeNsDQ5\",\"tutorials_10-audio-processor-graph.md\":\"CTYf2pMY\",\"tutorials_11-dsp.md\":\"8Sh_jw0r\",\"tutorials_12-utilities.md\":\"HUpkk4eu\",\"tutorials_13-opengl.md\":\"B6ZEBpW-\",\"tutorials_14-mobile-and-app-services.md\":\"rolH71Fn\",\"tutorials_15-physics-music.md\":\"BZ72q7FU\",\"tutorials_16-box2d-v3.md\":\"D_7h_6Wc\",\"tutorials_17-modal-physics-audio.md\":\"DfYZRWxJ\",\"tutorials_index.md\":\"Dn-zFYZk\",\"tutorials_notice.md\":\"CgF_XTAk\"}");window.__VP_SITE_DATA__=JSON.parse("{\"lang\":\"en-GB\",\"dir\":\"ltr\",\"title\":\"Learning JUCE\",\"description\":\"A personal field guide to the JUCE C++ framework: what it is, how the modules relate, and where it came from.\",\"base\":\"/JUCE/\",\"head\":[],\"router\":{\"prefetchLinks\":true},\"appearance\":true,\"themeConfig\":{\"logo\":\"/favicon.svg\",\"nav\":[{\"text\":\"Guide\",\"link\":\"/guide/what-is-juce\",\"activeMatch\":\"/guide/\"},{\"text\":\"Tutorials\",\"link\":\"/tutorials/\",\"activeMatch\":\"/tutorials/\"},{\"text\":\"Examples\",\"link\":\"/examples/\",\"activeMatch\":\"/examples/\"},{\"text\":\"Module map\",\"link\":\"/reference/module-map\"},{\"text\":\"Glossary\",\"link\":\"/reference/glossary\"},{\"text\":\"API reference\",\"link\":\"/api/index.html\",\"target\":\"_self\"},{\"text\":\"History\",\"link\":\"/guide/history\"},{\"text\":\"Changelog\",\"link\":\"/changelog\"},{\"text\":\"JUCE 9.0.3\",\"link\":\"https://github.com/juce-framework/JUCE\"}],\"sidebar\":{\"/tutorials/\":[{\"text\":\"Tutorials\",\"items\":[{\"text\":\"Overview\",\"link\":\"/tutorials/\"},{\"text\":\"Getting started\",\"link\":\"/tutorials/01-getting-started\"},{\"text\":\"Graphics and layout\",\"link\":\"/tutorials/02-graphics-and-layout\"},{\"text\":\"Widgets\",\"link\":\"/tutorials/03-widgets\"},{\"text\":\"Listeners, ValueTree, and undo\",\"link\":\"/tutorials/04-listeners-and-state\"},{\"text\":\"Audio I/O and playback\",\"link\":\"/tutorials/05-audio-io-and-playback\"},{\"text\":\"Synthesis\",\"link\":\"/tutorials/06-synthesis\"},{\"text\":\"MIDI and MPE\",\"link\":\"/tutorials/07-midi-and-mpe\"},{\"text\":\"Plug-in basics\",\"link\":\"/tutorials/08-plugin-basics\"},{\"text\":\"Parameters and state\",\"link\":\"/tutorials/09-plugin-parameters\"},{\"text\":\"AudioProcessorGraph\",\"link\":\"/tutorials/10-audio-processor-graph\"},{\"text\":\"DSP\",\"link\":\"/tutorials/11-dsp\"},{\"text\":\"Core utilities\",\"link\":\"/tutorials/12-utilities\"},{\"text\":\"OpenGL\",\"link\":\"/tutorials/13-opengl\"},{\"text\":\"Mobile and app services\",\"link\":\"/tutorials/14-mobile-and-app-services\"},{\"text\":\"Physics as an instrument\",\"link\":\"/tutorials/15-physics-music\"},{\"text\":\"Box2D v3\",\"link\":\"/tutorials/16-box2d-v3\"},{\"text\":\"Modal physics audio\",\"link\":\"/tutorials/17-modal-physics-audio\"},{\"text\":\"Attribution\",\"link\":\"/tutorials/notice\"}]}],\"/examples/\":[{\"text\":\"Examples\",\"items\":[{\"text\":\"Overview\",\"link\":\"/examples/\"}]},{\"text\":\"Starters\",\"items\":[{\"text\":\"GUI App\",\"link\":\"/examples/gui-app\"},{\"text\":\"Audio Plugin Skeleton\",\"link\":\"/examples/audio-plugin\"},{\"text\":\"Console App\",\"link\":\"/examples/console-app\"}]},{\"text\":\"Plug-ins\",\"items\":[{\"text\":\"Gain Plugin\",\"link\":\"/examples/gain-plugin\"},{\"text\":\"Arpeggiator\",\"link\":\"/examples/arpeggiator\"},{\"text\":\"Noise Gate\",\"link\":\"/examples/noise-gate\"}]},{\"text\":\"Audio\",\"items\":[{\"text\":\"Audio App\",\"link\":\"/examples/audio-app\"},{\"text\":\"Simple FFT\",\"link\":\"/examples/simple-fft\"},{\"text\":\"Audio Synthesiser\",\"link\":\"/examples/synthesiser\"}]},{\"text\":\"DSP\",\"items\":[{\"text\":\"Gain and Ramp\",\"link\":\"/examples/dsp-gain\"},{\"text\":\"State Variable Filter\",\"link\":\"/examples/svf\"}]},{\"text\":\"GUI\",\"items\":[{\"text\":\"Hello World\",\"link\":\"/examples/hello-world\"},{\"text\":\"FlexBox Layout\",\"link\":\"/examples/flexbox\"},{\"text\":\"Look and Feel\",\"link\":\"/examples/look-and-feel\"}]},{\"text\":\"Utilities\",\"items\":[{\"text\":\"Value Trees\",\"link\":\"/examples/value-trees\"},{\"text\":\"Multithreading\",\"link\":\"/examples/multithreading\"},{\"text\":\"XML and JSON\",\"link\":\"/examples/xml-json\"}]}],\"/\":[{\"text\":\"Understand\",\"items\":[{\"text\":\"What is JUCE?\",\"link\":\"/guide/what-is-juce\"},{\"text\":\"Architecture\",\"link\":\"/guide/architecture\"},{\"text\":\"Core concepts\",\"link\":\"/guide/core-concepts\"},{\"text\":\"Anatomy of a plug-in\",\"link\":\"/guide/plugin-anatomy\"},{\"text\":\"Build systems\",\"link\":\"/guide/build-systems\"},{\"text\":\"History\",\"link\":\"/guide/history\"}]},{\"text\":\"Reference\",\"items\":[{\"text\":\"Module map\",\"link\":\"/reference/module-map\"},{\"text\":\"Modules\",\"link\":\"/reference/modules\"},{\"text\":\"Glossary\",\"link\":\"/reference/glossary\"}]},{\"text\":\"Learn\",\"items\":[{\"text\":\"Learning path\",\"link\":\"/guide/learning-path\"},{\"text\":\"Tutorials\",\"link\":\"/tutorials/\"},{\"text\":\"Example browser\",\"link\":\"/examples/\"},{\"text\":\"Changelog\",\"link\":\"/changelog\"},{\"text\":\"About this site\",\"link\":\"/about\"}]}]},\"outline\":{\"level\":[2,3]},\"search\":{\"provider\":\"local\"},\"socialLinks\":[{\"icon\":\"github\",\"link\":\"https://github.com/juce-framework/JUCE\"}],\"editLink\":{\"pattern\":\"https://github.com/andrewh/JUCE/edit/master/site/:path\",\"text\":\"Edit this page\"},\"footer\":{\"message\":\"Personal study notes on JUCE. Not affiliated with or endorsed by the JUCE team.\",\"copyright\":\"JUCE is dual-licensed under AGPLv3 and a commercial licence; see <a href=\\\"https://github.com/juce-framework/JUCE/blob/master/LICENSE.md\\\">LICENSE.md</a> for the details and third-party terms.\"}},\"locales\":{},\"scrollOffset\":134,\"cleanUrls\":false}");</script>
+    
+  </body>
+</html>
