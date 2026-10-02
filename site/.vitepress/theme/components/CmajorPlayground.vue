@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, reactive, ref } from 'vue'
+
+const props = defineProps<{
+  /** Ids of the patches to offer; all of them when omitted. */
+  only?: string[]
+  /** Show the table of parameters as a JUCE host would see them. */
+  hostView?: boolean
+}>()
 
 // A live Cmajor playground. The Cmajor compiler is itself built to WebAssembly, so the page
 // compiles the source in the browser and runs it in an AudioWorklet. The compiler and the
@@ -92,14 +99,32 @@ const SAMPLES: Sample[] = [
   { id: 'zita', label: 'Zita reverb (hosted)', note: 'A larger effect patch.', url: `${EXAMPLES}ZitaReverb/ZitaReverb.cmajorpatch` }
 ]
 
-const selectedId = ref(SAMPLES[0].id)
-const source = ref(SAMPLES[0].source ?? '')
+const choices = computed(() => (props.only?.length ? SAMPLES.filter((s) => props.only!.includes(s.id)) : SAMPLES))
+
+const selectedId = ref(choices.value[0].id)
+const source = ref(choices.value[0].source ?? '')
 const status = ref<'idle' | 'building' | 'running' | 'error'>('idle')
 const message = ref('')
 const version = ref('')
 const viewHost = ref<HTMLElement | null>(null)
 
-const selected = computed(() => SAMPLES.find((s) => s.id === selectedId.value)!)
+// What the bridge's Parameter class (cmaj_JUCEPlugin.h) would report to a host for one
+// patch parameter. The defaults mirror PatchParameterProperties in cmaj_PatchHelpers.h.
+interface HostParam {
+  id: string
+  name: string
+  label: string
+  min: number
+  max: number
+  defaultValue: number
+  value: number
+}
+const hostParams = ref<HostParam[]>([])
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
+const normalise = (p: HostParam, v: number) => (p.max === p.min ? 0 : clamp01((v - p.min) / (p.max - p.min)))
+const fmt = (v: number) => (Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(3).replace(/\.?0+$/, ''))
+
+const selected = computed(() => choices.value.find((s) => s.id === selectedId.value)!)
 const editable = computed(() => selected.value.source !== undefined)
 
 let audioContext: AudioContext | null = null
@@ -115,6 +140,7 @@ async function stop() {
   const ctx = audioContext
   audioContext = null
   if (viewHost.value) viewHost.value.replaceChildren()
+  hostParams.value = []
   try {
     await ctx?.close()
   } catch {
@@ -122,6 +148,37 @@ async function stop() {
   }
   status.value = 'idle'
   message.value = ''
+}
+
+function watchParameters(connection: any, mine: number) {
+  hostParams.value = []
+  connection.addStatusListener((st: any) => {
+    if (mine !== run) return
+    const rows: HostParam[] = []
+    for (const e of st?.details?.inputs ?? []) {
+      const a = e.annotation ?? {}
+      if (e.endpointType !== 'value' || a.hidden) continue
+      const min = Number(a.min ?? 0)
+      const max = Number(a.max ?? 1)
+      const init = Number(a.init ?? min)
+      const row = reactive<HostParam>({
+        id: String(e.endpointID),
+        name: String(a.name ?? e.endpointID),
+        label: String(a.unit ?? ''),
+        min,
+        max,
+        defaultValue: init,
+        value: init
+      })
+      connection.addParameterListener(row.id, (v: number) => {
+        if (mine === run) row.value = v
+      })
+      connection.requestParameterValue(row.id)
+      rows.push(row)
+    }
+    hostParams.value = rows
+  })
+  connection.requestStatusUpdate()
 }
 
 function describe(e: any): string {
@@ -174,6 +231,8 @@ async function build() {
     version.value = compiler.CmajorVersion
     if (mine !== run) return
 
+    if (props.hostView) watchParameters(connection, mine)
+
     const view = await createPatchViewHolder(connection)
     if (mine !== run) return
     viewHost.value?.replaceChildren(...(view ? [view] : []))
@@ -201,7 +260,7 @@ onBeforeUnmount(() => {
       <label>
         <span>Patch</span>
         <select v-model="selectedId" @change="pick">
-          <option v-for="s in SAMPLES" :key="s.id" :value="s.id">{{ s.label }}</option>
+          <option v-for="s in choices" :key="s.id" :value="s.id">{{ s.label }}</option>
         </select>
       </label>
       <button class="go" :disabled="status === 'building'" @click="build">
@@ -230,6 +289,35 @@ onBeforeUnmount(() => {
     </div>
 
     <div ref="viewHost" class="view"></div>
+
+    <div v-if="hostView && hostParams.length" class="host">
+      <p class="note">
+        What a JUCE host sees. Each row is one <code>Parameter</code> object from the bridge. Hosts only ever use the
+        0 to 1 value, and the bridge converts to and from the patch's own range.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>getParameterID()</th>
+            <th>getName()</th>
+            <th>getLabel()</th>
+            <th>getDefaultValue()</th>
+            <th>getValue()</th>
+            <th>getText()</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="p in hostParams" :key="p.id">
+            <td><code>{{ p.id }}</code></td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.label || '(none)' }}</td>
+            <td>{{ fmt(normalise(p, p.defaultValue)) }}</td>
+            <td>{{ fmt(normalise(p, p.value)) }}</td>
+            <td>{{ fmt(p.value) }} {{ p.label }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -309,5 +397,24 @@ button:disabled {
 .view {
   margin-top: 1rem;
   overflow: auto;
+}
+.host {
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+.host table {
+  display: table;
+  width: 100%;
+  font-size: 0.8rem;
+}
+.host th,
+.host td {
+  padding: 0.3rem 0.6rem;
+  white-space: nowrap;
+}
+.host th {
+  font-family: var(--vp-font-family-mono);
+  font-weight: 500;
+  text-align: left;
 }
 </style>
