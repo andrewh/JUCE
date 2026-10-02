@@ -19,6 +19,13 @@ export default withMermaid(
     cleanUrls: false,
     lastUpdated: true,
     srcExclude: ['README.md'],
+    // Mermaid imports fastdom, a CommonJS package. The dev server only converts it to an ES module
+    // when it is pre-bundled; otherwise every page fails to load. https://vite.dev/config/dep-optimization-options#optimizedeps-include
+    vite: {
+      optimizeDeps: {
+        include: ['mermaid > fastdom', 'mermaid > fastdom/extensions/fastdom-promised.js']
+      }
+    },
     head: [
       ['link', { rel: 'icon', href: `${base}favicon.svg`, type: 'image/svg+xml' }],
       ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
