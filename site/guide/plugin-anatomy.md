@@ -118,7 +118,7 @@ Platforms marked "not checked", and the owner column generally, come from common
 
 ## Hosting other plug-ins
 
-The same abstractions work in reverse. `AudioPluginFormatManager` knows the formats. `KnownPluginList` and `PluginListComponent` scan for and list installed plug-ins, and `createPluginInstance()` gives you an `AudioPluginInstance` (an `AudioProcessor`). You can then put it in an `AudioProcessorGraph`. `extras/AudioPluginHost` is a complete working example.[^host]
+The same abstractions work in reverse. `AudioPluginFormatManager` knows the formats. `KnownPluginList` and `PluginListComponent` scan for and list installed plug-ins, and `createPluginInstance()` gives you an `AudioPluginInstance` (an `AudioProcessor`). You can then put it in an `AudioProcessorGraph`. `extras/AudioPluginHost` is a complete working example.[^host] For the other direction, a real `AudioPluginInstance` that wraps a foreign DSP engine, read [Cmajor and the JUCE bridge](./cmajor-bridge).
 
 ## Try it
 
