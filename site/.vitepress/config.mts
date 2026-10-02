@@ -45,6 +45,7 @@ export default withMermaid(
         { text: 'Guide', link: '/guide/what-is-juce', activeMatch: '/guide/' },
         { text: 'Tutorials', link: '/tutorials/', activeMatch: '/tutorials/' },
         { text: 'Examples', link: '/examples/', activeMatch: '/examples/' },
+        { text: 'Playground', link: '/playground' },
         { text: 'Module map', link: '/reference/module-map' },
         { text: 'Glossary', link: '/reference/glossary' },
         { text: 'API reference', link: '/api/index.html', target: '_self' },
@@ -93,6 +94,7 @@ export default withMermaid(
               { text: 'Learning path', link: '/guide/learning-path' },
               { text: 'Tutorials', link: '/tutorials/' },
               { text: 'Example browser', link: '/examples/' },
+              { text: 'Audio playground', link: '/playground' },
               { text: 'Changelog', link: '/changelog' },
               { text: 'About this site', link: '/about' }
             ]

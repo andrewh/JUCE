@@ -6,6 +6,7 @@ import ModuleTable from './components/ModuleTable.vue'
 import LatencyChart from './components/LatencyChart.vue'
 import SmoothingChart from './components/SmoothingChart.vue'
 import ModuleSizeChart from './components/ModuleSizeChart.vue'
+import CmajorPlayground from './components/CmajorPlayground.vue'
 import HomeIntro from './components/HomeIntro.vue'
 import './custom.css'
 
@@ -18,5 +19,6 @@ export default {
     app.component('LatencyChart', LatencyChart)
     app.component('SmoothingChart', SmoothingChart)
     app.component('ModuleSizeChart', ModuleSizeChart)
+    app.component('CmajorPlayground', CmajorPlayground)
   }
 } satisfies Theme
