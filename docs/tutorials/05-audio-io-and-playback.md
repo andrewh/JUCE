@@ -12,6 +12,11 @@ Link `juce::juce_audio_utils` (which brings in devices, formats, and basics).
 
 The project below opens the default audio device and shows its sample rate. The snippets that follow change what `MainComponent` does with audio.
 
+How to use the snippets below: whole-class snippets replace
+`MainComponent` (put them in `MainComponent.h`, and move the member function
+bodies into `MainComponent.cpp` if you prefer). Individual member functions such
+as `getNextAudioBlock()` replace the same function in the project below.
+
 This guide builds on [Getting started](01-getting-started.md). Make a copy of the
 `HelloJuce` folder from that tutorial, **without** its `build` folder, and name
 the copy `AudioDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
@@ -126,11 +131,6 @@ permission string that macOS and iOS require before an app can record. Without i
 the app is killed when it opens an input device, and you only get silence on
 input. Add `MICROPHONE_PERMISSION_TEXT "Why you need the mic"` to change the
 wording the user sees. On the first run, macOS asks for permission.
-
-How to use the snippets in this guide: whole-class snippets replace
-`MainComponent` (put them in `MainComponent.h`, and move the member function
-bodies into `MainComponent.cpp` if you prefer). Individual member functions such
-as `getNextAudioBlock()` replace the same function in the project above.
 
 ## `AudioAppComponent`: the audio callback
 

@@ -9,6 +9,18 @@ Draw with `Graphics`, build interfaces from nested components, place them with
 
 The project below draws a small scene: a sky and a ground line painted by `MainComponent`, and two houses. Each house is a `HouseComponent`, built from a `WallComponent` and a `RoofComponent`, which the "Nested components" section explains. The snippets that follow are code to try inside it.
 
+How to use the snippets below:
+
+- A snippet that starts with `void paint (juce::Graphics& g) override` is the body of
+  a component's `paint()`. Try it in `MainComponent::paint()`, or in `WallComponent`
+  or `RoofComponent` in `House.h` to change how the houses look.
+- Likewise, `resized()` snippets go in a component's `resized()`.
+- Whole classes (such as `MyLookAndFeel` or `Spinner`) go above `MainComponent` in
+  `MainComponent.h`, or in their own header like `House.h`. Add an instance as a
+  member of `MainComponent`, call `addAndMakeVisible()` on it in the constructor,
+  and position it in `resized()`, as the project does for its houses.
+- Build and run after each change (see [Build and run](#build-and-run)).
+
 This guide builds on [Getting started](01-getting-started.md). Make a copy of the
 `HelloJuce` folder from that tutorial, **without** its `build` folder, and name
 the copy `GraphicsDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
@@ -160,18 +172,6 @@ private:
     RoofComponent roof;
 };
 ```
-
-How to use the snippets in this guide:
-
-- A snippet that starts with `void paint (juce::Graphics& g) override` is the body of
-  a component's `paint()`. Try it in `MainComponent::paint()`, or in `WallComponent`
-  or `RoofComponent` in `House.h` to change how the houses look.
-- Likewise, `resized()` snippets go in a component's `resized()`.
-- Whole classes (such as `MyLookAndFeel` or `Spinner`) go above `MainComponent` in
-  `MainComponent.h`, or in their own header like `House.h`. Add an instance as a
-  member of `MainComponent`, call `addAndMakeVisible()` on it in the constructor,
-  and position it in `resized()`, as the project does for its houses.
-- Build and run after each change (see [Build and run](#build-and-run)).
 
 ## Drawing with `Graphics`
 
