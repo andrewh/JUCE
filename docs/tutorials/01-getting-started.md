@@ -214,8 +214,8 @@ cmake --build build
 
 ### Run the app
 
-The build puts the finished app in `build/HelloJuce_artefacts/`. With the
-default Makefile or Ninja generators:
+The build puts the finished app in `build/HelloJuce_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
 
 | Platform | Run it with                                          |
 | -------- | ---------------------------------------------------- |

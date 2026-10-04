@@ -223,6 +223,7 @@ private:
 
     static inline const juce::StringArray choices { "Empty", "Oscillator", "Gain", "Filter" };
 
+    juce::CriticalSection graphLock;   // serialises graph changes: the timer versus prepareToPlay() and releaseResources()
     std::unique_ptr<juce::AudioProcessorGraph> graph;
     juce::AudioParameterChoice* slotParams[3];
     juce::AudioParameterBool*   bypassParams[3];
@@ -269,6 +270,8 @@ bool ChannelStrip::isBusesLayoutSupported (const BusesLayout& l) const
 
 void ChannelStrip::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    const juce::ScopedLock lock (graphLock);   // the timer can rebuild the graph at the same time
+
     graph->setPlayConfigDetails (getMainBusNumInputChannels(),
                                  getMainBusNumOutputChannels(),
                                  sampleRate, samplesPerBlock);
@@ -276,7 +279,11 @@ void ChannelStrip::prepareToPlay (double sampleRate, int samplesPerBlock)
     graph->prepareToPlay (sampleRate, samplesPerBlock);
 }
 
-void ChannelStrip::releaseResources() { graph->releaseResources(); }
+void ChannelStrip::releaseResources()
+{
+    const juce::ScopedLock lock (graphLock);
+    graph->releaseResources();
+}
 
 void ChannelStrip::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midi)
 {
@@ -358,6 +365,8 @@ bool ChannelStrip::parametersChanged() const           // message thread: compar
 
 void ChannelStrip::timerCallback()   // message thread
 {
+    const juce::ScopedLock lock (graphLock);
+
     if (parametersChanged())         // a slot or bypass changed: rebuild
         buildGraph();
 }
@@ -462,6 +471,8 @@ public:
 
     void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
+        const juce::ScopedLock lock (graphLock);   // the timer can rebuild the graph at the same time
+
         graph->setPlayConfigDetails (getMainBusNumInputChannels(),
                                      getMainBusNumOutputChannels(),
                                      sampleRate, samplesPerBlock);
@@ -469,7 +480,11 @@ public:
         graph->prepareToPlay (sampleRate, samplesPerBlock);
     }
 
-    void releaseResources() override { graph->releaseResources(); }
+    void releaseResources() override
+    {
+        const juce::ScopedLock lock (graphLock);
+        graph->releaseResources();
+    }
 
     void processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midi) override
     {
@@ -485,6 +500,7 @@ public:
 private:
     static inline const juce::StringArray choices { "Empty", "Oscillator", "Gain", "Filter" };
 
+    juce::CriticalSection graphLock;   // serialises graph changes: the timer versus prepareToPlay() and releaseResources()
     std::unique_ptr<juce::AudioProcessorGraph> graph;
     juce::AudioParameterChoice* slotParams[3];
     juce::AudioParameterBool*   bypassParams[3];
@@ -572,6 +588,8 @@ bool parametersChanged() const           // message thread: compares the paramet
 
 void timerCallback() override           // message thread
 {
+    const juce::ScopedLock lock (graphLock);
+
     if (parametersChanged())            // a slot or bypass changed: rebuild
         buildGraph();
 }
@@ -585,6 +603,10 @@ Notes on this design:
   a message-thread `Timer` polls for changes in the code above, rather than the
   audio callback requesting an update: `AsyncUpdater::triggerAsyncUpdate()` posts to
   the system message queue, which can block on some platforms and cause dropouts.
+- Hosts may call `prepareToPlay()` and `releaseResources()` on a thread other than the
+  message thread, while the timer rebuilds the graph on it. All three take `graphLock`,
+  so only one of them changes the graph (and the node pointers) at a time. Never take
+  that lock in `processBlock()`.
 - Every mutation passes `UpdateKind::none`, and `buildGraph()` ends with one
   `rebuild()`. With the default (`UpdateKind::sync`), `clear()`, each `addNode()`,
   and each connection would publish a new render sequence, so the audio thread
