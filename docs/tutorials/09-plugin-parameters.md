@@ -523,7 +523,9 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | -------- | ----------- |
 | macOS    | `open "build/ParametersPlugin_artefacts/Standalone/Parameters Plugin.app"` |
 | Linux    | `./build/ParametersPlugin_artefacts/Standalone/Parameters\ Plugin` |
-| Windows  | `build\ParametersPlugin_artefacts\Debug\Standalone\Parameters Plugin.exe` |
+| Windows  | `"build\ParametersPlugin_artefacts\Debug\Standalone\Parameters Plugin.exe"` |
+
+In PowerShell, put `&` before the quoted path.
 
 On Windows, the default Visual Studio generator adds the `Debug` folder (build with
 `cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.

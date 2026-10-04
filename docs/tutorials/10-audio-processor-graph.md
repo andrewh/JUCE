@@ -227,7 +227,7 @@ private:
     juce::AudioParameterChoice* slotParams[3];
     juce::AudioParameterBool*   bypassParams[3];
     Node::Ptr slotNodes[3];                             // touched on the message thread only
-    std::atomic<int>  builtChoices[3] { -1, -1, -1 };   // read by the audio thread, so atomic
+    std::atomic<int>  builtChoices[3] { -1, -1, -1 };   // atomic: prepareToPlay() may run off the message thread
     std::atomic<bool> builtBypass[3]  { false, false, false };
     Node::Ptr audioIn, audioOut, midiIn, midiOut;
 
@@ -272,8 +272,8 @@ void ChannelStrip::prepareToPlay (double sampleRate, int samplesPerBlock)
     graph->setPlayConfigDetails (getMainBusNumInputChannels(),
                                  getMainBusNumOutputChannels(),
                                  sampleRate, samplesPerBlock);
+    buildGraph();   // topology first, so prepareToPlay() below renders these nodes straight away
     graph->prepareToPlay (sampleRate, samplesPerBlock);
-    buildGraph();
 }
 
 void ChannelStrip::releaseResources() { graph->releaseResources(); }
@@ -465,8 +465,8 @@ public:
         graph->setPlayConfigDetails (getMainBusNumInputChannels(),
                                      getMainBusNumOutputChannels(),
                                      sampleRate, samplesPerBlock);
+        buildGraph();   // topology first, so prepareToPlay() below renders these nodes straight away
         graph->prepareToPlay (sampleRate, samplesPerBlock);
-        buildGraph();
     }
 
     void releaseResources() override { graph->releaseResources(); }
@@ -489,7 +489,7 @@ private:
     juce::AudioParameterChoice* slotParams[3];
     juce::AudioParameterBool*   bypassParams[3];
     Node::Ptr slotNodes[3];                        // touched on the message thread only
-    std::atomic<int>  builtChoices[3] { -1, -1, -1 };   // read by the audio thread, so atomic
+    std::atomic<int>  builtChoices[3] { -1, -1, -1 };   // atomic: prepareToPlay() may run off the message thread
     std::atomic<bool> builtBypass[3]  { false, false, false };
     Node::Ptr audioIn, audioOut, midiIn, midiOut;
 };
@@ -744,7 +744,9 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | -------- | ----------- |
 | macOS    | `open "build/ChannelStrip_artefacts/Standalone/Channel Strip.app"` |
 | Linux    | `./build/ChannelStrip_artefacts/Standalone/Channel\ Strip` |
-| Windows  | `build\ChannelStrip_artefacts\Debug\Standalone\Channel Strip.exe` |
+| Windows  | `"build\ChannelStrip_artefacts\Debug\Standalone\Channel Strip.exe"` |
+
+In PowerShell, put `&` before the quoted path.
 
 On Windows, the default Visual Studio generator adds the `Debug` folder (build with
 `cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.

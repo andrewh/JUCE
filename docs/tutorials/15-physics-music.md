@@ -457,7 +457,9 @@ Visual Studio on Windows, which adds the `Debug` folder):
 | -------- | ----------- |
 | macOS    | `open "build/Box2DMusic_artefacts/Physics Music.app"` |
 | Linux    | `./build/Box2DMusic_artefacts/Physics\ Music` |
-| Windows  | `build\Box2DMusic_artefacts\Debug\Physics Music.exe` |
+| Windows  | `"build\Box2DMusic_artefacts\Debug\Physics Music.exe"` |
+
+In PowerShell, put `&` before the quoted path.
 
 Xcode and Visual Studio are multi-config generators and add a configuration folder,
 for example `build/Box2DMusic_artefacts/Debug/Physics Music.app`; build with

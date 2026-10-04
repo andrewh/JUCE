@@ -476,7 +476,9 @@ Visual Studio on Windows, which adds the `Debug` folder):
 | -------- | ----------- |
 | macOS    | `open "build/OpenGLDemo_artefacts/OpenGL Demo.app"` |
 | Linux    | `./build/OpenGLDemo_artefacts/OpenGL\ Demo` |
-| Windows  | `build\OpenGLDemo_artefacts\Debug\OpenGL Demo.exe` |
+| Windows  | `"build\OpenGLDemo_artefacts\Debug\OpenGL Demo.exe"` |
+
+In PowerShell, put `&` before the quoted path.
 
 Xcode and Visual Studio are multi-config generators and add a configuration folder,
 for example `build/OpenGLDemo_artefacts/Debug/OpenGL Demo.app`; build with

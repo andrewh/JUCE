@@ -37,13 +37,15 @@ project(MOBILESERVICESDEMO VERSION 0.0.1)
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
 
 juce_add_gui_app(MobileServicesDemo PRODUCT_NAME "Mobile Services Demo"
-    NEEDS_STORE_KIT TRUE)   # links StoreKit and enables juce::InAppPurchases on Apple platforms
+    NEEDS_STORE_KIT TRUE            # links StoreKit and enables juce::InAppPurchases on Apple platforms
+    PUSH_NOTIFICATIONS_ENABLED TRUE)   # adds the push-notification entitlement on Apple platforms
 
 target_sources(MobileServicesDemo PRIVATE Main.cpp MainComponent.cpp)
 
 target_compile_definitions(MobileServicesDemo PRIVATE
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
+    JUCE_PUSH_NOTIFICATIONS=1   # use the real juce::PushNotifications, not the no-op stub
     JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:MobileServicesDemo,JUCE_PRODUCT_NAME>"
     JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:MobileServicesDemo,JUCE_VERSION>")
 
@@ -625,7 +627,9 @@ Visual Studio on Windows, which adds the `Debug` folder):
 | -------- | ----------- |
 | macOS    | `open "build/MobileServicesDemo_artefacts/Mobile Services Demo.app"` |
 | Linux    | `./build/MobileServicesDemo_artefacts/Mobile\ Services\ Demo` |
-| Windows  | `build\MobileServicesDemo_artefacts\Debug\Mobile Services Demo.exe` |
+| Windows  | `"build\MobileServicesDemo_artefacts\Debug\Mobile Services Demo.exe"` |
+
+In PowerShell, put `&` before the quoted path.
 
 Xcode and Visual Studio are multi-config generators and add a configuration folder,
 for example `build/MobileServicesDemo_artefacts/Debug/Mobile Services Demo.app`; build with

@@ -221,7 +221,9 @@ default Makefile or Ninja generators:
 | -------- | ---------------------------------------------------- |
 | macOS    | `open "build/HelloJuce_artefacts/Hello JUCE.app"`    |
 | Linux    | `./build/HelloJuce_artefacts/Hello\ JUCE`            |
-| Windows  | `build\HelloJuce_artefacts\Debug\Hello JUCE.exe`    |
+| Windows  | `"build\HelloJuce_artefacts\Debug\Hello JUCE.exe"`    |
+
+In PowerShell, put `&` before the quoted path.
 
 Xcode and Visual Studio are multi-config generators and add a configuration folder,
 for example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with

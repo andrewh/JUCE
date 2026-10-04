@@ -471,7 +471,9 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | -------- | ----------- |
 | macOS    | `open "build/MyPlugin_artefacts/Standalone/My Plugin.app"` |
 | Linux    | `./build/MyPlugin_artefacts/Standalone/My\ Plugin` |
-| Windows  | `build\MyPlugin_artefacts\Debug\Standalone\My Plugin.exe` |
+| Windows  | `"build\MyPlugin_artefacts\Debug\Standalone\My Plugin.exe"` |
+
+In PowerShell, put `&` before the quoted path.
 
 On Windows, the default Visual Studio generator adds the `Debug` folder (build with
 `cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.

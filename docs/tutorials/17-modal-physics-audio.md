@@ -382,7 +382,9 @@ Run the app (`cmake --build` puts it in `build/Modal_artefacts/`):
 | -------- | ----------- |
 | macOS    | `open "build/Modal_artefacts/Modal Physics.app"` |
 | Linux    | `./build/Modal_artefacts/Modal\ Physics` |
-| Windows  | `build\Modal_artefacts\Debug\Modal Physics.exe` |
+| Windows  | `"build\Modal_artefacts\Debug\Modal Physics.exe"` |
+
+In PowerShell, put `&` before the quoted path.
 
 On Windows, the default Visual Studio generator adds the `Debug` folder (add
 `--config Debug` to the build command). Makefile and Ninja builds have no such folder.
