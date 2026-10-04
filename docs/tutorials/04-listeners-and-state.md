@@ -7,10 +7,10 @@ data model that notifies, serialises, and undoes for free.
 
 ## Set up the project
 
-One small app carries every technique in this guide, so you can run each snippet
-instead of imagining where it goes. It has a clock button, a `ValueTree` that
-models a pet and its accessories, buttons that edit the tree with undo, save and
-load, and a log pane that prints every change the tree broadcasts.
+This example app walks you through every technique in this guide.
+It has a clock button, a `ValueTree` that models a pet and its accessories,
+buttons that edit the tree with undo, save and load, and a log pane that
+prints every change the tree broadcasts.
 
 This guide builds on [Getting started](01-getting-started.md). Make a copy of the
 `HelloJuce` folder from that tutorial, **without** its `build` folder, and name
@@ -283,12 +283,12 @@ are an exercise to add yourself.
 
 What each part of the window demonstrates:
 
-| Control | Technique | Section |
-| ------- | --------- | ------- |
-| **Check the time...** | listener class (`Button::Listener`) | [Option 2](#option-2-listener-classes) |
-| **Rename**, **Add camera**, **Undo**, **Redo**, **Save**, **Load** | lambda callbacks (`onClick`) | [Option 1](#option-1-lambda-callbacks) |
-| Log pane | `ValueTree::Listener` | [Listening for changes](#listening-for-changes) |
-| Undo and Redo enabled state | `UndoManager` as a `ChangeBroadcaster` | [Undo and redo](#undo-and-redo) |
+| Control                                                            | Technique                              | Section                                         |
+| ------------------------------------------------------------------ | -------------------------------------- | ----------------------------------------------- |
+| **Check the time...**                                              | listener class (`Button::Listener`)    | [Option 2](#option-2-listener-classes)          |
+| **Rename**, **Add camera**, **Undo**, **Redo**, **Save**, **Load** | lambda callbacks (`onClick`)           | [Option 1](#option-1-lambda-callbacks)          |
+| Log pane                                                           | `ValueTree::Listener`                  | [Listening for changes](#listening-for-changes) |
+| Undo and Redo enabled state                                        | `UndoManager` as a `ChangeBroadcaster` | [Undo and redo](#undo-and-redo)                 |
 
 `DBG (...)` also prints each log line to your IDE's debug console in a debug build.
 
@@ -322,7 +322,7 @@ checkTime.onClick = [this]
 };
 ```
 
-`dontSendNotification` stops the label broadcasting its own change to *its*
+`dontSendNotification` stops the label broadcasting its own change to _its_
 listeners. Use `sendNotification` when others should hear about it.
 
 ### Option 2: listener classes
@@ -374,7 +374,7 @@ Pressing **Add camera** appends a `Camera` node (`hasFlash=false capacity=32`) u
 
 ### The three types you use with it
 
-- **`ValueTree`**: the node. Copying it copies a *reference*, not the data, so it
+- **`ValueTree`**: the node. Copying it copies a _reference_, not the data, so it
   is cheap to pass by value and returned nodes stay alive as long as anything
   refers to them. Use `createCopy()` for a deep copy. A default-constructed tree
   is invalid (like a null pointer, but safe to call): check with `isValid()`.
@@ -496,7 +496,7 @@ other callbacks are `valueTreeChildRemoved()` (the demo logs this when you undo
 **Add camera**), `valueTreeChildOrderChanged()`, `valueTreeParentChanged()`, and
 `valueTreeRedirected()`.
 
-- Callbacks are **synchronous** and propagate *up* the tree, so a listener on the
+- Callbacks are **synchronous** and propagate _up_ the tree, so a listener on the
   root hears about every descendant, as in the demo, where `Camera` is added to
   `Accessories` and `pet` is told. Filter with `tree == myNode` or by type.
 - Do not do slow work in them. Hand it to an `AsyncUpdater` or a `Timer`.
@@ -571,10 +571,10 @@ cmake --build build
 The build puts the finished app in `build/ListenersDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
 Visual Studio on Windows, which adds the `Debug` folder):
 
-| Platform | Run it with |
-| -------- | ----------- |
-| macOS    | `open "build/ListenersDemo_artefacts/Listeners Demo.app"` |
-| Linux    | `./build/ListenersDemo_artefacts/Listeners\ Demo` |
+| Platform | Run it with                                                |
+| -------- | ---------------------------------------------------------- |
+| macOS    | `open "build/ListenersDemo_artefacts/Listeners Demo.app"`  |
+| Linux    | `./build/ListenersDemo_artefacts/Listeners\ Demo`          |
 | Windows  | `"build\ListenersDemo_artefacts\Debug\Listeners Demo.exe"` |
 
 In PowerShell, put `&` before the quoted path.
@@ -598,6 +598,6 @@ drop `Debug` from the Windows path.
 
 ## Sources
 
-Condensed from the JUCE tutorials *Listeners and Broadcasters*, *The ValueTree
-class*, and *Using an UndoManager with a ValueTree*, Copyright (c) Raw Material
+Condensed from the JUCE tutorials _Listeners and Broadcasters_, _The ValueTree
+class_, and _Using an UndoManager with a ValueTree_, Copyright (c) Raw Material
 Software Limited, ISC licence. See [NOTICE.md](NOTICE.md).
