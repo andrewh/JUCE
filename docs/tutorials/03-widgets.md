@@ -8,6 +8,11 @@ The controls you will use in almost every interface, and the patterns they share
 
 The project below already shows a label, a slider, a combo box, and a button wired with lambdas. The snippets that follow show each widget in more depth.
 
+How to use the snippets below: widget snippets refer to members such as
+`title`, `input`, and `output`. Declare those members in `MainComponent.h`, configure
+them in the `MainComponent` constructor, and position them in `resized()`, as the
+project below does for its own widgets.
+
 This guide builds on [Getting started](01-getting-started.md). Make a copy of the
 `HelloJuce` folder from that tutorial, **without** its `build` folder, and name
 the copy `WidgetsDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
@@ -134,11 +139,6 @@ void MainComponent::resized()
     button.setBounds  (area.removeFromTop (40).reduced (60, 5));
 }
 ```
-
-How to use the snippets in this guide: widget snippets refer to members such as
-`title`, `input`, and `output`. Declare those members in `MainComponent.h`, configure
-them in the `MainComponent` constructor, and position them in `resized()`, as the
-project above does for its own widgets.
 
 ## The common pattern
 
