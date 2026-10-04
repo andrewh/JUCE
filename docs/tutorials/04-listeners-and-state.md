@@ -164,8 +164,10 @@ MainComponent::MainComponent()
     {
         if (auto xml = pet.createXml())
         {
-            xml->writeTo (getSaveFile());
-            log ("Saved to " + getSaveFile().getFullPathName());
+            if (xml->writeTo (getSaveFile()))
+                log ("Saved to " + getSaveFile().getFullPathName());
+            else
+                log ("Could not save to " + getSaveFile().getFullPathName());
         }
     };
 
@@ -272,9 +274,12 @@ juce::File MainComponent::getSaveFile() const
 }
 ```
 
-Build and run it (see [Build and run](#build-and-run)) to see the app working, then read on. Every
-snippet below is an excerpt of these two files, so you can find it in context and
-change it. Edits you make to the excerpts are live in the next build.
+Build and run it (see [Build and run](#build-and-run)) to see the app working, then read on. Most
+snippets below are excerpts of these two files, so you can find them in context and
+change them. The exceptions are labelled: the clock-button lambda in
+[Option 1](#option-1-lambda-callbacks) is an alternative to code in the demo, and the
+read-back lines in [The three types you use with it](#the-three-types-you-use-with-it)
+are an exercise to add yourself.
 
 What each part of the window demonstrates:
 
@@ -427,8 +432,10 @@ save.onClick = [this]
 {
     if (auto xml = pet.createXml())
     {
-        xml->writeTo (getSaveFile());
-        log ("Saved to " + getSaveFile().getFullPathName());
+        if (xml->writeTo (getSaveFile()))
+            log ("Saved to " + getSaveFile().getFullPathName());
+        else
+            log ("Could not save to " + getSaveFile().getFullPathName());
     }
 };
 
