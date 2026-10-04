@@ -23,29 +23,46 @@ and `AnimatedAppComponent` for animation (see
 
 ## Create a project with CMake
 
-Copy an example folder somewhere convenient, point it at JUCE, and build:
+Make a new, empty folder for the project (for example `HelloJuce`) and create
+four files in it:
+
+```text
+HelloJuce/
+├── CMakeLists.txt      # the build configuration (this section)
+├── Main.cpp            # the application class and window (next section)
+├── MainComponent.h     # the main component's declaration
+└── MainComponent.cpp   # the main component's implementation
+```
+
+The minimum a GUI app needs is `Main.cpp` and `MainComponent.cpp`, plus the
+header that lets `Main.cpp` see `MainComponent`. Put this in `CMakeLists.txt`,
+which is the file CMake reads when you run `cmake -B build`:
 
 ```cmake
 cmake_minimum_required(VERSION 3.22)
-project(MY_APP VERSION 0.0.1)
+project(HELLO_JUCE VERSION 0.0.1)
 
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
 
-juce_add_gui_app(MyApp PRODUCT_NAME "My App")
+juce_add_gui_app(HelloJuce PRODUCT_NAME "Hello JUCE")
 
-target_sources(MyApp PRIVATE Main.cpp MainComponent.cpp)
+target_sources(HelloJuce PRIVATE Main.cpp MainComponent.cpp)
 
-target_compile_definitions(MyApp PRIVATE
+target_compile_definitions(HelloJuce PRIVATE
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
-    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:MyApp,JUCE_PRODUCT_NAME>"
-    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:MyApp,JUCE_VERSION>")
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:HelloJuce,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:HelloJuce,JUCE_VERSION>")
 
-target_link_libraries(MyApp
+target_link_libraries(HelloJuce
     PRIVATE juce::juce_gui_extra
     PUBLIC  juce::juce_recommended_config_flags
             juce::juce_recommended_warning_flags)
 ```
+
+Replace `/path/to/JUCE` with the folder you cloned JUCE into. Once you have
+written `Main.cpp`, `MainComponent.h`, and `MainComponent.cpp` from the next two
+sections, build and run:
 
 ```sh
 cmake -B build
@@ -54,6 +71,13 @@ cmake --build build
 
 Each JUCE module you use is a `juce::juce_<module>` target to link against. See
 the [CMake API](../CMake%20API.md) for every option.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`. Every source file must include the module headers it uses.
+> `MainComponent.h` below includes `<juce_gui_extra/juce_gui_extra.h>`, and
+> `Main.cpp` includes `MainComponent.h`. Leave out those includes and the
+> compiler will not know what `juce::`, `std::`, or `START_JUCE_APPLICATION`
+> mean.
 
 > **Projucer users:** a Projucer project is a `.jucer` file plus a `Source`
 > folder. Add source files and modules in the Projucer, choose an exporter per
@@ -64,14 +88,17 @@ the [CMake API](../CMake%20API.md) for every option.
 ## The application class
 
 `Main.cpp` contains a class derived from `juce::JUCEApplication`. It provides
-startup and shutdown hooks and is registered with `START_JUCE_APPLICATION`:
+startup and shutdown hooks and is registered with `START_JUCE_APPLICATION`. The
+first line includes `MainComponent.h`, which in turn pulls in the JUCE headers:
 
 ```cpp
-class MyApplication final : public juce::JUCEApplication
+#include "MainComponent.h"
+
+class HelloJuceApplication final : public juce::JUCEApplication
 {
 public:
-    const juce::String getApplicationName() override    { return "My App"; }
-    const juce::String getApplicationVersion() override { return "1.0.0"; }
+    const juce::String getApplicationName() override    { return JUCE_APPLICATION_NAME_STRING; }
+    const juce::String getApplicationVersion() override { return JUCE_APPLICATION_VERSION_STRING; }
 
     void initialise (const juce::String&) override
     {
@@ -105,11 +132,14 @@ private:
     std::unique_ptr<MainWindow> mainWindow;
 };
 
-START_JUCE_APPLICATION (MyApplication)
+START_JUCE_APPLICATION (HelloJuceApplication)
 ```
 
 Points worth knowing:
 
+- `JUCE_APPLICATION_NAME_STRING` and `JUCE_APPLICATION_VERSION_STRING` are the
+  compile definitions set in `CMakeLists.txt`, so the name and version are
+  defined in one place.
 - `initialise()` runs as soon as the app starts, and `shutdown()` is where you
   release everything that must die before JUCE does. Keeping the window in a
   `std::unique_ptr` makes that a one-liner.
@@ -132,31 +162,48 @@ Points worth knowing:
 is a component that draws itself in `paint()` and positions its children in
 `resized()`:
 
+Declare it in `MainComponent.h`:
+
 ```cpp
+#pragma once
+
+#include <juce_gui_extra/juce_gui_extra.h>
+
 class MainComponent final : public juce::Component
 {
 public:
-    MainComponent()
-    {
-        setSize (600, 400);   // initial size, also the window's initial size
-    }
+    MainComponent();
 
-    void paint (juce::Graphics& g) override
-    {
-        g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-        g.setColour (juce::Colours::white);
-        g.setFont (20.0f);
-        g.drawText ("Hello, JUCE!", getLocalBounds(), juce::Justification::centred, true);
-    }
-
-    void resized() override
-    {
-        // Position child components here using getLocalBounds()
-    }
+    void paint (juce::Graphics& g) override;
+    void resized() override;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
+```
+
+and implement it in `MainComponent.cpp`:
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    setSize (600, 400);   // initial size, also the window's initial size
+}
+
+void MainComponent::paint (juce::Graphics& g)
+{
+    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.setColour (juce::Colours::white);
+    g.setFont (20.0f);
+    g.drawText ("Hello, JUCE!", getLocalBounds(), juce::Justification::centred, true);
+}
+
+void MainComponent::resized()
+{
+    // Position child components here using getLocalBounds()
+}
 ```
 
 - `paint()` is called by JUCE whenever the component needs redrawing. Never
