@@ -258,7 +258,9 @@ private:
         static auto getResourceStorageMode()
         {
            #if JUCE_MAC && JUCE_INTEL
+            JUCE_BEGIN_IGNORE_DEPRECATION_WARNINGS
             return MTLResourceStorageModeManaged;
+            JUCE_END_IGNORE_DEPRECATION_WARNINGS
            #else
             return MTLResourceStorageModeShared;
            #endif
@@ -267,7 +269,9 @@ private:
         static auto getStorageMode()
         {
            #if JUCE_MAC && JUCE_INTEL
+            JUCE_BEGIN_IGNORE_DEPRECATION_WARNINGS
             return MTLStorageModeManaged;
+            JUCE_END_IGNORE_DEPRECATION_WARNINGS
            #else
             return MTLStorageModeShared;
            #endif
@@ -318,7 +322,9 @@ private:
         void signalBufferModifiedByCpu()
         {
            #if JUCE_MAC && JUCE_INTEL
+            JUCE_BEGIN_IGNORE_DEPRECATION_WARNINGS
             [buffer.get() didModifyRange: { 0, buffer.get().length }];
+            JUCE_END_IGNORE_DEPRECATION_WARNINGS
            #endif
         }
 

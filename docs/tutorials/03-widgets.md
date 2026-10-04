@@ -20,12 +20,13 @@ WidgetsDemo/
 └── MainComponent.cpp   # new: replaces the one from tutorial 1
 ```
 
-Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `WidgetsDemo` and links the modules this guide needs.
+In `CMakeLists.txt`, `/path/to/JUCE` stands for the JUCE path you already set in tutorial 1, so keep that path as it is unless JUCE has moved. This `CMakeLists.txt` renames the target to `WidgetsDemo` and links the modules this guide needs.
 
 **`CMakeLists.txt`**
 
 ```cmake
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(WIDGETSDEMO VERSION 0.0.1)
 
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)

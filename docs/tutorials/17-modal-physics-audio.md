@@ -46,6 +46,7 @@ for the copy, so tell it where JUCE is when you configure (see
 downloads Box2D v3 the first time you configure, and the `box2d` library it links:
 
 ```cmake
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(BOX2D_AUDIO_V3 VERSION 1.0.0 LANGUAGES C CXX)
 
 set(BOX2D_AUDIO_JUCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../.." CACHE PATH "Path to the JUCE repository")

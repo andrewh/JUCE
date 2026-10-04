@@ -30,6 +30,7 @@ Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into
 
 ```cmake
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(PARAMETERS_PLUGIN VERSION 0.0.1)
 
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
