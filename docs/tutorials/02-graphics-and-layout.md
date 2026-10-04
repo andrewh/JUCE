@@ -22,7 +22,7 @@ GraphicsDemo/
 └── House.h             # new: the wall, roof, and house components
 ```
 
-Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `GraphicsDemo` and links the modules this guide needs.
+In `CMakeLists.txt`, `/path/to/JUCE` stands for the JUCE path you already set in tutorial 1, so keep that path as it is unless JUCE has moved. This `CMakeLists.txt` renames the target to `GraphicsDemo` and links the modules this guide needs.
 
 **`CMakeLists.txt`**
 
