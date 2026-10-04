@@ -85,6 +85,11 @@
       "slug": "17-modal-physics-audio",
       "label": "Modal physics audio",
       "title": "A physical audio engine: modal synthesis driven by physics"
+    },
+    {
+      "slug": "18-profiling-macos",
+      "label": "Profiling on macOS with dSYM files",
+      "title": "Profiling on macOS with dSYM files"
     }
   ]
 }
