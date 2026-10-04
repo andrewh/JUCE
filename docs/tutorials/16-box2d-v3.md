@@ -317,7 +317,7 @@ Run the app (`cmake --build` puts it in `build/MusicV3_artefacts/`):
 | -------- | ----------- |
 | macOS    | `open "build/MusicV3_artefacts/Physics Music (Box2D v3).app"` |
 | Linux    | `./build/MusicV3_artefacts/Physics\ Music\ (Box2D\ v3)` |
-| Windows  | `build\\MusicV3_artefacts\\Debug\\Physics Music (Box2D v3).exe` |
+| Windows  | `build\MusicV3_artefacts\Debug\Physics Music (Box2D v3).exe` |
 
 On Windows, the default Visual Studio generator adds the `Debug` folder (add
 `--config Debug` to the build command). Makefile and Ninja builds have no such folder.
