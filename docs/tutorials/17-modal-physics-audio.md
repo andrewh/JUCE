@@ -21,6 +21,46 @@ builds something closer to a physical instrument:
 - Voices are managed, the output is spatialised and limited, and none of it
   allocates on the audio thread.
 
+## Set up the project
+
+This guide builds on [Integrating Box2D v3](16-box2d-v3.md), and uses the same project. Start from the finished apps and read the steps below as a tour of how the `Modal` app works.
+
+Copy the `Box2DAudioV3` example out of your JUCE checkout into a new folder, so that
+you can edit it freely:
+
+```sh
+cp -r /path/to/JUCE/examples/Box2DAudioV3 Box2DAudio
+```
+
+```text
+Box2DAudio/
+├── CMakeLists.txt     # adds JUCE, fetches Box2D v3, defines both apps
+├── common/            # Scales.h, shared by both apps
+├── MusicV3/           # target MusicV3: guide 15's app ported to Box2D v3
+└── Modal/             # target Modal: the modal-synthesis app of guide 17
+```
+
+The `CMakeLists.txt` finds JUCE two folders above itself by default, which is wrong
+for the copy, so tell it where JUCE is when you configure (see
+[Build and run](#build-and-run)). Its key parts are the `FetchContent` call that
+downloads Box2D v3 the first time you configure, and the `box2d` library it links:
+
+```cmake
+project(BOX2D_AUDIO_V3 VERSION 1.0.0 LANGUAGES C CXX)
+
+set(BOX2D_AUDIO_JUCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../.." CACHE PATH "Path to the JUCE repository")
+add_subdirectory("${BOX2D_AUDIO_JUCE_DIR}" JUCE)
+
+include(FetchContent)
+FetchContent_Declare(box2d
+    GIT_REPOSITORY https://github.com/erincatto/box2d.git
+    GIT_TAG        v3.1.1
+    GIT_SHALLOW    TRUE)
+FetchContent_MakeAvailable(box2d)
+```
+
+Configuring needs network access the first time, because of that download.
+
 ## The architecture
 
 ```
@@ -325,6 +365,39 @@ process. If you change the materials, change these too. Then listen.
   be the next step.
 - The pitch law and the mode tables are hand-picked. For accurate results, derive them
   from measurements.
+
+## Build and run
+
+Configure from the `Box2DAudio` folder, giving it your JUCE checkout, then build the
+`Modal` target:
+
+```sh
+cmake -B build -DBOX2D_AUDIO_JUCE_DIR=/path/to/JUCE
+cmake --build build --target Modal
+```
+
+Run the app (`cmake --build` puts it in `build/Modal_artefacts/`):
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/Modal_artefacts/Modal Physics.app"` |
+| Linux    | `./build/Modal_artefacts/Modal\ Physics` |
+| Windows  | `"build\Modal_artefacts\Debug\Modal Physics.exe"` |
+
+In PowerShell, put `&` before the quoted path.
+
+On Windows, the default Visual Studio generator adds the `Debug` folder (add
+`--config Debug` to the build command). Makefile and Ninja builds have no such folder.
+
+If you have already downloaded Box2D, avoid the network fetch with
+`-DFETCHCONTENT_SOURCE_DIR_BOX2D=/path/to/box2d`. On Linux you also need the
+packages in [Linux Dependencies](../Linux%20Dependencies.md), including ALSA.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build` reported
+> errors, fix them and build again. Check that the last lines of the output say
+> `Built target Modal`.
 
 ## Checklist
 

@@ -11,6 +11,65 @@ into notes. The finished app is [`examples/Box2DMusic`](../../examples/Box2DMusi
 Unlike guides 01 to 14, this one is not adapted from juce.com: no official
 tutorial covers Box2D.
 
+## Set up the project
+
+This guide builds an app out of several source files. Rather than repeat all of
+them here, start from the finished app in the JUCE repository and read the steps
+below as a tour of how it works.
+
+Copy the example out of your JUCE checkout into a new folder, so that you can edit
+it freely:
+
+```sh
+cp -r /path/to/JUCE/examples/Box2DMusic PhysicsMusic
+```
+
+The folder holds `Main.cpp`, `MainComponent.cpp`, `MainComponent.h`,
+`PhysicsMusicWorld.cpp`, `PhysicsMusicWorld.h`, `PluckSynth.h`, and `Scales.h`.
+Replace its `CMakeLists.txt` with the version below. It is the example's own file,
+with the line that adds JUCE (`add_subdirectory`) included, because the copy no
+longer sits inside the JUCE tree:
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(BOX2D_MUSIC VERSION 1.0.0)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(Box2DMusic
+    PRODUCT_NAME "Physics Music"
+    NEEDS_WEB_BROWSER FALSE
+    NEEDS_CURL FALSE)
+
+target_sources(Box2DMusic
+    PRIVATE
+        Main.cpp
+        MainComponent.cpp
+        PhysicsMusicWorld.cpp)
+
+target_compile_definitions(Box2DMusic
+    PRIVATE
+        JUCE_WEB_BROWSER=0
+        JUCE_USE_CURL=0
+        JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:Box2DMusic,JUCE_PRODUCT_NAME>"
+        JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:Box2DMusic,JUCE_VERSION>")
+
+target_link_libraries(Box2DMusic
+    PRIVATE
+        juce::juce_audio_utils
+        juce::juce_box2d
+        juce::juce_gui_extra
+    PUBLIC
+        juce::juce_recommended_config_flags
+        juce::juce_recommended_lto_flags
+        juce::juce_recommended_warning_flags)
+```
+
+Replace `/path/to/JUCE` with the folder you cloned JUCE into. The `juce_box2d`
+module is part of JUCE, so nothing else needs downloading.
+
 ## What JUCE ships
 
 - **The engine:** [`modules/juce_box2d/box2d`](../../modules/juce_box2d/box2d) is a
@@ -288,19 +347,6 @@ debugRenderer.render (g, *world, 0.0f, worldHeight, worldWidth, 0.0f, worldArea)
 The click-and-throw interaction converts screen to world coordinates and passes the
 drag vector as an initial velocity to `addBall()`.
 
-## Building and running
-
-```
-cmake . -B cmake-build -DJUCE_BUILD_EXAMPLES=ON
-cmake --build cmake-build --target Box2DMusic
-```
-
-On Linux you also need the packages in
-[Linux Dependencies](../Linux%20Dependencies.md), including ALSA.
-
-Controls: choose a scene and scale, set the root note, click to drop a ball or drag
-and release to throw one, and adjust gravity, bounciness, and the auto-drop rate.
-
 ## Extending it
 
 **Send MIDI instead of audio.** Because the FIFO carries plain note data, you can
@@ -394,6 +440,49 @@ time, because both define the same `b2...` symbols. Wrap the engine behind a sma
 class like `PhysicsMusicWorld`, whose only output is `NoteEvent`s, so that swapping the
 engine changes one file. A plug-in that steps on its own thread must also decide how
 many worker threads the engine may create. Keep them away from the audio thread.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/Box2DMusic_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/Box2DMusic_artefacts/Physics Music.app"` |
+| Linux    | `./build/Box2DMusic_artefacts/Physics\ Music` |
+| Windows  | `"build\Box2DMusic_artefacts\Debug\Physics Music.exe"` |
+
+In PowerShell, put `&` before the quoted path.
+
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/Box2DMusic_artefacts/Debug/Physics Music.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
+
+On Linux you also need the packages in
+[Linux Dependencies](../Linux%20Dependencies.md), including ALSA.
+
+Controls: choose a scene and scale, set the root note, click to drop a ball or drag
+and release to throw one, and adjust gravity, bounciness, and the auto-drop rate.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target Box2DMusic`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Checklist
 

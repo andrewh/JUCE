@@ -7,29 +7,197 @@ audio, describe its channel layout, and package it for users.
 **Formats:** VST3, AU, AUv3, AAX, LV2, Unity, and Standalone (JUCE also builds
 legacy VST2 if you already hold the SDK)
 
-## Create the project
+## Set up the project
 
-Start from [`examples/CMake/AudioPlugin`](../../examples/CMake/AudioPlugin), which
-contains a complete `CMakeLists.txt`, processor, and editor. The core of the build
-file is:
+The project below is a complete stereo pass-through plug-in with an editor, which builds as a VST3, an Audio Unit (on macOS), and a standalone app. The snippets that follow extend it.
+
+Create a new, empty folder named `MyPlugin` containing these files:
+
+```text
+MyPlugin/
+├── CMakeLists.txt        # the build configuration
+├── PluginProcessor.h     # the processor: audio, MIDI, state
+├── PluginProcessor.cpp   # the processor implementation and plug-in entry point
+├── PluginEditor.h        # the editor: the GUI
+└── PluginEditor.cpp      # the editor implementation
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+
+**`CMakeLists.txt`**
 
 ```cmake
+cmake_minimum_required(VERSION 3.22)
+project(MYPLUGIN VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
 juce_add_plugin(MyPlugin
     PLUGIN_MANUFACTURER_CODE Manu     # 4 characters, at least one upper-case
-    PLUGIN_CODE Test                  # unique, 4 characters, exactly one upper-case
-    FORMATS VST3 AU Standalone
+    PLUGIN_CODE Mypl                  # unique, 4 characters, exactly one upper-case
+    FORMATS VST3 AU Standalone        # formats not available on your platform are skipped
     PRODUCT_NAME "My Plugin"
     IS_SYNTH FALSE                    # TRUE for instruments
     NEEDS_MIDI_INPUT FALSE            # TRUE if it must receive MIDI
     IS_MIDI_EFFECT FALSE              # TRUE for MIDI-only processors
-    COPY_PLUGIN_AFTER_BUILD TRUE)     # install into the user plug-in folders after building
+    MICROPHONE_PERMISSION_ENABLED TRUE  # the Standalone app opens the audio input
+    COPY_PLUGIN_AFTER_BUILD FALSE)
 
 target_sources(MyPlugin PRIVATE PluginProcessor.cpp PluginEditor.cpp)
-target_link_libraries(MyPlugin PRIVATE juce::juce_audio_utils
-                               PUBLIC  juce::juce_recommended_config_flags)
+
+target_compile_definitions(MyPlugin PUBLIC
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_VST3_CAN_REPLACE_VST2=0)
+
+target_link_libraries(MyPlugin
+    PRIVATE juce::juce_audio_utils
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
 ```
 
-Build, then test in a host. JUCE ships an **Audio Plug-In Host**
+**`PluginProcessor.h`**
+
+```cpp
+#pragma once
+
+#include <juce_audio_utils/juce_audio_utils.h>
+
+class MyProcessor final : public juce::AudioProcessor
+{
+public:
+    MyProcessor();
+
+    void prepareToPlay (double sampleRate, int maxBlockSize) override;
+    void releaseResources() override;
+
+    void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+    using AudioProcessor::processBlock;               // keep the double-precision overload visible
+
+    bool isBusesLayoutSupported (const BusesLayout&) const override;
+
+    juce::AudioProcessorEditor* createEditor() override;
+    bool hasEditor() const override                     { return true; }
+
+    const juce::String getName() const override         { return "My Plugin"; }
+    bool acceptsMidi() const override                   { return false; }
+    bool producesMidi() const override                  { return false; }
+    bool isMidiEffect() const override                  { return false; }
+    double getTailLengthSeconds() const override        { return 0.0; }
+
+    int getNumPrograms() override                       { return 1; }
+    int getCurrentProgram() override                    { return 0; }
+    void setCurrentProgram (int) override               {}
+    const juce::String getProgramName (int) override    { return {}; }
+    void changeProgramName (int, const juce::String&) override {}
+
+    void getStateInformation (juce::MemoryBlock&) override;
+    void setStateInformation (const void*, int) override;
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MyProcessor)
+};
+```
+
+**`PluginProcessor.cpp`**
+
+```cpp
+#include "PluginProcessor.h"
+#include "PluginEditor.h"
+
+MyProcessor::MyProcessor()
+    : AudioProcessor (BusesProperties()
+                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true))
+{
+}
+
+void MyProcessor::prepareToPlay (double, int) {}
+void MyProcessor::releaseResources() {}
+
+bool MyProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+{
+    // Only stereo in and stereo out
+    return layouts.getMainOutputChannelSet() == juce::AudioChannelSet::stereo()
+        && layouts.getMainInputChannelSet() == layouts.getMainOutputChannelSet();
+}
+
+void MyProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
+{
+    juce::ScopedNoDenormals noDenormals;
+
+    // Clear any output channels that have no matching input, then pass audio through
+    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
+        buffer.clear (i, 0, buffer.getNumSamples());
+}
+
+juce::AudioProcessorEditor* MyProcessor::createEditor() { return new MyEditor (*this); }
+
+void MyProcessor::getStateInformation (juce::MemoryBlock&) {}
+void MyProcessor::setStateInformation (const void*, int) {}
+
+// This creates new instances of the plug-in. It is called by the format wrappers.
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+{
+    return new MyProcessor();
+}
+```
+
+**`PluginEditor.h`**
+
+```cpp
+#pragma once
+
+#include "PluginProcessor.h"
+
+class MyEditor final : public juce::AudioProcessorEditor
+{
+public:
+    explicit MyEditor (MyProcessor&);
+
+    void paint (juce::Graphics&) override;
+    void resized() override;
+
+private:
+    [[maybe_unused]] MyProcessor& processorRef;   // not `processor`: the base class already has one
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MyEditor)
+};
+```
+
+**`PluginEditor.cpp`**
+
+```cpp
+#include "PluginEditor.h"
+
+MyEditor::MyEditor (MyProcessor& p)
+    : AudioProcessorEditor (&p), processorRef (p)
+{
+    setSize (300, 200);
+}
+
+void MyEditor::paint (juce::Graphics& g)
+{
+    g.fillAll (juce::Colours::black);
+    g.setColour (juce::Colours::white);
+    g.drawText ("My Plugin", getLocalBounds(), juce::Justification::centred);
+}
+
+void MyEditor::resized() {}
+```
+
+The `PLUGIN_MANUFACTURER_CODE` and `PLUGIN_CODE` identify your plug-in to hosts. Change
+them to your own values before you share it. See the [CMake API](../CMake%20API.md)
+for every option, including `AAX` (which needs Avid's SDK and signing).
+
+The snippets in the rest of this guide show the processor and editor as one
+listing for brevity. In the project above, the same code is split across the
+`.h` and `.cpp` files. Put declarations in the headers, and function bodies in
+the `.cpp` files.
+
+## Test in a host
+
+Once it builds (see [Build and run](#build-and-run)), test it in a host. JUCE ships an **Audio Plug-In Host**
 (`extras/AudioPluginHost`, target `AudioPluginHost`) that scans plug-ins, wires them
 into a node graph, and can be set as your IDE's launch executable so that
 debugging your plug-in opens it automatically. The `Standalone` format runs your
@@ -92,7 +260,7 @@ public:
 class MyEditor final : public juce::AudioProcessorEditor
 {
 public:
-    explicit MyEditor (MyProcessor& p) : AudioProcessorEditor (&p), processor (p)
+    explicit MyEditor (MyProcessor& p) : AudioProcessorEditor (&p), processorRef (p)
     {
         setSize (300, 200);
     }
@@ -101,7 +269,7 @@ public:
     void resized() override {}
 
 private:
-    MyProcessor& processor;
+    [[maybe_unused]] MyProcessor& processorRef;   // not `processor`: the base class already has one
 };
 
 juce::AudioProcessorEditor* MyProcessor::createEditor() { return new MyEditor (*this); }
@@ -286,6 +454,49 @@ vary by host and version, so check the current format documentation.
 - **Marketplaces and stores:** each has its own signing and packaging rules
   (Avid for AAX, Apple for App Store and AUv3). Check their current requirements
   before your first submission.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts each format in `build/MyPlugin_artefacts/`. The quickest way to
+try the plug-in is the `Standalone` format, which runs it as an ordinary app:
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/MyPlugin_artefacts/Standalone/My Plugin.app"` |
+| Linux    | `./build/MyPlugin_artefacts/Standalone/My\ Plugin` |
+| Windows  | `"build\MyPlugin_artefacts\Debug\Standalone\My Plugin.exe"` |
+
+In PowerShell, put `&` before the quoted path.
+
+On Windows, the default Visual Studio generator adds the `Debug` folder (build with
+`cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.
+
+The `VST3` (and, on macOS, `AU`) bundles are in the sibling folders `VST3/` and
+`AU/`. To test them in a host, either set `COPY_PLUGIN_AFTER_BUILD TRUE` so that
+they are installed into the user plug-in folders, or point a host such as JUCE's
+`AudioPluginHost` (`extras/AudioPluginHost`) at the build folder.
+
+> **No sound?** To avoid a feedback loop, the standalone app mutes the audio input at
+> first. Click **Settings** on the banner, or open **Options > Audio/MIDI Settings**,
+> and untick **Mute audio input**. Wear headphones first, because laptop speakers can
+> howl.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target MyPlugin_Standalone`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `PluginProcessor.h` includes them, and the other files include that header.
 
 ## Sources
 

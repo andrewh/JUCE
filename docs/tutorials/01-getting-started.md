@@ -214,18 +214,21 @@ cmake --build build
 
 ### Run the app
 
-The build puts the finished app in `build/HelloJuce_artefacts/`. With the
-default Makefile or Ninja generators:
+The build puts the finished app in `build/HelloJuce_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
 
 | Platform | Run it with                                          |
 | -------- | ---------------------------------------------------- |
 | macOS    | `open "build/HelloJuce_artefacts/Hello JUCE.app"`    |
 | Linux    | `./build/HelloJuce_artefacts/Hello\ JUCE`            |
-| Windows  | `build\HelloJuce_artefacts\Debug\Hello JUCE.exe`    |
+| Windows  | `"build\HelloJuce_artefacts\Debug\Hello JUCE.exe"`    |
 
-Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
-example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with
-`cmake --build build --config Debug`.
+In PowerShell, put `&` before the quoted path.
+
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

@@ -5,6 +5,173 @@ Draw with `Graphics`, build interfaces from nested components, place them with
 
 **Level:** Beginner to intermediate
 
+## Set up the project
+
+The project below draws a small scene: a sky and a ground line painted by `MainComponent`, and two houses. Each house is a `HouseComponent`, built from a `WallComponent` and a `RoofComponent`, which the "Nested components" section explains. The snippets that follow are code to try inside it.
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `GraphicsDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+GraphicsDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+├── MainComponent.cpp   # new: replaces the one from tutorial 1
+└── House.h             # new: the wall, roof, and house components
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `GraphicsDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(GRAPHICSDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(GraphicsDemo PRODUCT_NAME "Graphics Demo")
+
+target_sources(GraphicsDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(GraphicsDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:GraphicsDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:GraphicsDemo,JUCE_VERSION>")
+
+target_link_libraries(GraphicsDemo
+    PRIVATE juce::juce_gui_extra
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include "House.h"
+
+class MainComponent final : public juce::Component
+{
+public:
+    MainComponent();
+
+    void paint (juce::Graphics& g) override;
+    void resized() override;
+
+private:
+    HouseComponent house, cottage;   // two instances of the same component
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    addAndMakeVisible (house);
+    addAndMakeVisible (cottage);
+    setSize (600, 400);
+}
+
+void MainComponent::paint (juce::Graphics& g)
+{
+    g.fillAll (juce::Colours::lightblue);
+
+    g.setColour (juce::Colours::darkblue);
+    g.setFont (juce::FontOptions (20.0f));
+    g.drawText ("Hello, World!", 20, 40, 200, 40, juce::Justification::centred, true);
+
+    g.setColour (juce::Colours::green);
+    g.drawLine (10, 350, 590, 350, 5.0f);       // the ground
+}
+
+void MainComponent::resized()
+{
+    // Each house is placed by its bounds. Its parts position themselves.
+    house.setBounds   (60, 150, 260, 200);
+    cottage.setBounds (380, 240, 140, 110);
+}
+```
+
+**`House.h`**
+
+```cpp
+#pragma once
+
+#include <juce_gui_extra/juce_gui_extra.h>
+
+// A wall: a checkerboard that fills whatever bounds it is given
+class WallComponent final : public juce::Component
+{
+public:
+    void paint (juce::Graphics& g) override
+    {
+        g.fillCheckerBoard (getLocalBounds().toFloat(), 30.0f, 10.0f,
+                            juce::Colours::sandybrown, juce::Colours::saddlebrown);
+    }
+};
+
+// A roof: a red triangle that fits its bounds
+class RoofComponent final : public juce::Component
+{
+public:
+    void paint (juce::Graphics& g) override
+    {
+        auto w = (float) getWidth();
+        auto h = (float) getHeight();
+
+        juce::Path roof;
+        roof.addTriangle (0.0f, h, w, h, w * 0.5f, 0.0f);
+
+        g.setColour (juce::Colours::red);
+        g.fillPath (roof);
+    }
+};
+
+// A house is a roof on top of a wall. It knows nothing about where it will be placed.
+class HouseComponent final : public juce::Component
+{
+public:
+    HouseComponent()
+    {
+        addAndMakeVisible (wall);   // add as child and show, in one call
+        addAndMakeVisible (roof);
+    }
+
+    void resized() override
+    {
+        auto area = getLocalBounds();
+        roof.setBounds (area.removeFromTop (area.getHeight() / 3));
+        wall.setBounds (area);
+    }
+
+private:
+    WallComponent wall;
+    RoofComponent roof;
+};
+```
+
+How to use the snippets in this guide:
+
+- A snippet that starts with `void paint (juce::Graphics& g) override` is the body of
+  a component's `paint()`. Try it in `MainComponent::paint()`, or in `WallComponent`
+  or `RoofComponent` in `House.h` to change how the houses look.
+- Likewise, `resized()` snippets go in a component's `resized()`.
+- Whole classes (such as `MyLookAndFeel` or `Spinner`) go above `MainComponent` in
+  `MainComponent.h`, or in their own header like `House.h`. Add an instance as a
+  member of `MainComponent`, call `addAndMakeVisible()` on it in the constructor,
+  and position it in `resized()`, as the project does for its houses.
+- Build and run after each change (see [Build and run](#build-and-run)).
+
 ## Drawing with `Graphics`
 
 A component draws itself in `paint (juce::Graphics&)`. JUCE calls it when needed;
@@ -61,6 +228,10 @@ void paint (juce::Graphics& g) override
 A UI is a tree. Each `Component` may draw itself, contain children, or both.
 Each child has exactly one parent at a time.
 
+The project above builds a house this way. `WallComponent` and `RoofComponent` each
+draw one thing, and `HouseComponent` has them as children and positions them (the
+full classes are in `House.h`):
+
 ```cpp
 class HouseComponent final : public juce::Component
 {
@@ -74,7 +245,7 @@ public:
     void resized() override
     {
         auto area = getLocalBounds();
-        roof.setBounds (area.removeFromTop (area.getHeight() / 5));
+        roof.setBounds (area.removeFromTop (area.getHeight() / 3));
         wall.setBounds (area);
     }
 
@@ -84,9 +255,34 @@ private:
 };
 ```
 
+`MainComponent` then uses a `HouseComponent` like any other widget. This is the
+payoff of nesting: one member, one `addAndMakeVisible()`, and one `setBounds()` per
+house, and the house sizes its own parts to fit. That is why the project has two
+houses of different sizes:
+
+```cpp
+// MainComponent.h
+HouseComponent house, cottage;
+
+// MainComponent.cpp
+MainComponent::MainComponent()
+{
+    addAndMakeVisible (house);
+    addAndMakeVisible (cottage);
+    setSize (600, 400);
+}
+
+void MainComponent::resized()
+{
+    house.setBounds   (60, 150, 260, 200);
+    cottage.setBounds (380, 240, 140, 110);
+}
+```
+
+Try adding a third house, or giving `HouseComponent` a door child.
+
 - Child bounds are relative to the parent's top-left corner, so a component can
-  be reused anywhere without knowing where it is. Adding a second `HouseComponent`
-  to the scene is one member, one `addAndMakeVisible()`, and one `setBounds()`.
+  be reused anywhere without knowing where it is.
 - A component paints itself first, then its children in the order they were
   added (change with `toFront()`, `toBack()`, or `toBehind()`). Override
   `paintOverChildren()` to draw on top of children.
@@ -285,6 +481,44 @@ composite shape: compute positions from time, then draw. Use
 `getFrameCounter()` for frame-based effects. For animation inside an existing
 component, `Timer`, `VBlankAttachment`, or `ComponentAnimator` are the
 alternatives; see `examples/GUI/AnimationAppDemo.h`.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/GraphicsDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/GraphicsDemo_artefacts/Graphics Demo.app"` |
+| Linux    | `./build/GraphicsDemo_artefacts/Graphics\ Demo` |
+| Windows  | `"build\GraphicsDemo_artefacts\Debug\Graphics Demo.exe"` |
+
+In PowerShell, put `&` before the quoted path.
+
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/GraphicsDemo_artefacts/Debug/Graphics Demo.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target GraphicsDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes `House.h`, which includes them, and `Main.cpp` includes
+> `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 

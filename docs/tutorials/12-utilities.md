@@ -6,6 +6,103 @@ almost every project.
 **Level:** Beginner to intermediate  
 **Modules:** `juce_core`, and `juce_osc` for the OSC section
 
+## Set up the project
+
+The project below rolls a die with `juce::Random`, and already links `juce_osc` for the OSC section. Try each later snippet by calling it from the button handler or the constructor of `MainComponent`, and show results in a `Label` (or with `DBG()`, which prints to your IDE's debug console in a debug build).
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `UtilitiesDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+UtilitiesDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `UtilitiesDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(UTILITIESDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(UtilitiesDemo PRODUCT_NAME "Utilities Demo")
+
+target_sources(UtilitiesDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(UtilitiesDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:UtilitiesDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:UtilitiesDemo,JUCE_VERSION>")
+
+target_link_libraries(UtilitiesDemo
+    PRIVATE juce::juce_gui_extra
+            juce::juce_osc
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_gui_extra/juce_gui_extra.h>
+#include <juce_osc/juce_osc.h>
+
+class MainComponent final : public juce::Component
+{
+public:
+    MainComponent();
+
+    void resized() override;
+
+private:
+    juce::Random rng { 1234 };    // fixed seed: the same rolls every run. Use setSeedRandomly() for real dice.
+
+    juce::TextButton rollButton { "Roll a die" };
+    juce::Label result;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    rollButton.onClick = [this]
+    {
+        auto roll = rng.nextInt (6) + 1;   // upper bound is exclusive: 0..5, plus one
+        result.setText ("You rolled " + juce::String (roll), juce::dontSendNotification);
+    };
+
+    result.setJustificationType (juce::Justification::centred);
+    result.setFont (juce::FontOptions (24.0f));
+
+    addAndMakeVisible (rollButton);
+    addAndMakeVisible (result);
+    setSize (300, 160);
+}
+
+void MainComponent::resized()
+{
+    auto area = getLocalBounds().reduced (10);
+    rollButton.setBounds (area.removeFromTop (40));
+    result.setBounds (area);
+}
+```
+
 ## Random numbers: `Random`
 
 `juce::Random` is a fast, seedable pseudo-random generator (not suitable for
@@ -270,6 +367,43 @@ private:
   one, or broadcasts, since a UDP port can be bound by one receiver per machine.
 - `connect()` and `disconnect()` return `false` on failure. Report the failure to
   the user, and let them choose a port between 1 and 65535.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/UtilitiesDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/UtilitiesDemo_artefacts/Utilities Demo.app"` |
+| Linux    | `./build/UtilitiesDemo_artefacts/Utilities\ Demo` |
+| Windows  | `"build\UtilitiesDemo_artefacts\Debug\Utilities Demo.exe"` |
+
+In PowerShell, put `&` before the quoted path.
+
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/UtilitiesDemo_artefacts/Debug/Utilities Demo.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target UtilitiesDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 

@@ -5,6 +5,115 @@ data model that notifies, serialises, and undoes for free.
 
 **Level:** Beginner to intermediate
 
+## Set up the project
+
+The project below is the listener-class example from the first section, ready to run. The later snippets, including the `ValueTree` ones, can be tried by adding them to `MainComponent` or to a console-style test in its constructor.
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `ListenersDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+ListenersDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `ListenersDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(LISTENERSDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(ListenersDemo PRODUCT_NAME "Listeners Demo")
+
+target_sources(ListenersDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(ListenersDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:ListenersDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:ListenersDemo,JUCE_VERSION>")
+
+target_link_libraries(ListenersDemo
+    PRIVATE juce::juce_gui_extra
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_gui_extra/juce_gui_extra.h>
+
+class MainComponent final : public juce::Component,
+                            private juce::Button::Listener
+{
+public:
+    MainComponent();
+    ~MainComponent() override;
+
+    void resized() override;
+
+private:
+    void buttonClicked (juce::Button* button) override;
+
+    juce::TextButton checkTime;
+    juce::Label timeLabel;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    addAndMakeVisible (checkTime);
+    checkTime.setButtonText ("Check the time...");
+    checkTime.addListener (this);
+
+    addAndMakeVisible (timeLabel);
+    timeLabel.setJustificationType (juce::Justification::centred);
+
+    setSize (400, 120);
+}
+
+MainComponent::~MainComponent()
+{
+    checkTime.removeListener (this);
+}
+
+void MainComponent::resized()
+{
+    auto area = getLocalBounds().reduced (10);
+    checkTime.setBounds (area.removeFromTop (40));
+    timeLabel.setBounds (area);
+}
+
+void MainComponent::buttonClicked (juce::Button* button)
+{
+    if (button == &checkTime)
+        timeLabel.setText (juce::Time::getCurrentTime().toString (true, true),
+                           juce::dontSendNotification);
+}
+```
+
+`ValueTree` snippets that print to the log can use `DBG (...)`, which shows in your
+IDE's debug console in a debug build. For on-screen output, append to a
+`juce::TextEditor` member instead.
+
 ## Listeners and broadcasters
 
 Buttons, sliders, combo boxes, `ValueTree`, `ChangeBroadcaster`, `Timer` and many
@@ -198,6 +307,43 @@ redoButton.onClick = [this] { undoManager.redo(); };
 - Keep the `UndoManager` at a scope that lives as long as the tree it edits. When
   bound to a plug-in, `AudioProcessorValueTreeState` accepts one in its
   constructor (see [Plug-in parameters](09-plugin-parameters.md)).
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/ListenersDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/ListenersDemo_artefacts/Listeners Demo.app"` |
+| Linux    | `./build/ListenersDemo_artefacts/Listeners\ Demo` |
+| Windows  | `"build\ListenersDemo_artefacts\Debug\Listeners Demo.exe"` |
+
+In PowerShell, put `&` before the quoted path.
+
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/ListenersDemo_artefacts/Debug/Listeners Demo.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target ListenersDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 

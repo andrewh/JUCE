@@ -11,6 +11,105 @@ All examples live inside an `AudioAppComponent` and write into
 Audio is `float` data where `1.0` and `-1.0` are full scale, so keep test signals
 well below that: the output is **very** loud at full scale.
 
+## Set up the project
+
+The project below plays quiet white noise, the first example in the guide. Turn your volume down first. Every later example is a replacement for `getNextAudioBlock()` and `prepareToPlay()` in this project, plus any members it declares in `MainComponent.h`.
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `SynthDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+SynthDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `SynthDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(SYNTHDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(SynthDemo PRODUCT_NAME "Synth Demo")
+
+target_sources(SynthDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(SynthDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:SynthDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:SynthDemo,JUCE_VERSION>")
+
+target_link_libraries(SynthDemo
+    PRIVATE juce::juce_audio_utils
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_audio_utils/juce_audio_utils.h>
+
+class MainComponent final : public juce::AudioAppComponent
+{
+public:
+    MainComponent();
+    ~MainComponent() override;
+
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& info) override;
+    void releaseResources() override;
+
+private:
+    juce::Random random;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    setSize (400, 200);
+    setAudioChannels (0, 2);   // no inputs, two outputs
+}
+
+MainComponent::~MainComponent()
+{
+    shutdownAudio();
+}
+
+void MainComponent::prepareToPlay (int, double) {}
+
+void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
+{
+    // White noise at a safe level: -0.125 .. +0.125
+    for (int ch = 0; ch < info.buffer->getNumChannels(); ++ch)
+    {
+        auto* out = info.buffer->getWritePointer (ch, info.startSample);
+
+        for (int i = 0; i < info.numSamples; ++i)
+            out[i] = random.nextFloat() * 0.25f - 0.125f;
+    }
+}
+
+void MainComponent::releaseResources() {}
+```
+
 ## White noise
 
 Fill the block with random values. `Random::nextFloat()` returns `0..1`, so scale
@@ -340,6 +439,43 @@ private:
   oscillators for chords, and scale the total down to avoid clipping.
 - For very high harmonic content, use band-limited tables per octave to avoid
   aliasing.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/SynthDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/SynthDemo_artefacts/Synth Demo.app"` |
+| Linux    | `./build/SynthDemo_artefacts/Synth\ Demo` |
+| Windows  | `"build\SynthDemo_artefacts\Debug\Synth Demo.exe"` |
+
+In PowerShell, put `&` before the quoted path.
+
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/SynthDemo_artefacts/Debug/Synth Demo.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target SynthDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 
