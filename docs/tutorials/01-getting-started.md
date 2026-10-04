@@ -60,24 +60,12 @@ target_link_libraries(HelloJuce
             juce::juce_recommended_warning_flags)
 ```
 
-Replace `/path/to/JUCE` with the folder you cloned JUCE into. Once you have
-written `Main.cpp`, `MainComponent.h`, and `MainComponent.cpp` from the next two
-sections, build and run:
-
-```sh
-cmake -B build
-cmake --build build
-```
+Replace `/path/to/JUCE` with the folder you cloned JUCE into. The next two
+sections give you `Main.cpp`, `MainComponent.h`, and `MainComponent.cpp`;
+[build and run](#build-and-run) once all four files exist.
 
 Each JUCE module you use is a `juce::juce_<module>` target to link against. See
 the [CMake API](../CMake%20API.md) for every option.
-
-> **"use of undeclared identifier 'juce'"?** CMake projects have no
-> `JuceHeader.h`. Every source file must include the module headers it uses.
-> `MainComponent.h` below includes `<juce_gui_extra/juce_gui_extra.h>`, and
-> `Main.cpp` includes `MainComponent.h`. Leave out those includes and the
-> compiler will not know what `juce::`, `std::`, or `START_JUCE_APPLICATION`
-> mean.
 
 > **Projucer users:** a Projucer project is a `.jucer` file plus a `Source`
 > folder. Add source files and modules in the Projucer, choose an exporter per
@@ -214,6 +202,43 @@ void MainComponent::resized()
   window sizes itself to fit.
 - Use `getLocalBounds()` (origin at 0, 0) rather than `getBounds()` (position
   in the parent) when laying out children.
+
+## Build and run
+
+With all four files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+### Run the app
+
+The build puts the finished app in `build/HelloJuce_artefacts/`. With the
+default Makefile or Ninja generators:
+
+| Platform | Run it with                                          |
+| -------- | ---------------------------------------------------- |
+| macOS    | `open "build/HelloJuce_artefacts/Hello JUCE.app"`    |
+| Linux    | `./build/HelloJuce_artefacts/Hello\ JUCE`            |
+| Windows  | `build\HelloJuce_artefacts\Debug\Hello JUCE.exe`    |
+
+Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
+example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with
+`cmake --build build --config Debug`.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target HelloJuce`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`. Every source file must include the module headers it uses.
+> `MainComponent.h` includes `<juce_gui_extra/juce_gui_extra.h>`, and
+> `Main.cpp` includes `MainComponent.h`. Leave out those includes and the
+> compiler will not know what `juce::`, `std::`, or `START_JUCE_APPLICATION`
+> mean.
 
 ## Sources
 
