@@ -83,6 +83,42 @@ when using an AI coding assistant, please note the following:
   build-system API with minimal starting points for a GUI application, a console
   application and an audio plug-in.
 
+### Building the Documentation Locally
+
+There are two sets of docs, both built from the `master` branch.
+
+#### Learning JUCE site (VitePress)
+
+The study site in [site](/site) is built with [VitePress](https://vitepress.dev)
+and needs Node.js and npm.
+
+    cd /path/to/JUCE/site
+    npm install
+    npm run dev
+
+This regenerates the module, tutorial and example pages and starts a live
+preview at <http://localhost:5173/JUCE/>. To check a production build, run
+`npm run build` followed by `npm run preview`. Set `SITE_BASE=/` to build for
+a custom domain instead of `/JUCE/`.
+
+The site embeds the Doxygen API reference at `/api/`. To include it locally,
+install [Doxygen](https://www.doxygen.nl) and [Graphviz](https://graphviz.org),
+then run `npm run api` before `npm run dev` or `npm run build`. Without it the
+site still builds, but API links are left unlinked. See
+[site/README.md](/site/README.md) for deployment and other details.
+
+#### Doxygen API reference only
+
+    cd /path/to/JUCE/docs/doxygen
+    python3 build.py
+
+`build.py` runs `doxygen` itself and then generates the additional module
+indexes (use `doxygen Doxyfile` for the vanilla output). Doxygen, Graphviz and
+Python 3 are required. The HTML is written to `docs/doxygen/doc`; open
+`index.html` in a browser, or serve it with
+`python3 -m http.server --directory doc 8000`. See
+[docs/doxygen/README.md](/docs/doxygen/README.md) for more details.
+
 ### Tutorials
 
 The JUCE tutorials are available online
