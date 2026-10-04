@@ -535,9 +535,10 @@ The `VST3` (and, on macOS, `AU`) bundles are in the sibling folders `VST3/` and
 they are installed into the user plug-in folders, or point a host such as JUCE's
 `AudioPluginHost` (`extras/AudioPluginHost`) at the build folder.
 
-> **Hearing feedback?** The standalone app routes the audio input to the output,
-> which on laptop speakers can howl. Use headphones, or mute the input in the
-> window's **Options > Audio/MIDI Settings** dialogue.
+> **No sound?** To avoid a feedback loop, the standalone app mutes the audio input at
+> first. Click **Settings** on the banner, or open **Options > Audio/MIDI Settings**,
+> and untick **Mute audio input**. Wear headphones first, because laptop speakers can
+> howl.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

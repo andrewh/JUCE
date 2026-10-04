@@ -515,7 +515,8 @@ drop `Debug` from the Windows path.
 
 > **"use of undeclared identifier 'juce'"?** CMake projects have no
 > `JuceHeader.h`, so every source file must include the module headers it uses.
-> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> `MainComponent.h` includes `House.h`, which includes them, and `Main.cpp` includes
+> `MainComponent.h`.
 > Without those includes the compiler does not know what `juce::`, `std::`, or
 > `START_JUCE_APPLICATION` mean.
 

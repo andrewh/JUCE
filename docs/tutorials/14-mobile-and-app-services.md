@@ -156,7 +156,18 @@ void MainComponent::paint (juce::Graphics& g)
              << "Display DPI: " << display->dpi << "\n"
              << "User area: " << display->userBounds.toString() << "\n";
 
-    text << "Orientation: " << (int) juce::Desktop::getInstance().getCurrentOrientation();
+    juce::String orientation;
+
+    switch (juce::Desktop::getInstance().getCurrentOrientation())
+    {
+        case juce::Desktop::upright:              orientation = "Upright"; break;
+        case juce::Desktop::upsideDown:           orientation = "Upside down"; break;
+        case juce::Desktop::rotatedClockwise:     orientation = "Rotated clockwise"; break;
+        case juce::Desktop::rotatedAntiClockwise: orientation = "Rotated anticlockwise"; break;
+        case juce::Desktop::allOrientations:      break;
+    }
+
+    text << "Orientation: " << orientation;
 
     g.drawFittedText (text, getLocalBounds().reduced (16), juce::Justification::topLeft, 10);
 }
