@@ -83,6 +83,26 @@ when using an AI coding assistant, please note the following:
   build-system API with minimal starting points for a GUI application, a console
   application and an audio plug-in.
 
+### Building the Documentation Locally
+
+The API documentation can be generated from the module headers with
+[Doxygen](https://www.doxygen.nl) and [Graphviz](https://graphviz.org) (the
+Doxyfile enables `HAVE_DOT` for class diagrams), so install both with your
+package manager first. Python 3 is also needed for the module index step.
+
+    cd /path/to/JUCE/docs/doxygen
+    python3 build.py
+
+`build.py` runs `doxygen` itself and then generates the additional module
+indexes. If you only want the vanilla Doxygen output, run `doxygen Doxyfile`
+instead. The HTML is written to `docs/doxygen/doc`, and you can view it by
+opening `docs/doxygen/doc/index.html` in a browser, or by serving it locally:
+
+    python3 -m http.server --directory doc 8000
+
+then visiting <http://localhost:8000>. See
+[docs/doxygen/README.md](/docs/doxygen/README.md) for more details.
+
 ### Tutorials
 
 The JUCE tutorials are available online
