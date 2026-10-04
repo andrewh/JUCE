@@ -73,6 +73,7 @@ target_link_libraries(ChannelStrip
 class ProcessorBase : public juce::AudioProcessor
 {
 public:
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
     ProcessorBase()
         : AudioProcessor (BusesProperties()
                             .withInput  ("Input",  juce::AudioChannelSet::stereo())
@@ -103,11 +104,12 @@ public:
 class GainProcessor final : public ProcessorBase
 {
 public:
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
     GainProcessor() { gain.setGainDecibels (-6.0f); }
 
-    void prepareToPlay (double sampleRate, int blockSize) override
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
-        gain.prepare ({ sampleRate, (juce::uint32) blockSize, 2 });
+        gain.prepare ({ sampleRate, (juce::uint32) samplesPerBlock, 2 });
     }
 
     void processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override
@@ -126,15 +128,16 @@ private:
 class OscillatorProcessor final : public ProcessorBase
 {
 public:
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
     OscillatorProcessor()
     {
         osc.setFrequency (440.0f);
         osc.initialise ([] (float x) { return std::sin (x); });
     }
 
-    void prepareToPlay (double sampleRate, int blockSize) override
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
-        osc.prepare ({ sampleRate, (juce::uint32) blockSize, 2 });
+        osc.prepare ({ sampleRate, (juce::uint32) samplesPerBlock, 2 });
     }
 
     void processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override
@@ -153,10 +156,11 @@ private:
 class FilterProcessor final : public ProcessorBase
 {
 public:
-    void prepareToPlay (double sampleRate, int blockSize) override
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
         *filter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass (sampleRate, 1000.0f);
-        filter.prepare ({ sampleRate, (juce::uint32) blockSize, 2 });
+        filter.prepare ({ sampleRate, (juce::uint32) samplesPerBlock, 2 });
     }
 
     void processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override
@@ -187,7 +191,7 @@ public:
 
     bool isBusesLayoutSupported (const BusesLayout&) const override;
 
-    void prepareToPlay (double sampleRate, int blockSize) override;
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
     using AudioProcessor::processBlock;
@@ -260,12 +264,12 @@ bool ChannelStrip::isBusesLayoutSupported (const BusesLayout& l) const
            && (out == juce::AudioChannelSet::mono() || out == juce::AudioChannelSet::stereo());
 }
 
-void ChannelStrip::prepareToPlay (double sampleRate, int blockSize)
+void ChannelStrip::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     graph->setPlayConfigDetails (getMainBusNumInputChannels(),
                                  getMainBusNumOutputChannels(),
-                                 sampleRate, blockSize);
-    graph->prepareToPlay (sampleRate, blockSize);
+                                 sampleRate, samplesPerBlock);
+    graph->prepareToPlay (sampleRate, samplesPerBlock);
     buildGraph();
 }
 
@@ -443,12 +447,12 @@ public:
                && (out == juce::AudioChannelSet::mono() || out == juce::AudioChannelSet::stereo());
     }
 
-    void prepareToPlay (double sampleRate, int blockSize) override
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
         graph->setPlayConfigDetails (getMainBusNumInputChannels(),
                                      getMainBusNumOutputChannels(),
-                                     sampleRate, blockSize);
-        graph->prepareToPlay (sampleRate, blockSize);
+                                     sampleRate, samplesPerBlock);
+        graph->prepareToPlay (sampleRate, samplesPerBlock);
         buildGraph();
     }
 
@@ -583,6 +587,7 @@ node only implements what it uses:
 class ProcessorBase : public juce::AudioProcessor
 {
 public:
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
     ProcessorBase()
         : AudioProcessor (BusesProperties()
                             .withInput  ("Input",  juce::AudioChannelSet::stereo())
@@ -618,11 +623,12 @@ Each derived node wraps a `juce::dsp` processor (see
 class GainProcessor final : public ProcessorBase
 {
 public:
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
     GainProcessor() { gain.setGainDecibels (-6.0f); }
 
-    void prepareToPlay (double sampleRate, int blockSize) override
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
-        gain.prepare ({ sampleRate, (juce::uint32) blockSize, 2 });
+        gain.prepare ({ sampleRate, (juce::uint32) samplesPerBlock, 2 });
     }
 
     void processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override
@@ -641,15 +647,16 @@ private:
 class OscillatorProcessor final : public ProcessorBase
 {
 public:
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
     OscillatorProcessor()
     {
         osc.setFrequency (440.0f);
         osc.initialise ([] (float x) { return std::sin (x); });
     }
 
-    void prepareToPlay (double sampleRate, int blockSize) override
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
-        osc.prepare ({ sampleRate, (juce::uint32) blockSize, 2 });
+        osc.prepare ({ sampleRate, (juce::uint32) samplesPerBlock, 2 });
     }
 
     void processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override
@@ -668,10 +675,11 @@ private:
 class FilterProcessor final : public ProcessorBase
 {
 public:
-    void prepareToPlay (double sampleRate, int blockSize) override
+    using AudioProcessor::processBlock;   // keep the double-precision overload visible
+    void prepareToPlay (double sampleRate, int samplesPerBlock) override
     {
         *filter.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass (sampleRate, 1000.0f);
-        filter.prepare ({ sampleRate, (juce::uint32) blockSize, 2 });
+        filter.prepare ({ sampleRate, (juce::uint32) samplesPerBlock, 2 });
     }
 
     void processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override
