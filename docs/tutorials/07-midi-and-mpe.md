@@ -29,6 +29,7 @@ In `CMakeLists.txt`, `/path/to/JUCE` stands for the JUCE path you already set in
 
 ```cmake
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(MIDIDEMO VERSION 0.0.1)
 
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)

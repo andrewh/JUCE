@@ -40,6 +40,7 @@ which is the file CMake reads when you run `cmake -B build`:
 
 ```cmake
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(HELLO_JUCE VERSION 0.0.1)
 
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
@@ -63,6 +64,11 @@ target_link_libraries(HelloJuce
 Replace `/path/to/JUCE` with the folder you cloned JUCE into. The next two
 sections give you `Main.cpp`, `MainComponent.h`, and `MainComponent.cpp`;
 [build and run](#build-and-run) once all four files exist.
+
+The `CMAKE_OSX_ARCHITECTURES` line makes macOS builds target Apple Silicon (arm64)
+by default. It has no effect on other platforms. Pass `-DCMAKE_OSX_ARCHITECTURES=x86_64`
+(or `"arm64;x86_64"` for a universal binary) when you configure to override it, and
+use a fresh `build` folder if you change it.
 
 Each JUCE module you use is a `juce::juce_<module>` target to link against. See
 the [CMake API](../CMake%20API.md) for every option.

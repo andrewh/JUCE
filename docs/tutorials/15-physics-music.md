@@ -34,6 +34,7 @@ longer sits inside the JUCE tree:
 
 ```cmake
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(BOX2D_MUSIC VERSION 1.0.0)
 
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
