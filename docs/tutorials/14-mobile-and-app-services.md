@@ -36,14 +36,14 @@ project(MOBILESERVICESDEMO VERSION 0.0.1)
 
 add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
 
-juce_add_gui_app(MobileServicesDemo PRODUCT_NAME "Mobile Services Demo")
+juce_add_gui_app(MobileServicesDemo PRODUCT_NAME "Mobile Services Demo"
+    NEEDS_STORE_KIT TRUE)   # links StoreKit and enables juce::InAppPurchases on Apple platforms
 
 target_sources(MobileServicesDemo PRIVATE Main.cpp MainComponent.cpp)
 
 target_compile_definitions(MobileServicesDemo PRIVATE
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
-    JUCE_IN_APP_PURCHASES=1  # needed for juce::InAppPurchases
     JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:MobileServicesDemo,JUCE_PRODUCT_NAME>"
     JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:MobileServicesDemo,JUCE_VERSION>")
 
@@ -113,6 +113,8 @@ START_JUCE_APPLICATION (MobileServicesDemoApplication)
 #pragma once
 
 #include <juce_gui_extra/juce_gui_extra.h>
+#include <juce_product_unlocking/juce_product_unlocking.h>
+#include <juce_analytics/juce_analytics.h>
 
 class MainComponent final : public juce::Component
 {
@@ -262,8 +264,10 @@ depend on hover.
 
 `juce::InAppPurchases` (module `juce_product_unlocking`) wraps the Apple App Store and
 Google Play billing APIs behind one interface. Enable it with the module option
-`JUCE_IN_APP_PURCHASES=1` (a compile definition, or the Projucer's in-app purchases
-flag); without it the class is not declared. The flow:
+`JUCE_IN_APP_PURCHASES=1`. In CMake, set `NEEDS_STORE_KIT TRUE` on the target, as the
+project above does, which defines it and links Apple's StoreKit framework on Apple
+platforms; in the Projucer, use the in-app purchases flag. Without it the class is not
+declared. The flow:
 
 1. In the store consoles (App Store Connect, Google Play Console), define your
    products and choose types: consumable, non-consumable, or subscription.

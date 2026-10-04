@@ -123,11 +123,12 @@ public:
 
         glEnable (GL_BLEND);
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glViewport (0, 0, juce::roundToInt (scale * (float) getWidth()),
-                          juce::roundToInt (scale * (float) getHeight()));
+        const auto area = getRenderBounds();                            // snapshot taken under the lock
+        glViewport (0, 0, juce::roundToInt (scale * (float) area.getWidth()),
+                          juce::roundToInt (scale * (float) area.getHeight()));
 
         shader->use();
-        projectionMatrix->setMatrix4 (getProjectionMatrix().mat, 1, false);
+        projectionMatrix->setMatrix4 (getProjectionMatrix (area).mat, 1, false);
         viewMatrix->setMatrix4       (getViewMatrix().mat,       1, false);
 
         glBindBuffer (GL_ARRAY_BUFFER, vertexBuffer);
@@ -145,15 +146,25 @@ public:
     }
 
     void paint (juce::Graphics&) override {}        // GL draws the content
-    void resized() override {}
+    void resized() override
+    {
+        const juce::ScopedLock lock (mutex);   // resized() runs on the message thread, render() on the GL thread
+        bounds = getLocalBounds();
+    }
 
 private:
     struct Vertex { float position[3]; float colour[4]; };
 
-    juce::Matrix3D<float> getProjectionMatrix() const
+    juce::Rectangle<int> getRenderBounds() const
+    {
+        const juce::ScopedLock lock (mutex);
+        return bounds;
+    }
+
+    static juce::Matrix3D<float> getProjectionMatrix (juce::Rectangle<int> area)
     {
         auto w = 1.0f / (0.5f + 0.1f);                                        // half-width at the near plane
-        auto h = w * getLocalBounds().toFloat().getAspectRatio (false);       // keep the aspect ratio
+        auto h = w * area.toFloat().getAspectRatio (false);                   // keep the aspect ratio
         return juce::Matrix3D<float>::fromFrustum (-w, w, -h, h, 4.0f, 30.0f);
     }
 
@@ -192,6 +203,9 @@ private:
     std::unique_ptr<juce::OpenGLShaderProgram::Attribute> position, sourceColour;
     std::unique_ptr<juce::OpenGLShaderProgram::Uniform> projectionMatrix, viewMatrix;
     juce::uint32 vertexBuffer = 0;
+
+    mutable juce::CriticalSection mutex;   // guards `bounds`
+    juce::Rectangle<int> bounds;           // the component's size, as last seen by resized()
 };
 ```
 
@@ -303,11 +317,12 @@ public:
 
         glEnable (GL_BLEND);
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glViewport (0, 0, juce::roundToInt (scale * (float) getWidth()),
-                          juce::roundToInt (scale * (float) getHeight()));
+        const auto area = getRenderBounds();                            // snapshot taken under the lock
+        glViewport (0, 0, juce::roundToInt (scale * (float) area.getWidth()),
+                          juce::roundToInt (scale * (float) area.getHeight()));
 
         shader->use();
-        projectionMatrix->setMatrix4 (getProjectionMatrix().mat, 1, false);
+        projectionMatrix->setMatrix4 (getProjectionMatrix (area).mat, 1, false);
         viewMatrix->setMatrix4       (getViewMatrix().mat,       1, false);
 
         glBindBuffer (GL_ARRAY_BUFFER, vertexBuffer);
@@ -325,15 +340,25 @@ public:
     }
 
     void paint (juce::Graphics&) override {}        // GL draws the content
-    void resized() override {}
+    void resized() override
+    {
+        const juce::ScopedLock lock (mutex);   // resized() runs on the message thread, render() on the GL thread
+        bounds = getLocalBounds();
+    }
 
 private:
     struct Vertex { float position[3]; float colour[4]; };
 
-    juce::Matrix3D<float> getProjectionMatrix() const
+    juce::Rectangle<int> getRenderBounds() const
+    {
+        const juce::ScopedLock lock (mutex);
+        return bounds;
+    }
+
+    static juce::Matrix3D<float> getProjectionMatrix (juce::Rectangle<int> area)
     {
         auto w = 1.0f / (0.5f + 0.1f);                                        // half-width at the near plane
-        auto h = w * getLocalBounds().toFloat().getAspectRatio (false);       // keep the aspect ratio
+        auto h = w * area.toFloat().getAspectRatio (false);                   // keep the aspect ratio
         return juce::Matrix3D<float>::fromFrustum (-w, w, -h, h, 4.0f, 30.0f);
     }
 
@@ -372,6 +397,9 @@ private:
     std::unique_ptr<juce::OpenGLShaderProgram::Attribute> position, sourceColour;
     std::unique_ptr<juce::OpenGLShaderProgram::Uniform> projectionMatrix, viewMatrix;
     juce::uint32 vertexBuffer = 0;
+
+    mutable juce::CriticalSection mutex;   // guards `bounds`
+    juce::Rectangle<int> bounds;           // the component's size, as last seen by resized()
 };
 ```
 
@@ -392,6 +420,10 @@ What to take from it:
   builds a perspective projection. Derive the top and bottom from the component's
   aspect ratio so shapes are not stretched. Compose the view matrix from a
   translation and a rotation.
+- **Never read component state from `render()` unprotected.** `render()` runs on the
+  GL thread while the user can resize the window on the message thread. Copy the
+  size in `resized()` under a lock, as above, and use that snapshot for both the
+  viewport and the projection (`examples/GUI/OpenGLAppDemo.h` does the same).
 - **Scale for HiDPI.** Multiply component sizes by
   `openGLContext.getRenderingScale()` for `glViewport()`.
 - **Index buffers** (`GL_ELEMENT_ARRAY_BUFFER`, `glDrawElements()`) are the way to

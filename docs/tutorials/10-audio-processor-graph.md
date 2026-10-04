@@ -42,6 +42,7 @@ juce_add_plugin(ChannelStrip
     PRODUCT_NAME "Channel Strip"
     IS_SYNTH FALSE                    # TRUE for instruments
     NEEDS_MIDI_INPUT TRUE             # TRUE if it must receive MIDI
+    NEEDS_MIDI_OUTPUT TRUE            # TRUE because it forwards MIDI to the host
     IS_MIDI_EFFECT FALSE              # TRUE for MIDI-only processors
     MICROPHONE_PERMISSION_ENABLED TRUE  # the Standalone app opens the audio input
     COPY_PLUGIN_AFTER_BUILD FALSE)
@@ -180,7 +181,7 @@ private:
 //==============================================================================
 // The hosting plug-in: owns the graph and rebuilds it when the slots change
 class ChannelStrip final : public juce::AudioProcessor,
-                           private juce::AsyncUpdater
+                           private juce::Timer
 {
 public:
     using IOProcessor = juce::AudioProcessorGraph::AudioGraphIOProcessor;
@@ -218,7 +219,7 @@ private:
     void connectStereo (Node& source, Node& destination);
     std::unique_ptr<juce::AudioProcessor> createProcessor (int choiceIndex);
     bool parametersChanged() const;
-    void handleAsyncUpdate() override;   // message thread
+    void timerCallback() override;   // message thread
 
     static inline const juce::StringArray choices { "Empty", "Oscillator", "Gain", "Filter" };
 
@@ -253,9 +254,11 @@ ChannelStrip::ChannelStrip()
 {
     for (auto* p : slotParams)   addParameter (p);
     for (auto* p : bypassParams) addParameter (p);
+
+    startTimerHz (20);   // polls for slot changes on the message thread
 }
 
-ChannelStrip::~ChannelStrip() { cancelPendingUpdate(); }
+ChannelStrip::~ChannelStrip() { stopTimer(); }
 
 bool ChannelStrip::isBusesLayoutSupported (const BusesLayout& l) const
 {
@@ -280,31 +283,32 @@ void ChannelStrip::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuf
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    if (parametersChanged())           // a slot or bypass changed: update off the audio thread
-        triggerAsyncUpdate();
 
     graph->processBlock (buffer, midi);
 }
 
 void ChannelStrip::buildGraph()
 {
-    graph->clear();
+    using Update = juce::AudioProcessorGraph::UpdateKind;
 
-    audioIn  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioInputNode));
-    audioOut = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioOutputNode));
-    midiIn   = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiInputNode));
-    midiOut  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiOutputNode));
+    graph->clear (Update::none);   // batch every change below, then publish once with rebuild()
+
+    audioIn  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioInputNode), std::nullopt, Update::none);
+    audioOut = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioOutputNode), std::nullopt, Update::none);
+    midiIn   = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiInputNode), std::nullopt, Update::none);
+    midiOut  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiOutputNode), std::nullopt, Update::none);
 
     // MIDI passes straight through
     graph->addConnection ({ { midiIn->nodeID,  juce::AudioProcessorGraph::midiChannelIndex },
-                            { midiOut->nodeID, juce::AudioProcessorGraph::midiChannelIndex } });
+                            { midiOut->nodeID, juce::AudioProcessorGraph::midiChannelIndex } },
+                           Update::none);
 
     // Create a node for each chosen slot; empty slots have no node
     for (int i = 0; i < 3; ++i)
     {
         builtChoices[i] = slotParams[i]->getIndex();
         slotNodes[i]    = builtChoices[i] == 0 ? nullptr
-                                               : graph->addNode (createProcessor (builtChoices[i]));
+                                               : graph->addNode (createProcessor (builtChoices[i]), std::nullopt, Update::none);
 
         builtBypass[i] = *bypassParams[i];
         if (slotNodes[i] != nullptr)
@@ -320,12 +324,15 @@ void ChannelStrip::buildGraph()
         previous = slot.get();
     }
     connectStereo (*previous, *audioOut);
+
+    graph->rebuild();   // publish the finished graph in one go
 }
 
 void ChannelStrip::connectStereo (Node& source, Node& destination)
 {
     for (int channel = 0; channel < 2; ++channel)
-        graph->addConnection ({ { source.nodeID, channel }, { destination.nodeID, channel } });
+        graph->addConnection ({ { source.nodeID, channel }, { destination.nodeID, channel } },
+                              juce::AudioProcessorGraph::UpdateKind::none);
 }
 
 std::unique_ptr<juce::AudioProcessor> ChannelStrip::createProcessor (int choiceIndex)
@@ -349,7 +356,11 @@ bool ChannelStrip::parametersChanged() const           // audio thread: reads on
     return false;
 }
 
-void ChannelStrip::handleAsyncUpdate() { buildGraph(); }   // message thread
+void ChannelStrip::timerCallback()   // message thread
+{
+    if (parametersChanged())         // a slot or bypass changed: rebuild
+        buildGraph();
+}
 
 // A generic editor lists the slot and bypass parameters automatically
 juce::AudioProcessorEditor* ChannelStrip::createEditor()
@@ -416,7 +427,7 @@ graph's `processBlock()`:
 
 ```cpp
 class ChannelStrip final : public juce::AudioProcessor,
-                           private juce::AsyncUpdater
+                           private juce::Timer
 {
 public:
     using IOProcessor = juce::AudioProcessorGraph::AudioGraphIOProcessor;
@@ -436,9 +447,11 @@ public:
     {
         for (auto* p : slotParams)   addParameter (p);
         for (auto* p : bypassParams) addParameter (p);
+
+        startTimerHz (20);   // polls for slot changes on the message thread
     }
 
-    ~ChannelStrip() override { cancelPendingUpdate(); }
+    ~ChannelStrip() override { stopTimer(); }
 
     bool isBusesLayoutSupported (const BusesLayout& l) const override
     {
@@ -463,8 +476,6 @@ public:
         for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
             buffer.clear (i, 0, buffer.getNumSamples());
 
-        if (parametersChanged())           // a slot or bypass changed: update off the audio thread
-            triggerAsyncUpdate();
 
         graph->processBlock (buffer, midi);
     }
@@ -492,23 +503,26 @@ in series. Rebuilding wholesale on the message thread is simple and safe:
 ```cpp
 void buildGraph()
 {
-    graph->clear();
+    using Update = juce::AudioProcessorGraph::UpdateKind;
 
-    audioIn  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioInputNode));
-    audioOut = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioOutputNode));
-    midiIn   = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiInputNode));
-    midiOut  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiOutputNode));
+    graph->clear (Update::none);   // batch every change below, then publish once with rebuild()
+
+    audioIn  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioInputNode), std::nullopt, Update::none);
+    audioOut = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::audioOutputNode), std::nullopt, Update::none);
+    midiIn   = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiInputNode), std::nullopt, Update::none);
+    midiOut  = graph->addNode (std::make_unique<IOProcessor> (IOProcessor::midiOutputNode), std::nullopt, Update::none);
 
     // MIDI passes straight through
     graph->addConnection ({ { midiIn->nodeID,  juce::AudioProcessorGraph::midiChannelIndex },
-                            { midiOut->nodeID, juce::AudioProcessorGraph::midiChannelIndex } });
+                            { midiOut->nodeID, juce::AudioProcessorGraph::midiChannelIndex } },
+                           Update::none);
 
     // Create a node for each chosen slot; empty slots have no node
     for (int i = 0; i < 3; ++i)
     {
         builtChoices[i] = slotParams[i]->getIndex();
         slotNodes[i]    = builtChoices[i] == 0 ? nullptr
-                                               : graph->addNode (createProcessor (builtChoices[i]));
+                                               : graph->addNode (createProcessor (builtChoices[i]), std::nullopt, Update::none);
 
         builtBypass[i] = *bypassParams[i];
         if (slotNodes[i] != nullptr)
@@ -524,12 +538,15 @@ void buildGraph()
         previous = slot.get();
     }
     connectStereo (*previous, *audioOut);
+
+    graph->rebuild();   // publish the finished graph in one go
 }
 
 void connectStereo (Node& source, Node& destination)
 {
     for (int channel = 0; channel < 2; ++channel)
-        graph->addConnection ({ { source.nodeID, channel }, { destination.nodeID, channel } });
+        graph->addConnection ({ { source.nodeID, channel }, { destination.nodeID, channel } },
+                              juce::AudioProcessorGraph::UpdateKind::none);
 }
 
 std::unique_ptr<juce::AudioProcessor> createProcessor (int choiceIndex)
@@ -553,7 +570,11 @@ bool parametersChanged() const           // audio thread: reads only atomics
     return false;
 }
 
-void handleAsyncUpdate() override { buildGraph(); }   // message thread
+void timerCallback() override           // message thread
+{
+    if (parametersChanged())            // a slot or bypass changed: rebuild
+        buildGraph();
+}
 ```
 
 Notes on this design:
@@ -561,14 +582,19 @@ Notes on this design:
 - Changing the graph (`addNode`, `addConnection`, `removeNode`, `clear`) is allowed
   while audio is running; the graph rebuilds its render sequence and swaps it in
   safely. Do it on the message thread, never inside `processBlock()`. That is why
-  the code above only *requests* an update from the audio callback with
-  `AsyncUpdater`. (Update several parts of the graph together with
-  `UpdateKind::async`, or `UpdateKind::none` followed by `rebuild()`.)
+  a message-thread `Timer` polls for changes in the code above, rather than the
+  audio callback requesting an update: `AsyncUpdater::triggerAsyncUpdate()` posts to
+  the system message queue, which can block on some platforms and cause dropouts.
+- Every mutation passes `UpdateKind::none`, and `buildGraph()` ends with one
+  `rebuild()`. With the default (`UpdateKind::sync`), `clear()`, each `addNode()`,
+  and each connection would publish a new render sequence, so the audio thread
+  could run an empty or half-connected graph. (`UpdateKind::async` batches changes
+  made in one call stack too.)
 - `Node::setBypassed()` skips the processor and passes its input through. Use it
   for bypass switches rather than removing nodes. Here it is applied inside the
   same message-thread rebuild, so the audio thread never touches the node
-  pointers. (The audio callback only *compares* parameters with atomics, then
-  triggers the update.)
+  pointers. (Only the timer, on the message thread, compares parameters with the
+  atomics and triggers the rebuild.)
 - Any `AudioProcessor` can be a node, including instances of other plug-ins
   created through `AudioPluginFormatManager` (see `extras/AudioPluginHost`, a
   complete node-graph plug-in host).
