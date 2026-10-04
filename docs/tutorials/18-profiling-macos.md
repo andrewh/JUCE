@@ -144,15 +144,20 @@ your target, so it matters that incremental builds work.
 
 Check these first:
 
-- **One build folder per generator and configuration set.** Changing the generator,
-  or the `-D` flags, in an existing `build` folder invalidates the objects. Use
-  names such as `build-xcode` and `build-ninja`.
+- **One build folder per generator.** CMake refuses to reuse a build folder that was
+  configured with a different generator, so it reports an error instead of
+  rebuilding. Use separate folders such as `build-xcode` and `build-ninja`. Changing
+  a flag that affects compilation, such as `CMAKE_BUILD_TYPE` or the compiler flags,
+  does recompile the affected files, so keep those settings fixed between builds.
 - **Unexpected timestamp changes.** If the JUCE checkout sits in a synced folder, or
   something touches its files, they look modified. List recently changed files with
   `find /path/to/JUCE/modules -newer build/CMakeCache.txt | head`.
-- **A second build that compiles nothing.** Run `cmake --build` twice in a row
-  without changing any file. The second run should not compile. If it does, find
-  out why before adding a cache.
+- **A second build that compiles nothing.** Run the same build command twice in a
+  row, with the same configuration, and without changing any file. For the Xcode
+  generator that is `cmake --build build --config RelWithDebInfo` both times,
+  because a build without `--config` uses a different configuration and compiles
+  everything again. The second run should not compile. If it does, find out why
+  before adding a cache.
 
 With Ninja, ask the build why each file is considered stale:
 
