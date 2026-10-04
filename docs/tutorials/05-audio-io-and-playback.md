@@ -8,6 +8,129 @@ and draw waveforms.
 
 Link `juce::juce_audio_utils` (which brings in devices, formats, and basics).
 
+## Set up the project
+
+The project below opens the default audio device and shows its sample rate. The snippets that follow change what `MainComponent` does with audio.
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `AudioDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+AudioDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `AudioDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(AUDIODEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(AudioDemo PRODUCT_NAME "Audio Demo"
+    MICROPHONE_PERMISSION_ENABLED TRUE)
+
+target_sources(AudioDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(AudioDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:AudioDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:AudioDemo,JUCE_VERSION>")
+
+target_link_libraries(AudioDemo
+    PRIVATE juce::juce_audio_utils
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_audio_utils/juce_audio_utils.h>
+
+class MainComponent final : public juce::AudioAppComponent
+{
+public:
+    MainComponent();
+    ~MainComponent() override;
+
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& info) override;
+    void releaseResources() override;
+
+    void paint (juce::Graphics& g) override;
+
+private:
+    std::atomic<double> currentSampleRate { 0.0 };
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    setSize (400, 200);
+    setAudioChannels (2, 2);   // inputs, outputs: opens the default device
+}
+
+MainComponent::~MainComponent()
+{
+    shutdownAudio();           // mandatory: stops the audio thread first
+}
+
+void MainComponent::prepareToPlay (int, double sampleRate)
+{
+    currentSampleRate = sampleRate;
+
+    juce::MessageManager::callAsync ([safe = juce::Component::SafePointer<MainComponent> (this)]
+    {
+        if (safe != nullptr)
+            safe->repaint();
+    });
+}
+
+void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
+{
+    info.clearActiveBufferRegion();   // silence for now
+}
+
+void MainComponent::releaseResources() {}
+
+void MainComponent::paint (juce::Graphics& g)
+{
+    g.fillAll (juce::Colours::black);
+    g.setColour (juce::Colours::white);
+    g.drawText ("Audio running at " + juce::String (currentSampleRate.load()) + " Hz",
+                getLocalBounds(), juce::Justification::centred);
+}
+```
+
+`MICROPHONE_PERMISSION_ENABLED TRUE` in `CMakeLists.txt` adds the microphone
+permission string that macOS and iOS require before an app can record. Without it,
+the app is killed when it opens an input device, and you only get silence on
+input. Add `MICROPHONE_PERMISSION_TEXT "Why you need the mic"` to change the
+wording the user sees. On the first run, macOS asks for permission.
+
+How to use the snippets in this guide: whole-class snippets replace
+`MainComponent` (put them in `MainComponent.h`, and move the member function
+bodies into `MainComponent.cpp` if you prefer). Individual member functions such
+as `getNextAudioBlock()` replace the same function in the project above.
+
 ## `AudioAppComponent`: the audio callback
 
 `AudioAppComponent` is a `Component` that is also an `AudioSource` and owns an
@@ -335,6 +458,40 @@ private:
   mouse handling to seek by clicking.
 - The first constructor argument trades resolution against memory. Larger values
   give a smaller, coarser thumbnail.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/AudioDemo_artefacts/`. With the default
+Makefile or Ninja generators:
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/AudioDemo_artefacts/Audio Demo.app"` |
+| Linux    | `./build/AudioDemo_artefacts/Audio\ Demo` |
+| Windows  | `build\AudioDemo_artefacts\Debug\Audio Demo.exe` |
+
+Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
+example `build/AudioDemo_artefacts/Debug/Audio Demo.app`; build with
+`cmake --build build --config Debug`.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target AudioDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 

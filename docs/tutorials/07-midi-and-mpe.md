@@ -7,6 +7,123 @@ Polyphonic Expression).
 **Prerequisite:** [Synthesis](06-synthesis.md) for the voice and audio-callback
 context.
 
+## Set up the project
+
+The project below builds several `MidiMessage`s and shows what each one is. The sections that make sound (the synthesiser and MPE) need an audio callback: change `MainComponent` to derive from `juce::AudioAppComponent` and add `setAudioChannels (0, 2)` and `shutdownAudio()`, exactly as in [Synthesis](06-synthesis.md).
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `MidiDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+MidiDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `MidiDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(MIDIDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(MidiDemo PRODUCT_NAME "Midi Demo")
+
+target_sources(MidiDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(MidiDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:MidiDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:MidiDemo,JUCE_VERSION>")
+
+target_link_libraries(MidiDemo
+    PRIVATE juce::juce_audio_utils
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_audio_utils/juce_audio_utils.h>
+
+class MainComponent final : public juce::Component
+{
+public:
+    MainComponent();
+
+    void resized() override;
+
+private:
+    static juce::String describe (const juce::MidiMessage& m);
+
+    juce::TextEditor log;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    log.setMultiLine (true);
+    log.setReadOnly (true);
+    log.setFont (juce::FontOptions (juce::Font::getDefaultMonospacedFontName(), 14.0f, juce::Font::plain));
+    addAndMakeVisible (log);
+
+    const juce::MidiMessage messages[] =
+    {
+        juce::MidiMessage::noteOn (1, 60, (juce::uint8) 100),
+        juce::MidiMessage::noteOff (1, 60),
+        juce::MidiMessage::controllerEvent (10, 7, 90),
+        juce::MidiMessage::programChange (1, 5),
+        juce::MidiMessage::pitchWheel (1, 9000),
+    };
+
+    for (auto& m : messages)
+        log.moveCaretToEnd(), log.insertTextAtCaret (describe (m) + "\n");
+
+    setSize (400, 250);
+}
+
+void MainComponent::resized()
+{
+    log.setBounds (getLocalBounds().reduced (10));
+}
+
+juce::String MainComponent::describe (const juce::MidiMessage& m)
+{
+    if (m.isNoteOn())          return "Note on "  + juce::MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
+    if (m.isNoteOff())         return "Note off " + juce::MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
+    if (m.isProgramChange())   return "Program change " + juce::String (m.getProgramChangeNumber());
+    if (m.isPitchWheel())      return "Pitch wheel " + juce::String (m.getPitchWheelValue());
+    if (m.isChannelPressure()) return "Channel pressure " + juce::String (m.getChannelPressureValue());
+    if (m.isAllNotesOff())     return "All notes off";
+
+    if (m.isController())
+    {
+        juce::String name (juce::MidiMessage::getControllerName (m.getControllerNumber()));
+        return "Controller " + (name.isEmpty() ? "[" + juce::String (m.getControllerNumber()) + "]" : name)
+               + ": " + juce::String (m.getControllerValue());
+    }
+
+    return juce::String::toHexString (m.getRawData(), m.getRawDataSize());
+}
+```
+
 ## `MidiMessage`: creating and parsing
 
 A `MidiMessage` is a small value type. Build one with a static factory, read it
@@ -328,6 +445,40 @@ synth.renderNextBlock (buffer, incomingMidi, 0, numSamples);
   number.
 - Pitch, pressure, and timbre change continuously: apply them with smoothing
   (`SmoothedValue`) to avoid zipper noise, as in [Synthesis](06-synthesis.md).
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/MidiDemo_artefacts/`. With the default
+Makefile or Ninja generators:
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/MidiDemo_artefacts/Midi Demo.app"` |
+| Linux    | `./build/MidiDemo_artefacts/Midi\ Demo` |
+| Windows  | `build\MidiDemo_artefacts\Debug\Midi Demo.exe` |
+
+Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
+example `build/MidiDemo_artefacts/Debug/Midi Demo.app`; build with
+`cmake --build build --config Debug`.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target MidiDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 

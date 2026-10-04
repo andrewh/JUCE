@@ -10,6 +10,177 @@ those steps change often. This guide gives the JUCE side of each, and points out
 must be set up elsewhere. Check each platform's current documentation for the
 account-side steps.
 
+## Set up the project
+
+The project below shows the screen details a mobile app has to cope with (size, orientation, scale, and DPI), links every module the later sections use, and runs on desktop as well as iOS. Use the desktop build to try the in-app purchase, notification, analytics, and unlocking code that the platform allows, and a phone or tablet for the rest.
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `MobileServicesDemo`. Replace all four files so the folder looks like this:
+
+```text
+MobileServicesDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # new: tutorial 1's, changed for mobile
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `MobileServicesDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(MOBILESERVICESDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(MobileServicesDemo PRODUCT_NAME "Mobile Services Demo")
+
+target_sources(MobileServicesDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(MobileServicesDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_IN_APP_PURCHASES=1  # needed for juce::InAppPurchases
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:MobileServicesDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:MobileServicesDemo,JUCE_VERSION>")
+
+target_link_libraries(MobileServicesDemo
+    PRIVATE juce::juce_gui_extra
+            juce::juce_product_unlocking
+            juce::juce_analytics
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`Main.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+class MobileServicesDemoApplication final : public juce::JUCEApplication
+{
+public:
+    const juce::String getApplicationName() override    { return JUCE_APPLICATION_NAME_STRING; }
+    const juce::String getApplicationVersion() override { return JUCE_APPLICATION_VERSION_STRING; }
+
+    void initialise (const juce::String&) override
+    {
+        mainWindow.reset (new MainWindow (getApplicationName()));
+    }
+
+    void shutdown() override { mainWindow = nullptr; }  // deletes the window
+
+    void systemRequestedQuit() override { quit(); }
+
+    class MainWindow final : public juce::DocumentWindow
+    {
+    public:
+        explicit MainWindow (juce::String name)
+            : DocumentWindow (name, juce::Colours::lightgrey, allButtons)
+        {
+            setUsingNativeTitleBar (true);
+            setContentOwned (new MainComponent(), true);
+
+           #if JUCE_IOS || JUCE_ANDROID
+            setFullScreen (true);
+           #else
+            setResizable (true, true);
+            centreWithSize (getWidth(), getHeight());
+           #endif
+
+            setVisible (true);
+        }
+
+        void closeButtonPressed() override
+        {
+            juce::JUCEApplication::getInstance()->systemRequestedQuit();
+        }
+    };
+
+private:
+    std::unique_ptr<MainWindow> mainWindow;
+};
+
+START_JUCE_APPLICATION (MobileServicesDemoApplication)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_gui_extra/juce_gui_extra.h>
+
+class MainComponent final : public juce::Component
+{
+public:
+    MainComponent();
+
+    void paint (juce::Graphics& g) override;
+    void resized() override;
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    setSize (480, 640);   // ignored on phones and tablets, where the window is full screen
+}
+
+void MainComponent::paint (juce::Graphics& g)
+{
+    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.setColour (juce::Colours::white);
+    g.setFont (juce::FontOptions (18.0f));
+
+    juce::String text;
+    text << "Component: " << getWidth() << " x " << getHeight() << " logical pixels\n"
+         << (getWidth() > getHeight() ? "Landscape" : "Portrait") << "\n";
+
+    if (auto* display = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay())
+        text << "Display scale: " << display->scale << "\n"
+             << "Display DPI: " << display->dpi << "\n"
+             << "User area: " << display->userBounds.toString() << "\n";
+
+    text << "Orientation: " << (int) juce::Desktop::getInstance().getCurrentOrientation();
+
+    g.drawFittedText (text, getLocalBounds().reduced (16), juce::Justification::topLeft, 10);
+}
+
+void MainComponent::resized()
+{
+    repaint();   // the text above depends on the size
+}
+```
+
+**iOS.** The same project builds for iOS with CMake's Xcode generator. Give it your
+Apple developer team so Xcode can sign the app, then open the generated project and
+run it on a simulator or device:
+
+```sh
+cmake -B build-ios -G Xcode -DCMAKE_SYSTEM_NAME=iOS \
+      -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM=YOUR_TEAM_ID
+open build-ios/MobileServicesDemo.xcodeproj
+```
+
+**Android.** JUCE's CMake API does not currently support Android targets, so Android
+projects come from the Projucer, as the next section describes. To try this
+project's code there, create a *GUI Application* in the Projucer, add the
+`juce_product_unlocking` and `juce_analytics` modules, add an Android exporter, and
+replace the generated `Main.cpp` and `MainComponent` files with the ones above. In
+`MainComponent.h`, change the include to `#include <JuceHeader.h>`, which is how
+Projucer projects reach the module headers.
+
 ## Getting started with Android
 
 Requirements (see the README for the supported versions): **Android Studio**, the
@@ -433,6 +604,40 @@ Security notes:
 - No client-side scheme is unbreakable. Treat this as a way to keep honest users
   honest, and combine it with sensible pricing and support.
 - Never ship the private key, and use HTTPS for the server.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/MobileServicesDemo_artefacts/`. With the default
+Makefile or Ninja generators:
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/MobileServicesDemo_artefacts/Mobile Services Demo.app"` |
+| Linux    | `./build/MobileServicesDemo_artefacts/Mobile\ Services\ Demo` |
+| Windows  | `build\MobileServicesDemo_artefacts\Debug\Mobile Services Demo.exe` |
+
+Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
+example `build/MobileServicesDemo_artefacts/Debug/Mobile Services Demo.app`; build with
+`cmake --build build --config Debug`.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target MobileServicesDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 

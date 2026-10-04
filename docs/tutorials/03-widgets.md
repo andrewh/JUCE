@@ -4,6 +4,141 @@ The controls you will use in almost every interface, and the patterns they share
 
 **Level:** Beginner
 
+## Set up the project
+
+The project below already shows a label, a slider, a combo box, and a button wired with lambdas. The snippets that follow show each widget in more depth.
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `WidgetsDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+WidgetsDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `WidgetsDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(WIDGETSDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(WidgetsDemo PRODUCT_NAME "Widgets Demo")
+
+target_sources(WidgetsDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(WidgetsDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:WidgetsDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:WidgetsDemo,JUCE_VERSION>")
+
+target_link_libraries(WidgetsDemo
+    PRIVATE juce::juce_gui_extra
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_gui_extra/juce_gui_extra.h>
+
+class MainComponent final : public juce::Component
+{
+public:
+    MainComponent();
+
+    void resized() override;
+
+private:
+    juce::Label title, caption, input, output;
+    juce::Slider slider;
+    juce::ComboBox choice;
+    juce::TextButton button { "Click me" };
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    title.setText ("Widgets", juce::dontSendNotification);
+    title.setFont (juce::FontOptions (16.0f, juce::Font::bold));
+    title.setJustificationType (juce::Justification::centred);
+    addAndMakeVisible (title);
+
+    caption.setText ("Text input:", juce::dontSendNotification);
+    caption.attachToComponent (&input, true);   // sits to the left of `input`
+    caption.setJustificationType (juce::Justification::right);
+
+    input.setEditable (true);
+    input.setText ("click to edit", juce::dontSendNotification);
+    input.setColour (juce::Label::backgroundColourId, juce::Colours::darkblue);
+    input.onTextChange = [this]
+    {
+        output.setText (input.getText().toUpperCase(), juce::dontSendNotification);
+    };
+    addAndMakeVisible (input);
+    addAndMakeVisible (output);
+
+    slider.setRange (0.0, 100.0);
+    slider.setValue (50.0);
+    slider.onValueChange = [this]
+    {
+        output.setText ("Slider: " + juce::String (slider.getValue()), juce::dontSendNotification);
+    };
+    addAndMakeVisible (slider);
+
+    choice.addItem ("First", 1);
+    choice.addItem ("Second", 2);
+    choice.setSelectedId (1);
+    choice.onChange = [this]
+    {
+        output.setText ("Chose: " + choice.getText(), juce::dontSendNotification);
+    };
+    addAndMakeVisible (choice);
+
+    button.onClick = [this]
+    {
+        output.setText ("Clicked", juce::dontSendNotification);
+    };
+    addAndMakeVisible (button);
+
+    setSize (400, 300);
+}
+
+void MainComponent::resized()
+{
+    auto area = getLocalBounds().reduced (10);
+    title.setBounds   (area.removeFromTop (30));
+    input.setBounds   (area.removeFromTop (30).withTrimmedLeft (100));
+    output.setBounds  (area.removeFromTop (30).withTrimmedLeft (100));
+    slider.setBounds  (area.removeFromTop (40));
+    choice.setBounds  (area.removeFromTop (30));
+    button.setBounds  (area.removeFromTop (40).reduced (60, 5));
+}
+```
+
+How to use the snippets in this guide: widget snippets refer to members such as
+`title`, `input`, and `output`. Declare those members in `MainComponent.h`, configure
+them in the `MainComponent` constructor, and position them in `resized()`, as the
+project above does for its own widgets.
+
 ## The common pattern
 
 Every widget follows the same recipe:
@@ -230,6 +365,40 @@ private:
 - Other useful callbacks: `cellClicked()`, `selectedRowsChanged()`,
   `deleteKeyPressed()`, and `getColumnAutoSizeWidth()`. Data loaded from XML or
   a `ValueTree` maps naturally onto rows.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/WidgetsDemo_artefacts/`. With the default
+Makefile or Ninja generators:
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/WidgetsDemo_artefacts/Widgets Demo.app"` |
+| Linux    | `./build/WidgetsDemo_artefacts/Widgets\ Demo` |
+| Windows  | `build\WidgetsDemo_artefacts\Debug\Widgets Demo.exe` |
+
+Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
+example `build/WidgetsDemo_artefacts/Debug/Widgets Demo.app`; build with
+`cmake --build build --config Debug`.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target WidgetsDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 

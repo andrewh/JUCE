@@ -6,6 +6,140 @@ analyse audio in the frequency domain.
 **Level:** Intermediate to advanced  
 **Module:** link `juce::juce_dsp` (and `juce::juce_audio_utils` for examples)
 
+## Set up the project
+
+The project below plays a quiet 220 Hz tone through the oscillator, filter, and gain chain from the processor-chain section. Turn your volume down first. The later examples (distortion, convolution, delay lines, the FFT) are further processors and displays to add to it.
+
+This guide builds on [Getting started](01-getting-started.md). Make a copy of the
+`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
+the copy `DspDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+
+```text
+DspDemo/
+├── CMakeLists.txt      # new: renamed target, modules for this guide
+├── Main.cpp            # copied unchanged from tutorial 1
+├── MainComponent.h     # new: replaces the one from tutorial 1
+└── MainComponent.cpp   # new: replaces the one from tutorial 1
+```
+
+Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into, as in tutorial 1. This `CMakeLists.txt` renames the target to `DspDemo` and links the modules this guide needs.
+
+**`CMakeLists.txt`**
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(DSPDEMO VERSION 0.0.1)
+
+add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+
+juce_add_gui_app(DspDemo PRODUCT_NAME "Dsp Demo")
+
+target_sources(DspDemo PRIVATE Main.cpp MainComponent.cpp)
+
+target_compile_definitions(DspDemo PRIVATE
+    JUCE_WEB_BROWSER=0
+    JUCE_USE_CURL=0
+    JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:DspDemo,JUCE_PRODUCT_NAME>"
+    JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:DspDemo,JUCE_VERSION>")
+
+target_link_libraries(DspDemo
+    PRIVATE juce::juce_audio_utils
+            juce::juce_dsp
+    PUBLIC  juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+```
+
+**`MainComponent.h`**
+
+```cpp
+#pragma once
+
+#include <juce_audio_utils/juce_audio_utils.h>
+#include <juce_dsp/juce_dsp.h>
+
+// An oscillator -> filter -> gain chain built from juce::dsp blocks
+class Voice
+{
+public:
+    enum { oscIndex, filterIndex, gainIndex };
+
+    Voice()
+    {
+        chain.get<oscIndex>().initialise ([] (float x) { return std::sin (x); }, 128);  // lookup table
+        chain.get<filterIndex>().setCutoffFrequencyHz (1000.0f);
+        chain.get<filterIndex>().setResonance (0.7f);
+        chain.get<gainIndex>().setGainLinear (0.1f);   // kept quiet so the demo is safe to run
+    }
+
+    void prepare (const juce::dsp::ProcessSpec& spec) { chain.prepare (spec); }
+    void reset()                                       { chain.reset(); }
+
+    template <typename Context>
+    void process (const Context& context)              { chain.process (context); }
+
+    void setFrequency (float hz, bool force = false)   { chain.get<oscIndex>().setFrequency (hz, force); }
+
+private:
+    juce::dsp::ProcessorChain<juce::dsp::Oscillator<float>,
+                              juce::dsp::LadderFilter<float>,
+                              juce::dsp::Gain<float>> chain;
+};
+
+class MainComponent final : public juce::AudioAppComponent
+{
+public:
+    MainComponent();
+    ~MainComponent() override;
+
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& info) override;
+    void releaseResources() override;
+
+private:
+    Voice voice;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+};
+```
+
+**`MainComponent.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+{
+    setSize (400, 200);
+    setAudioChannels (0, 2);   // no inputs, two outputs
+}
+
+MainComponent::~MainComponent()
+{
+    shutdownAudio();
+}
+
+void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+{
+    voice.prepare ({ sampleRate, (juce::uint32) samplesPerBlockExpected, 2 });
+    voice.setFrequency (220.0f, true);
+}
+
+void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
+{
+    info.clearActiveBufferRegion();
+
+    // Process only the region of the buffer JUCE asked us to fill
+    juce::dsp::AudioBlock<float> block (*info.buffer);
+    auto sub = block.getSubBlock ((size_t) info.startSample, (size_t) info.numSamples);
+    voice.process (juce::dsp::ProcessContextReplacing<float> (sub));
+}
+
+void MainComponent::releaseResources()
+{
+    voice.reset();
+}
+```
+
 ## Concepts in one page
 
 - **Time domain vs frequency domain.** Audio samples are a signal over time. The
@@ -354,6 +488,40 @@ The usual use is to process a group of independent channels in one pass: interle
 `IIR::Filter<SIMDRegister<float>>` over it, and de-interleave
 (`SIMDInterleavingHelpers`). Guard the code with `#if JUCE_USE_SIMD`, align data,
 and measure: the gains are largest for many-channel filter banks.
+
+## Build and run
+
+With all the files in place, configure and build from the project folder:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+The build puts the finished app in `build/DspDemo_artefacts/`. With the default
+Makefile or Ninja generators:
+
+| Platform | Run it with |
+| -------- | ----------- |
+| macOS    | `open "build/DspDemo_artefacts/Dsp Demo.app"` |
+| Linux    | `./build/DspDemo_artefacts/Dsp\ Demo` |
+| Windows  | `build\DspDemo_artefacts\Debug\Dsp Demo.exe` |
+
+Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
+example `build/DspDemo_artefacts/Debug/Dsp Demo.app`; build with
+`cmake --build build --config Debug`.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target DspDemo`.
+
+> **"use of undeclared identifier 'juce'"?** CMake projects have no
+> `JuceHeader.h`, so every source file must include the module headers it uses.
+> `MainComponent.h` includes them and `Main.cpp` includes `MainComponent.h`.
+> Without those includes the compiler does not know what `juce::`, `std::`, or
+> `START_JUCE_APPLICATION` mean.
 
 ## Sources
 
