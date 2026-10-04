@@ -69,6 +69,27 @@ cmake -B build
 cmake --build build
 ```
 
+### Run the app
+
+The build puts the finished app in `build/HelloJuce_artefacts/`. With the
+default Makefile or Ninja generators:
+
+| Platform | Run it with                                          |
+| -------- | ---------------------------------------------------- |
+| macOS    | `open "build/HelloJuce_artefacts/Hello JUCE.app"`    |
+| Linux    | `./build/HelloJuce_artefacts/Hello\ JUCE`            |
+| Windows  | `build\HelloJuce_artefacts\Debug\Hello JUCE.exe`    |
+
+Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
+example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with
+`cmake --build build --config Debug`.
+
+> **"The application cannot be opened because its executable is missing"?**
+> CMake creates the empty `.app` bundle at the start of the build and only fills
+> in the executable when compiling and linking succeed. If `cmake --build build`
+> reported errors, fix them and build again, then re-run `open`. Check that the
+> last lines of the build output say `Built target HelloJuce`.
+
 Each JUCE module you use is a `juce::juce_<module>` target to link against. See
 the [CMake API](../CMake%20API.md) for every option.
 
