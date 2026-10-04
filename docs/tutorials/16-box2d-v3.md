@@ -319,6 +319,9 @@ Run the app (`cmake --build` puts it in `build/MusicV3_artefacts/`):
 | Linux    | `./build/MusicV3_artefacts/Physics\ Music\ (Box2D\ v3)` |
 | Windows  | `build\\MusicV3_artefacts\\Debug\\Physics Music (Box2D v3).exe` |
 
+On Windows, the default Visual Studio generator adds the `Debug` folder (add
+`--config Debug` to the build command). Makefile and Ninja builds have no such folder.
+
 If you have already downloaded Box2D, avoid the network fetch with
 `-DFETCHCONTENT_SOURCE_DIR_BOX2D=/path/to/box2d`. On Linux you also need the
 packages in [Linux Dependencies](../Linux%20Dependencies.md), including ALSA.

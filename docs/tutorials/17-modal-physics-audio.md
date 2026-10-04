@@ -384,6 +384,9 @@ Run the app (`cmake --build` puts it in `build/Modal_artefacts/`):
 | Linux    | `./build/Modal_artefacts/Modal\ Physics` |
 | Windows  | `build\\Modal_artefacts\\Debug\\Modal Physics.exe` |
 
+On Windows, the default Visual Studio generator adds the `Debug` folder (add
+`--config Debug` to the build command). Makefile and Ninja builds have no such folder.
+
 If you have already downloaded Box2D, avoid the network fetch with
 `-DFETCHCONTENT_SOURCE_DIR_BOX2D=/path/to/box2d`. On Linux you also need the
 packages in [Linux Dependencies](../Linux%20Dependencies.md), including ALSA.

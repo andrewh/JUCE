@@ -450,8 +450,8 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/Box2DMusic_artefacts/`. With the default
-Makefile or Ninja generators:
+The build puts the finished app in `build/Box2DMusic_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
 
 | Platform | Run it with |
 | -------- | ----------- |
@@ -459,9 +459,10 @@ Makefile or Ninja generators:
 | Linux    | `./build/Box2DMusic_artefacts/Physics\ Music` |
 | Windows  | `build\Box2DMusic_artefacts\Debug\Physics Music.exe` |
 
-Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
-example `build/Box2DMusic_artefacts/Debug/Physics Music.app`; build with
-`cmake --build build --config Debug`.
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/Box2DMusic_artefacts/Debug/Physics Music.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
 
 On Linux you also need the packages in
 [Linux Dependencies](../Linux%20Dependencies.md), including ALSA.

@@ -346,7 +346,7 @@ std::unique_ptr<juce::AudioProcessor> ChannelStrip::createProcessor (int choiceI
     }
 }
 
-bool ChannelStrip::parametersChanged() const           // audio thread: reads only atomics
+bool ChannelStrip::parametersChanged() const           // message thread: compares the parameters with what was built
 {
     for (int i = 0; i < 3; ++i)
         if (slotParams[i]->getIndex() != builtChoices[i]
@@ -560,7 +560,7 @@ std::unique_ptr<juce::AudioProcessor> createProcessor (int choiceIndex)
     }
 }
 
-bool parametersChanged() const           // audio thread: reads only atomics
+bool parametersChanged() const           // message thread: compares the parameters with what was built
 {
     for (int i = 0; i < 3; ++i)
         if (slotParams[i]->getIndex() != builtChoices[i]
@@ -745,6 +745,9 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | macOS    | `open "build/ChannelStrip_artefacts/Standalone/Channel Strip.app"` |
 | Linux    | `./build/ChannelStrip_artefacts/Standalone/Channel\ Strip` |
 | Windows  | `build\ChannelStrip_artefacts\Debug\Standalone\Channel Strip.exe` |
+
+On Windows, the default Visual Studio generator adds the `Debug` folder (build with
+`cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.
 
 The `VST3` (and, on macOS, `AU`) bundles are in the sibling folders `VST3/` and
 `AU/`. To test them in a host, either set `COPY_PLUGIN_AFTER_BUILD TRUE` so that

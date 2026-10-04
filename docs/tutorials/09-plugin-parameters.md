@@ -525,6 +525,9 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | Linux    | `./build/ParametersPlugin_artefacts/Standalone/Parameters\ Plugin` |
 | Windows  | `build\ParametersPlugin_artefacts\Debug\Standalone\Parameters Plugin.exe` |
 
+On Windows, the default Visual Studio generator adds the `Debug` folder (build with
+`cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.
+
 The `VST3` (and, on macOS, `AU`) bundles are in the sibling folders `VST3/` and
 `AU/`. To test them in a host, either set `COPY_PLUGIN_AFTER_BUILD TRUE` so that
 they are installed into the user plug-in folders, or point a host such as JUCE's

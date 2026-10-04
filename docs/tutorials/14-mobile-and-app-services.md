@@ -172,7 +172,7 @@ run it on a simulator or device:
 ```sh
 cmake -B build-ios -G Xcode -DCMAKE_SYSTEM_NAME=iOS \
       -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM=YOUR_TEAM_ID
-open build-ios/MobileServicesDemo.xcodeproj
+open build-ios/*.xcodeproj
 ```
 
 **Android.** JUCE's CMake API does not currently support Android targets, so Android
@@ -618,8 +618,8 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/MobileServicesDemo_artefacts/`. With the default
-Makefile or Ninja generators:
+The build puts the finished app in `build/MobileServicesDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
 
 | Platform | Run it with |
 | -------- | ----------- |
@@ -627,9 +627,10 @@ Makefile or Ninja generators:
 | Linux    | `./build/MobileServicesDemo_artefacts/Mobile\ Services\ Demo` |
 | Windows  | `build\MobileServicesDemo_artefacts\Debug\Mobile Services Demo.exe` |
 
-Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
-example `build/MobileServicesDemo_artefacts/Debug/Mobile Services Demo.app`; build with
-`cmake --build build --config Debug`.
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/MobileServicesDemo_artefacts/Debug/Mobile Services Demo.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

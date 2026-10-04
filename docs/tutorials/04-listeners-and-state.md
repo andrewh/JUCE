@@ -317,8 +317,8 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/ListenersDemo_artefacts/`. With the default
-Makefile or Ninja generators:
+The build puts the finished app in `build/ListenersDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
 
 | Platform | Run it with |
 | -------- | ----------- |
@@ -326,9 +326,10 @@ Makefile or Ninja generators:
 | Linux    | `./build/ListenersDemo_artefacts/Listeners\ Demo` |
 | Windows  | `build\ListenersDemo_artefacts\Debug\Listeners Demo.exe` |
 
-Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
-example `build/ListenersDemo_artefacts/Debug/Listeners Demo.app`; build with
-`cmake --build build --config Debug`.
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/ListenersDemo_artefacts/Debug/Listeners Demo.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

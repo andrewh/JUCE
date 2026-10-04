@@ -9,7 +9,7 @@ context.
 
 ## Set up the project
 
-The project below builds several `MidiMessage`s and shows what each one is. The sections that make sound (the synthesiser and MPE) need an audio callback: change `MainComponent` to derive from `juce::AudioAppComponent` and add `setAudioChannels (0, 2)` and `shutdownAudio()`, exactly as in [Synthesis](06-synthesis.md).
+The project below builds several `MidiMessage`s and shows what each one is. The sections that make sound (the synthesiser and MPE) need an audio callback: change `MainComponent` to derive from `juce::AudioAppComponent`, call `setAudioChannels (0, 2)` in its constructor and `shutdownAudio()` in its destructor, and implement `prepareToPlay()`, `getNextAudioBlock()`, and `releaseResources()`, exactly as in the project in [Synthesis](06-synthesis.md).
 
 This guide builds on [Getting started](01-getting-started.md). Make a copy of the
 `HelloJuce` folder from that tutorial, **without** its `build` folder, and name
@@ -455,8 +455,8 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/MidiDemo_artefacts/`. With the default
-Makefile or Ninja generators:
+The build puts the finished app in `build/MidiDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
+Visual Studio on Windows, which adds the `Debug` folder):
 
 | Platform | Run it with |
 | -------- | ----------- |
@@ -464,9 +464,10 @@ Makefile or Ninja generators:
 | Linux    | `./build/MidiDemo_artefacts/Midi\ Demo` |
 | Windows  | `build\MidiDemo_artefacts\Debug\Midi Demo.exe` |
 
-Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
-example `build/MidiDemo_artefacts/Debug/Midi Demo.app`; build with
-`cmake --build build --config Debug`.
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/MidiDemo_artefacts/Debug/Midi Demo.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

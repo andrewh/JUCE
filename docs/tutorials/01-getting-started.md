@@ -223,9 +223,10 @@ default Makefile or Ninja generators:
 | Linux    | `./build/HelloJuce_artefacts/Hello\ JUCE`            |
 | Windows  | `build\HelloJuce_artefacts\Debug\Hello JUCE.exe`    |
 
-Multi-config generators (Xcode, Visual Studio) add a configuration folder, for
-example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with
-`cmake --build build --config Debug`.
+Xcode and Visual Studio are multi-config generators and add a configuration folder,
+for example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with
+`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
+drop `Debug` from the Windows path.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills
