@@ -1,7 +1,7 @@
 # JUCE tutorials, condensed
 
 Fourteen guides that distil the tutorials at <https://juce.com/learn/tutorials/>
-into one page per topic, plus three original guides on Box2D physics and music (15 to 17). Multi-part tutorials are merged, prose is shortened, and
+into one page per topic, plus four original guides: three on Box2D physics and music (15 to 17) and one on profiling on macOS (18). Multi-part tutorials are merged, prose is shortened, and
 code is updated for the JUCE version in this repository (for example `FontOptions`
 instead of the deprecated `Font` constructors, `ParameterID` for parameters,
 CMake-first project setup). For the full step-by-step walkthroughs, screenshots,
@@ -37,6 +37,7 @@ documentation in the main [README](../../README.md#api-documentation), and check
 | 15 | [Physics as a musical instrument](15-physics-music.md)             | `juce_box2d`, contact listeners, thread-safe hand-off to the audio thread, mapping collisions to notes | Intermediate to advanced |
 | 16 | [Integrating Box2D v3](16-box2d-v3.md)                            | `FetchContent`, ids instead of pointers, hit and sensor events, threading | Advanced |
 | 17 | [A physical audio engine](17-modal-physics-audio.md)               | Modal synthesis, contact-driven excitation, rolling noise, voice management, lock-free hand-off | Advanced |
+| 18 | [Profiling on macOS with dSYM files](18-profiling-macos.md)        | CMake and Xcode dSYM generation, `sample`, Activity Monitor, `xctrace`, incremental builds and ccache (macOS, Apple Silicon) | Intermediate |
 
 ## Where each original tutorial went
 
@@ -105,9 +106,10 @@ documentation in the main [README](../../README.md#api-documentation), and check
 | App analytics collection                                            | 14    |
 | Unlock your plugins through online registration                     | 14    |
 
-Guides 15 to 17 are written for this repository and have no juce.com original. The
+Guides 15 to 18 are written for this repository and have no juce.com original. The
 companion apps are [`examples/Box2DMusic`](../../examples/Box2DMusic) (guide 15) and
-[`examples/Box2DAudioV3`](../../examples/Box2DAudioV3) (guides 16 and 17).
+[`examples/Box2DAudioV3`](../../examples/Box2DAudioV3) (guides 16 and 17). Guide 18
+reuses the `GraphicsDemo` app from guide 02.
 
 ## Notes on the examples
 
