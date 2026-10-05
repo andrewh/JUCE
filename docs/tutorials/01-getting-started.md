@@ -43,7 +43,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(HELLO_JUCE VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(HelloJuce PRODUCT_NAME "Hello JUCE")
 
@@ -61,7 +62,8 @@ target_link_libraries(HelloJuce
             juce::juce_recommended_warning_flags)
 ```
 
-Replace `/path/to/JUCE` with the folder you cloned JUCE into. The next two
+The `CMakeLists.txt` above expects JUCE to be cloned to `~/JUCE`. If yours is
+elsewhere, change the path on the `file (REAL_PATH ...)` line. The next two
 sections give you `Main.cpp`, `MainComponent.h`, and `MainComponent.cpp`;
 [build and run](#build-and-run) once all four files exist.
 
@@ -220,21 +222,16 @@ cmake --build build
 
 ### Run the app
 
-The build puts the finished app in `build/HelloJuce_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
-Visual Studio on Windows, which adds the `Debug` folder):
+The build puts the finished app in `build/HelloJuce_artefacts/`. With CMake's default generator (Makefiles on macOS and Linux):
 
 | Platform | Run it with                                          |
 | -------- | ---------------------------------------------------- |
 | macOS    | `open "build/HelloJuce_artefacts/Hello JUCE.app"`    |
 | Linux    | `./build/HelloJuce_artefacts/Hello\ JUCE`            |
-| Windows  | `"build\HelloJuce_artefacts\Debug\Hello JUCE.exe"`    |
 
-In PowerShell, put `&` before the quoted path.
-
-Xcode and Visual Studio are multi-config generators and add a configuration folder,
+The Xcode generator is multi-config and adds a configuration folder,
 for example `build/HelloJuce_artefacts/Debug/Hello JUCE.app`; build with
-`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
-drop `Debug` from the Windows path.
+`cmake --build build --config Debug`.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

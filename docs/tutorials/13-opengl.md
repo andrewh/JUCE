@@ -4,7 +4,7 @@ Draw hardware-accelerated 3D graphics in a JUCE app with `OpenGLAppComponent` an
 shaders.
 
 **Level:** Advanced  
-**Platforms:** Windows, macOS, Linux, iOS, Android  
+**Platforms:** macOS, Linux, iOS, Android  
 **Module:** link `juce::juce_opengl`. On Linux, JUCE 9 creates OpenGL contexts through
 EGL, so install the EGL development package (for example `libegl-dev`). See
 [Linux Dependencies](../Linux%20Dependencies.md).
@@ -16,19 +16,24 @@ hosts a GL context and the parts of your code that you must write.
 
 The project below is the complete rotating-triangle app from the next section. `MainComponent.h` holds the whole class, so `MainComponent.cpp` only includes it.
 
-This guide builds on [Getting started](01-getting-started.md). Make a copy of the
-`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
-the copy `OpenGLDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+This guide builds on [Getting started](01-getting-started.md), which explains
+the CMake setup and `Main.cpp` in detail. To skip the typing, download the
+starter project, **[OpenGLDemo.zip](downloads/OpenGLDemo.zip)**, and unzip it. It
+contains exactly the four files below:
 
 ```text
 OpenGLDemo/
-├── CMakeLists.txt      # new: renamed target, modules for this guide
-├── Main.cpp            # copied unchanged from tutorial 1
-├── MainComponent.h     # new: replaces the one from tutorial 1
-└── MainComponent.cpp   # new: replaces the one from tutorial 1
+├── CMakeLists.txt
+├── Main.cpp
+├── MainComponent.h
+└── MainComponent.cpp
 ```
 
-In `CMakeLists.txt`, `/path/to/JUCE` stands for the JUCE path you already set in tutorial 1, so keep that path as it is unless JUCE has moved. This `CMakeLists.txt` renames the target to `OpenGLDemo` and links the modules this guide needs.
+If you prefer, create the `OpenGLDemo` folder yourself and copy each file from this
+page. Either way, `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere, change the path on the `file (REAL_PATH ...)` line. This
+`CMakeLists.txt` names the target `OpenGLDemo` and links the modules this guide needs.
+
+<!-- starter-zip: OpenGLDemo -->
 
 **`CMakeLists.txt`**
 
@@ -37,7 +42,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(OPENGLDEMO VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(OpenGLDemo PRODUCT_NAME "OpenGL Demo")
 
@@ -54,6 +60,54 @@ target_link_libraries(OpenGLDemo
     PUBLIC  juce::juce_recommended_config_flags
             juce::juce_recommended_warning_flags)
 ```
+
+**`Main.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+class HelloJuceApplication final : public juce::JUCEApplication
+{
+public:
+    const juce::String getApplicationName() override    { return JUCE_APPLICATION_NAME_STRING; }
+    const juce::String getApplicationVersion() override { return JUCE_APPLICATION_VERSION_STRING; }
+
+    void initialise (const juce::String&) override
+    {
+        mainWindow.reset (new MainWindow (getApplicationName()));
+    }
+
+    void shutdown() override { mainWindow = nullptr; }  // deletes the window
+
+    void systemRequestedQuit() override { quit(); }
+
+    class MainWindow final : public juce::DocumentWindow
+    {
+    public:
+        explicit MainWindow (juce::String name)
+            : DocumentWindow (name, juce::Colours::lightgrey, allButtons)
+        {
+            setUsingNativeTitleBar (true);
+            setContentOwned (new MainComponent(), true);
+            setResizable (true, true);
+            centreWithSize (getWidth(), getHeight());
+            setVisible (true);   // required, or the window never appears
+        }
+
+        void closeButtonPressed() override
+        {
+            juce::JUCEApplication::getInstance()->systemRequestedQuit();
+        }
+    };
+
+private:
+    std::unique_ptr<MainWindow> mainWindow;
+};
+
+START_JUCE_APPLICATION (HelloJuceApplication)
+```
+
+This is the `Main.cpp` from tutorial 1, unchanged, and it stays unchanged for the rest of this guide.
 
 **`MainComponent.h`**
 
@@ -470,21 +524,16 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/OpenGLDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
-Visual Studio on Windows, which adds the `Debug` folder):
+The build puts the finished app in `build/OpenGLDemo_artefacts/`. With CMake's default generator (Makefiles on macOS and Linux):
 
 | Platform | Run it with |
 | -------- | ----------- |
 | macOS    | `open "build/OpenGLDemo_artefacts/OpenGL Demo.app"` |
 | Linux    | `./build/OpenGLDemo_artefacts/OpenGL\ Demo` |
-| Windows  | `"build\OpenGLDemo_artefacts\Debug\OpenGL Demo.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-Xcode and Visual Studio are multi-config generators and add a configuration folder,
+The Xcode generator is multi-config and adds a configuration folder,
 for example `build/OpenGLDemo_artefacts/Debug/OpenGL Demo.app`; build with
-`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
-drop `Debug` from the Windows path.
+`cmake --build build --config Debug`.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

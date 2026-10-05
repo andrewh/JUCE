@@ -13,19 +13,21 @@ Link `juce::juce_audio_utils` and `juce::juce_dsp`.
 
 The project below is a complete three-slot channel strip. The listings in the sections that follow are its parts, so you can read them in context or type them in as you go.
 
-This guide builds on [Audio plug-in basics](08-plugin-basics.md). Make a copy of the
-`MyPlugin` folder from that tutorial, **without** its `build` folder, and name the
-copy `ChannelStrip`. Then replace its contents so that it holds these files (delete
-any file from tutorial 8 that is not listed):
+This guide builds on [Audio plug-in basics](08-plugin-basics.md). To skip the
+typing, download the starter project, **[ChannelStrip.zip](downloads/ChannelStrip.zip)**, and unzip
+it. It contains exactly the three files below. If you prefer, create a new folder
+named `ChannelStrip` yourself and copy each file from this page:
 
 ```text
 ChannelStrip/
-├── CMakeLists.txt        # the build configuration
-├── PluginProcessor.h     # the processor: audio, MIDI, state
-└── PluginProcessor.cpp   # the processor implementation and plug-in entry point
+├── CMakeLists.txt
+├── PluginProcessor.h
+└── PluginProcessor.cpp
 ```
 
-Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+Either way, `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere, change the path on the `file (REAL_PATH ...)` line.
+
+<!-- starter-zip: ChannelStrip -->
 
 **`CMakeLists.txt`**
 
@@ -34,7 +36,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(CHANNELSTRIP VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_plugin(ChannelStrip
     PLUGIN_MANUFACTURER_CODE Manu     # 4 characters, at least one upper-case
@@ -765,11 +768,8 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | -------- | ----------- |
 | macOS    | `open "build/ChannelStrip_artefacts/Standalone/Channel Strip.app"` |
 | Linux    | `./build/ChannelStrip_artefacts/Standalone/Channel\ Strip` |
-| Windows  | `"build\ChannelStrip_artefacts\Debug\Standalone\Channel Strip.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-On Windows, the default Visual Studio generator adds the `Debug` folder (build with
+The Xcode generator adds a `Debug` folder (build with
 `cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.
 
 The `VST3` (and, on macOS, `AU`) bundles are in the sibling folders `VST3/` and

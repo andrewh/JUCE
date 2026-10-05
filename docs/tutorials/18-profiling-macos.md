@@ -151,7 +151,7 @@ Check these first:
   does recompile the affected files, so keep those settings fixed between builds.
 - **Unexpected timestamp changes.** If the JUCE checkout sits in a synced folder, or
   something touches its files, they look modified. List recently changed files with
-  `find /path/to/JUCE/modules -newer build/CMakeCache.txt | head`.
+  `find ~/JUCE/modules -newer build/CMakeCache.txt | head`.
 - **A second build that compiles nothing.** Run the same build command twice in a
   row, with the same configuration, and without changing any file. For the Xcode
   generator that is `cmake --build build --config RelWithDebInfo` both times,

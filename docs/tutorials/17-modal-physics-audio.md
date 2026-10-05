@@ -29,7 +29,7 @@ Copy the `Box2DAudioV3` example out of your JUCE checkout into a new folder, so 
 you can edit it freely:
 
 ```sh
-cp -r /path/to/JUCE/examples/Box2DAudioV3 Box2DAudio
+cp -r ~/JUCE/examples/Box2DAudioV3 Box2DAudio
 ```
 
 ```text
@@ -373,7 +373,7 @@ Configure from the `Box2DAudio` folder, giving it your JUCE checkout, then build
 `Modal` target:
 
 ```sh
-cmake -B build -DBOX2D_AUDIO_JUCE_DIR=/path/to/JUCE
+cmake -B build -DBOX2D_AUDIO_JUCE_DIR="$HOME/JUCE"
 cmake --build build --target Modal
 ```
 
@@ -383,11 +383,8 @@ Run the app (`cmake --build` puts it in `build/Modal_artefacts/`):
 | -------- | ----------- |
 | macOS    | `open "build/Modal_artefacts/Modal Physics.app"` |
 | Linux    | `./build/Modal_artefacts/Modal\ Physics` |
-| Windows  | `"build\Modal_artefacts\Debug\Modal Physics.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-On Windows, the default Visual Studio generator adds the `Debug` folder (add
+The Xcode generator adds a `Debug` folder (add
 `--config Debug` to the build command). Makefile and Ninja builds have no such folder.
 
 If you have already downloaded Box2D, avoid the network fetch with

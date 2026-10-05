@@ -3,7 +3,7 @@
 Building for Android and iOS, and wiring an app to the services around it.
 
 **Level:** Intermediate to advanced  
-**Platforms:** Android, iOS, macOS, Windows (varies per section)
+**Platforms:** Android, iOS, macOS (varies per section)
 
 Most of these features need accounts and configuration on external services, and
 those steps change often. This guide gives the JUCE side of each, and points out what
@@ -14,19 +14,24 @@ account-side steps.
 
 The project below shows the screen details a mobile app has to cope with (size, orientation, scale, and DPI), links every module the later sections use, and runs on desktop as well as iOS. Use the desktop build to try the in-app purchase, notification, analytics, and unlocking code that the platform allows, and a phone or tablet for the rest.
 
-This guide builds on [Getting started](01-getting-started.md). Make a copy of the
-`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
-the copy `MobileServicesDemo`. Replace all four files so the folder looks like this:
+This guide builds on [Getting started](01-getting-started.md). To skip the typing,
+download the starter project, **[MobileServicesDemo.zip](downloads/MobileServicesDemo.zip)**, and unzip it. It
+contains exactly the four files below. If you prefer, create the `MobileServicesDemo` folder
+yourself and copy each file from this page. Unlike the other guides, this one
+changes tutorial 1's `Main.cpp` for mobile.
 
 ```text
 MobileServicesDemo/
-├── CMakeLists.txt      # new: renamed target, modules for this guide
-├── Main.cpp            # new: tutorial 1's, changed for mobile
-├── MainComponent.h     # new: replaces the one from tutorial 1
-└── MainComponent.cpp   # new: replaces the one from tutorial 1
+├── CMakeLists.txt
+├── Main.cpp
+├── MainComponent.h
+└── MainComponent.cpp
 ```
 
-In `CMakeLists.txt`, `/path/to/JUCE` stands for the JUCE path you already set in tutorial 1, so keep that path as it is unless JUCE has moved. This `CMakeLists.txt` renames the target to `MobileServicesDemo` and links the modules this guide needs.
+Either way, `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere, change the path on the `file (REAL_PATH ...)` line. This `CMakeLists.txt` names
+the target `MobileServicesDemo` and links the modules this guide needs.
+
+<!-- starter-zip: MobileServicesDemo -->
 
 **`CMakeLists.txt`**
 
@@ -35,7 +40,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(MOBILESERVICESDEMO VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(MobileServicesDemo PRODUCT_NAME "Mobile Services Demo"
     NEEDS_STORE_KIT TRUE            # links StoreKit and enables juce::InAppPurchases on Apple platforms
@@ -632,21 +638,16 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/MobileServicesDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
-Visual Studio on Windows, which adds the `Debug` folder):
+The build puts the finished app in `build/MobileServicesDemo_artefacts/`. With CMake's default generator (Makefiles on macOS and Linux):
 
 | Platform | Run it with |
 | -------- | ----------- |
 | macOS    | `open "build/MobileServicesDemo_artefacts/Mobile Services Demo.app"` |
 | Linux    | `./build/MobileServicesDemo_artefacts/Mobile\ Services\ Demo` |
-| Windows  | `"build\MobileServicesDemo_artefacts\Debug\Mobile Services Demo.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-Xcode and Visual Studio are multi-config generators and add a configuration folder,
+The Xcode generator is multi-config and adds a configuration folder,
 for example `build/MobileServicesDemo_artefacts/Debug/Mobile Services Demo.app`; build with
-`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
-drop `Debug` from the Windows path.
+`cmake --build build --config Debug`.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills

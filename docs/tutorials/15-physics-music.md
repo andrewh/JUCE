@@ -21,7 +21,7 @@ Copy the example out of your JUCE checkout into a new folder, so that you can ed
 it freely:
 
 ```sh
-cp -r /path/to/JUCE/examples/Box2DMusic PhysicsMusic
+cp -r ~/JUCE/examples/Box2DMusic PhysicsMusic
 ```
 
 The folder holds `Main.cpp`, `MainComponent.cpp`, `MainComponent.h`,
@@ -37,7 +37,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(BOX2D_MUSIC VERSION 1.0.0)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(Box2DMusic
     PRODUCT_NAME "Physics Music"
@@ -68,7 +69,8 @@ target_link_libraries(Box2DMusic
         juce::juce_recommended_warning_flags)
 ```
 
-Replace `/path/to/JUCE` with the folder you cloned JUCE into. The `juce_box2d`
+The `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere,
+change the path on the `file (REAL_PATH ...)` line. The `juce_box2d`
 module is part of JUCE, so nothing else needs downloading.
 
 ## What JUCE ships
@@ -451,21 +453,16 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/Box2DMusic_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
-Visual Studio on Windows, which adds the `Debug` folder):
+The build puts the finished app in `build/Box2DMusic_artefacts/`. With CMake's default generator (Makefiles on macOS and Linux):
 
 | Platform | Run it with |
 | -------- | ----------- |
 | macOS    | `open "build/Box2DMusic_artefacts/Physics Music.app"` |
 | Linux    | `./build/Box2DMusic_artefacts/Physics\ Music` |
-| Windows  | `"build\Box2DMusic_artefacts\Debug\Physics Music.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-Xcode and Visual Studio are multi-config generators and add a configuration folder,
+The Xcode generator is multi-config and adds a configuration folder,
 for example `build/Box2DMusic_artefacts/Debug/Physics Music.app`; build with
-`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
-drop `Debug` from the Windows path.
+`cmake --build build --config Debug`.
 
 On Linux you also need the packages in
 [Linux Dependencies](../Linux%20Dependencies.md), including ALSA.

@@ -11,7 +11,9 @@ legacy VST2 if you already hold the SDK)
 
 The project below is a complete stereo pass-through plug-in with an editor, which builds as a VST3, an Audio Unit (on macOS), and a standalone app. The snippets that follow extend it.
 
-Create a new, empty folder named `MyPlugin` containing these files:
+To skip the typing, download the starter project, **[MyPlugin.zip](downloads/MyPlugin.zip)**,
+and unzip it. It contains exactly the five files below. If you prefer, create a
+new, empty folder named `MyPlugin` yourself and copy each file from this page:
 
 ```text
 MyPlugin/
@@ -22,7 +24,9 @@ MyPlugin/
 └── PluginEditor.cpp      # the editor implementation
 ```
 
-Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+Either way, `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere, change the path on the `file (REAL_PATH ...)` line.
+
+<!-- starter-zip: MyPlugin -->
 
 **`CMakeLists.txt`**
 
@@ -31,7 +35,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(MYPLUGIN VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_plugin(MyPlugin
     PLUGIN_MANUFACTURER_CODE Manu     # 4 characters, at least one upper-case
@@ -472,11 +477,8 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | -------- | ----------- |
 | macOS    | `open "build/MyPlugin_artefacts/Standalone/My Plugin.app"` |
 | Linux    | `./build/MyPlugin_artefacts/Standalone/My\ Plugin` |
-| Windows  | `"build\MyPlugin_artefacts\Debug\Standalone\My Plugin.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-On Windows, the default Visual Studio generator adds the `Debug` folder (build with
+The Xcode generator adds a `Debug` folder (build with
 `cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.
 
 The `VST3` (and, on macOS, `AU`) bundles are in the sibling folders `VST3/` and
