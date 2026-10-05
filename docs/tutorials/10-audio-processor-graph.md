@@ -768,11 +768,8 @@ try the plug-in is the `Standalone` format, which runs it as an ordinary app:
 | -------- | ----------- |
 | macOS    | `open "build/ChannelStrip_artefacts/Standalone/Channel Strip.app"` |
 | Linux    | `./build/ChannelStrip_artefacts/Standalone/Channel\ Strip` |
-| Windows  | `"build\ChannelStrip_artefacts\Debug\Standalone\Channel Strip.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-On Windows, the default Visual Studio generator adds the `Debug` folder (build with
+The Xcode generator adds a `Debug` folder (build with
 `cmake --build build --config Debug`). Makefile and Ninja builds have no such folder.
 
 The `VST3` (and, on macOS, `AU`) bundles are in the sibling folders `VST3/` and

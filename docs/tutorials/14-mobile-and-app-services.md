@@ -3,7 +3,7 @@
 Building for Android and iOS, and wiring an app to the services around it.
 
 **Level:** Intermediate to advanced  
-**Platforms:** Android, iOS, macOS, Windows (varies per section)
+**Platforms:** Android, iOS, macOS (varies per section)
 
 Most of these features need accounts and configuration on external services, and
 those steps change often. This guide gives the JUCE side of each, and points out what
@@ -638,21 +638,16 @@ cmake -B build
 cmake --build build
 ```
 
-The build puts the finished app in `build/MobileServicesDemo_artefacts/`. With CMake's default generator on each platform (Makefiles on macOS and Linux, and
-Visual Studio on Windows, which adds the `Debug` folder):
+The build puts the finished app in `build/MobileServicesDemo_artefacts/`. With CMake's default generator (Makefiles on macOS and Linux):
 
 | Platform | Run it with |
 | -------- | ----------- |
 | macOS    | `open "build/MobileServicesDemo_artefacts/Mobile Services Demo.app"` |
 | Linux    | `./build/MobileServicesDemo_artefacts/Mobile\ Services\ Demo` |
-| Windows  | `"build\MobileServicesDemo_artefacts\Debug\Mobile Services Demo.exe"` |
 
-In PowerShell, put `&` before the quoted path.
-
-Xcode and Visual Studio are multi-config generators and add a configuration folder,
+The Xcode generator is multi-config and adds a configuration folder,
 for example `build/MobileServicesDemo_artefacts/Debug/Mobile Services Demo.app`; build with
-`cmake --build build --config Debug`. With Ninja there is no configuration folder, so
-drop `Debug` from the Windows path.
+`cmake --build build --config Debug`.
 
 > **"The application cannot be opened because its executable is missing"?**
 > CMake creates the empty `.app` bundle at the start of the build and only fills
