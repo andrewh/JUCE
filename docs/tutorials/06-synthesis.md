@@ -8,10 +8,9 @@ instrument.
 
 All the sound in this guide is written into `info.buffer` between
 `info.startSample` and `info.startSample + info.numSamples`. Audio is `float`
-data where `1.0` and `-1.0` are full scale, so the output is **very** loud at full
-scale. Keep your system volume low while you work through the steps, and read the
-[level control](#step-4-control-the-level-in-decibels) step before you raise
-anything.
+data where `1.0` and `-1.0` are full scale. Every step keeps its output well below
+that, at a comfortable listening level, so there is no need to turn your volume
+down before you run any of them.
 
 ## Step 1: set up the project
 
@@ -132,7 +131,7 @@ void MainComponent::releaseResources() {}
 
 ### White noise
 
-Build and run it (turn your volume down first). You should hear quiet hiss.
+Build and run it. You should hear quiet hiss.
 
 `getNextAudioBlock()` fills the block with random values. `Random::nextFloat()`
 returns `0..1`, so the code scales and centres it to `-0.125 .. +0.125`, which is
@@ -524,8 +523,8 @@ Build and run. **Level** starts at -24 dB, which is slightly quieter than the
 earlier steps. Drag it to the bottom for silence and watch the read-out change to
 "-inf dB". Type a value such as `-12` into the text box to set it exactly.
 
-- The slider stops at -6 dB, so a full-scale source can never reach full-scale
-  output by accident. Raise the top of the range if you need more volume.
+- The slider starts at -24 dB and stops at -6 dB, so no setting can reach full
+  scale. Raise the top of the range if you need more volume.
 - Use one "minus infinity" floor everywhere. `gainToDecibels (gain, -100.0f)`
   and `decibelsToGain (db, -100.0f)` take it as an explicit argument.
 - `level` is written by the GUI thread and read by the audio thread, so it is a
