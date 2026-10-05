@@ -24,7 +24,7 @@ ParametersPlugin/
 └── PluginEditor.cpp
 ```
 
-Either way, replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+Either way, `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere, change the path on the `file (REAL_PATH ...)` line.
 
 <!-- starter-zip: ParametersPlugin -->
 
@@ -35,7 +35,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(PARAMETERS_PLUGIN VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_plugin(ParametersPlugin
     PLUGIN_MANUFACTURER_CODE Manu     # 4 characters, at least one upper-case

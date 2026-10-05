@@ -25,8 +25,7 @@ MidiDemo/
 ```
 
 If you prefer, create the `MidiDemo` folder yourself and copy each file from this
-page. Either way, `/path/to/JUCE` in `CMakeLists.txt` stands for the JUCE path
-you used in tutorial 1, so change it to point at your copy of JUCE. This
+page. Either way, `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere, change the path on the `file (REAL_PATH ...)` line. This
 `CMakeLists.txt` names the target `MidiDemo` and links the modules this guide needs.
 
 <!-- starter-zip: MidiDemo -->
@@ -38,7 +37,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(MIDIDEMO VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(MidiDemo PRODUCT_NAME "Midi Demo")
 

@@ -43,7 +43,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(HELLO_JUCE VERSION 0.0.1)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(HelloJuce PRODUCT_NAME "Hello JUCE")
 
@@ -61,7 +62,8 @@ target_link_libraries(HelloJuce
             juce::juce_recommended_warning_flags)
 ```
 
-Replace `/path/to/JUCE` with the folder you cloned JUCE into. The next two
+The `CMakeLists.txt` above expects JUCE to be cloned to `~/JUCE`. If yours is
+elsewhere, change the path on the `file (REAL_PATH ...)` line. The next two
 sections give you `Main.cpp`, `MainComponent.h`, and `MainComponent.cpp`;
 [build and run](#build-and-run) once all four files exist.
 

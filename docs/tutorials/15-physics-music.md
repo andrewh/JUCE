@@ -21,7 +21,7 @@ Copy the example out of your JUCE checkout into a new folder, so that you can ed
 it freely:
 
 ```sh
-cp -r /path/to/JUCE/examples/Box2DMusic PhysicsMusic
+cp -r ~/JUCE/examples/Box2DMusic PhysicsMusic
 ```
 
 The folder holds `Main.cpp`, `MainComponent.cpp`, `MainComponent.h`,
@@ -37,7 +37,8 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "macOS architectures")  # must come before project()
 project(BOX2D_MUSIC VERSION 1.0.0)
 
-add_subdirectory(/path/to/JUCE JUCE)   # or find_package (JUCE CONFIG REQUIRED)
+file(REAL_PATH "~/JUCE" JUCE_DIR EXPAND_TILDE)   # JUCE cloned to ~/JUCE; or use find_package (JUCE CONFIG REQUIRED)
+add_subdirectory(${JUCE_DIR} JUCE)
 
 juce_add_gui_app(Box2DMusic
     PRODUCT_NAME "Physics Music"
@@ -68,7 +69,8 @@ target_link_libraries(Box2DMusic
         juce::juce_recommended_warning_flags)
 ```
 
-Replace `/path/to/JUCE` with the folder you cloned JUCE into. The `juce_box2d`
+The `CMakeLists.txt` expects JUCE to be cloned to `~/JUCE`. If yours is elsewhere,
+change the path on the `file (REAL_PATH ...)` line. The `juce_box2d`
 module is part of JUCE, so nothing else needs downloading.
 
 ## What JUCE ships

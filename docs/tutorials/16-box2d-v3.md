@@ -21,7 +21,7 @@ Copy the `Box2DAudioV3` example out of your JUCE checkout into a new folder, so 
 you can edit it freely:
 
 ```sh
-cp -r /path/to/JUCE/examples/Box2DAudioV3 Box2DAudio
+cp -r ~/JUCE/examples/Box2DAudioV3 Box2DAudio
 ```
 
 ```text
@@ -308,7 +308,7 @@ Configure from the `Box2DAudio` folder, giving it your JUCE checkout, then build
 `MusicV3` target:
 
 ```sh
-cmake -B build -DBOX2D_AUDIO_JUCE_DIR=/path/to/JUCE
+cmake -B build -DBOX2D_AUDIO_JUCE_DIR="$HOME/JUCE"
 cmake --build build --target MusicV3
 ```
 
