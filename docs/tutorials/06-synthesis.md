@@ -577,8 +577,9 @@ Build and run. **Level** starts at -24 dB, which is slightly quieter than the
 earlier steps. Drag it to the bottom for silence and watch the read-out change to
 "-inf dB". Type a value such as `-12` into the text box to set it exactly.
 
-- The slider starts at -24 dB and stops at -6 dB, so no setting can reach full
-  scale. Raise the top of the range if you need more volume.
+- The slider starts at -24 dB and stops at -6 dB, so no setting can push a single
+  source to full scale. (Several simultaneous synth voices add together, as the
+  next step explains.) Raise the top of the range if you need more volume.
 - Use one "minus infinity" floor everywhere. `gainToDecibels (gain, -100.0f)`
   and `decibelsToGain (db, -100.0f)` take it as an explicit argument.
 - `level` is written by the GUI thread and read by the audio thread, so it is a
@@ -685,7 +686,7 @@ Next, in `MainComponent`, add the new mode and its render function:
 
     void renderNoise (const juce::AudioSourceChannelInfo& info);
     void renderSine (const juce::AudioSourceChannelInfo& info);
-    void renderSynth (const juce::AudioSourceChannelInfo& info);
+    void renderSynth (const juce::AudioSourceChannelInfo& info, const juce::MidiBuffer& midi);
     void applyLevel (const juce::AudioSourceChannelInfo& info);
 ```
 
@@ -726,13 +727,11 @@ inactive in the new mode, since the pitch comes from the keys. Replace the
     };
 ```
 
-Then wire up the keyboard, MIDI, and voices before `setSize`, and make the
-window taller to fit the keyboard:
+Then add the keyboard and the voices before `setSize`, and make the window taller
+to fit the keyboard:
 
 ```cpp
     addAndMakeVisible (keyboard);
-    keyboardState.addListener (&midiCollector);                      // on-screen keys -> collector
-    deviceManager.addMidiInputDeviceCallback ({}, &midiCollector);   // hardware keys, if any
 
     for (int i = 0; i < 8; ++i)
         synth.addVoice (new SineVoice());
@@ -740,6 +739,20 @@ window taller to fit the keyboard:
     synth.addSound (new SineSound());
 
     setSize (600, 300);
+```
+
+Connect the MIDI sources at the **end** of the constructor, after
+`setAudioChannels()`. That call opens the device and runs `prepareToPlay()`,
+which calls `midiCollector.reset()`, and a collector must be reset before it
+receives any messages:
+
+```cpp
+    setSize (600, 300);
+    setAudioChannels (0, 2);   // no inputs, two outputs; this runs prepareToPlay()
+
+    keyboardState.addListener (&midiCollector);                      // on-screen keys -> collector
+    deviceManager.addMidiInputDeviceCallback ({}, &midiCollector);   // hardware keys, if any
+}
 ```
 
 Undo the wiring in the destructor, before `shutdownAudio()`:
@@ -762,13 +775,19 @@ Tell the synthesiser and the collector the sample rate in `prepareToPlay()`:
     midiCollector.reset (sampleRate);
 ```
 
-Replace `getNextAudioBlock()`. When the mode changes, `allNotesOff()` stops
-notes that were still sounding, so they do not return later:
+Replace `getNextAudioBlock()`. It takes the pending MIDI from the collector on
+every block, whatever the mode, and passes it to `renderSynth()` only in synth
+mode. When the mode changes, `allNotesOff()` stops notes that were still sounding,
+so they do not return later:
 
 ```cpp
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
 {
     auto currentMode = mode.load();
+
+    // Always drain the collector, so notes pressed in another mode are not replayed later
+    juce::MidiBuffer incoming;
+    midiCollector.removeNextBlockOfMessages (incoming, info.numSamples);
 
     if (currentMode != lastMode)
     {
@@ -777,7 +796,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
     }
 
     if (currentMode == midiSynth)
-        renderSynth (info);
+        renderSynth (info, incoming);
     else if (currentMode == sine)
         renderSine (info);
     else
@@ -790,13 +809,10 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
 Add `renderSynth()` before `applyLevel()`:
 
 ```cpp
-void MainComponent::renderSynth (const juce::AudioSourceChannelInfo& info)
+void MainComponent::renderSynth (const juce::AudioSourceChannelInfo& info, const juce::MidiBuffer& midi)
 {
     info.clearActiveBufferRegion();   // Synthesiser adds to the buffer, so start from silence
-
-    juce::MidiBuffer incoming;
-    midiCollector.removeNextBlockOfMessages (incoming, info.numSamples);
-    synth.renderNextBlock (*info.buffer, incoming, info.startSample, info.numSamples);
+    synth.renderNextBlock (*info.buffer, midi, info.startSample, info.numSamples);
 }
 ```
 
@@ -815,10 +831,15 @@ keyboard). Hold several keys to hear polyphony. If you have a hardware MIDI
 keyboard, it works too once the system has enabled it.
 
 - Clear the buffer before rendering: `Synthesiser` *adds* to it.
-- `renderNextBlock()` splits the block at each MIDI event's timestamp, so notes
-  start sample-accurately.
+- `renderNextBlock()` splits the block at the MIDI events' timestamps, so notes
+  start at the right moment within the block. By default the sub-blocks are at
+  least 32 samples long, which keeps timing accurate to under a millisecond; call
+  `synth.setMinimumRenderingSubdivisionSize()` to change that.
 - The collector is drained in every mode, so notes pressed while another mode is
   active are not stored up and played in a burst later.
+- The level slider cannot protect against polyphony. Eight voices at up to 0.25
+  each can sum to 2.0, so pressing many keys hard can still clip. In a real
+  instrument, scale each voice by one over the number of voices, or add a limiter.
 - Enable hardware MIDI inputs with
   `deviceManager.setMidiInputDeviceEnabled (info.identifier, true)`, for example
   from an `AudioDeviceSelectorComponent` with MIDI inputs shown.
@@ -885,7 +906,7 @@ Then, in `MainComponent`, add the mode and the render and table-building functio
 
     void renderNoise (const juce::AudioSourceChannelInfo& info);
     void renderSine (const juce::AudioSourceChannelInfo& info);
-    void renderSynth (const juce::AudioSourceChannelInfo& info);
+    void renderSynth (const juce::AudioSourceChannelInfo& info, const juce::MidiBuffer& midi);
     void renderWavetable (const juce::AudioSourceChannelInfo& info);
     void applyLevel (const juce::AudioSourceChannelInfo& info);
 
@@ -914,7 +935,7 @@ Add the new case to `getNextAudioBlock()`:
 
 ```cpp
     if (currentMode == midiSynth)
-        renderSynth (info);
+        renderSynth (info, incoming);
     else if (currentMode == wavetable)
         renderWavetable (info);
     else if (currentMode == sine)
@@ -1154,7 +1175,7 @@ private:
 
     void renderNoise (const juce::AudioSourceChannelInfo& info);
     void renderSine (const juce::AudioSourceChannelInfo& info);
-    void renderSynth (const juce::AudioSourceChannelInfo& info);
+    void renderSynth (const juce::AudioSourceChannelInfo& info, const juce::MidiBuffer& midi);
     void renderWavetable (const juce::AudioSourceChannelInfo& info);
 
     static juce::AudioSampleBuffer createWavetable (int tableSize = 128);
@@ -1232,8 +1253,6 @@ MainComponent::MainComponent()
     levelSlider.setValue (-24.0, juce::sendNotificationSync);
 
     addAndMakeVisible (keyboard);
-    keyboardState.addListener (&midiCollector);                      // on-screen keys -> collector
-    deviceManager.addMidiInputDeviceCallback ({}, &midiCollector);   // hardware keys, if any
 
     for (int i = 0; i < 8; ++i)
         synth.addVoice (new SineVoice());
@@ -1241,7 +1260,10 @@ MainComponent::MainComponent()
     synth.addSound (new SineSound());
 
     setSize (600, 300);
-    setAudioChannels (0, 2);   // no inputs, two outputs
+    setAudioChannels (0, 2);   // no inputs, two outputs; this runs prepareToPlay()
+
+    keyboardState.addListener (&midiCollector);                      // on-screen keys -> collector
+    deviceManager.addMidiInputDeviceCallback ({}, &midiCollector);   // hardware keys, if any
 }
 
 MainComponent::~MainComponent()
@@ -1269,6 +1291,10 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
 {
     auto currentMode = mode.load();
 
+    // Always drain the collector, so notes pressed in another mode are not replayed later
+    juce::MidiBuffer incoming;
+    midiCollector.removeNextBlockOfMessages (incoming, info.numSamples);
+
     if (currentMode != lastMode)
     {
         synth.allNotesOff (0, false);   // do not leave notes hanging when the mode changes
@@ -1276,7 +1302,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
     }
 
     if (currentMode == midiSynth)
-        renderSynth (info);
+        renderSynth (info, incoming);
     else if (currentMode == wavetable)
         renderWavetable (info);
     else if (currentMode == sine)
@@ -1287,13 +1313,10 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
     applyLevel (info);
 }
 
-void MainComponent::renderSynth (const juce::AudioSourceChannelInfo& info)
+void MainComponent::renderSynth (const juce::AudioSourceChannelInfo& info, const juce::MidiBuffer& midi)
 {
     info.clearActiveBufferRegion();   // Synthesiser adds to the buffer, so start from silence
-
-    juce::MidiBuffer incoming;
-    midiCollector.removeNextBlockOfMessages (incoming, info.numSamples);
-    synth.renderNextBlock (*info.buffer, incoming, info.startSample, info.numSamples);
+    synth.renderNextBlock (*info.buffer, midi, info.startSample, info.numSamples);
 }
 
 void MainComponent::renderWavetable (const juce::AudioSourceChannelInfo& info)
