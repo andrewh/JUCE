@@ -28,19 +28,25 @@ and ends with what to try. Build and run after each step (see
 [Build and run](#build-and-run)). The [complete source](#complete-source) at the end
 shows both files as they look after step 6, for checking your work.
 
-This guide builds on [Getting started](01-getting-started.md). Make a copy of the
-`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
-the copy `AudioDemo`. Keep `Main.cpp` exactly as it is, then replace the other three files so the folder looks like this:
+This guide builds on [Getting started](01-getting-started.md), which explains
+the CMake setup and `Main.cpp` in detail. To skip the typing, download the
+starter project, **[AudioDemo.zip](downloads/AudioDemo.zip)**, and unzip it. It
+contains exactly the four files below:
 
 ```text
 AudioDemo/
-├── CMakeLists.txt      # new: renamed target, modules for this guide
-├── Main.cpp            # copied unchanged from tutorial 1
-├── MainComponent.h     # new: replaces the one from tutorial 1
-└── MainComponent.cpp   # new: replaces the one from tutorial 1
+├── CMakeLists.txt
+├── Main.cpp
+├── MainComponent.h
+└── MainComponent.cpp
 ```
 
-In `CMakeLists.txt`, `/path/to/JUCE` stands for the JUCE path you already set in tutorial 1, so keep that path as it is unless JUCE has moved. This `CMakeLists.txt` renames the target to `AudioDemo` and links the modules this guide needs.
+If you prefer, create the `AudioDemo` folder yourself and copy each file from this
+page. Either way, `/path/to/JUCE` in `CMakeLists.txt` stands for the JUCE path
+you used in tutorial 1, so change it to point at your copy of JUCE. This
+`CMakeLists.txt` names the target `AudioDemo` and links the modules this guide needs.
+
+<!-- starter-zip: AudioDemo -->
 
 **`CMakeLists.txt`**
 
@@ -67,6 +73,54 @@ target_link_libraries(AudioDemo
     PUBLIC  juce::juce_recommended_config_flags
             juce::juce_recommended_warning_flags)
 ```
+
+**`Main.cpp`**
+
+```cpp
+#include "MainComponent.h"
+
+class HelloJuceApplication final : public juce::JUCEApplication
+{
+public:
+    const juce::String getApplicationName() override    { return JUCE_APPLICATION_NAME_STRING; }
+    const juce::String getApplicationVersion() override { return JUCE_APPLICATION_VERSION_STRING; }
+
+    void initialise (const juce::String&) override
+    {
+        mainWindow.reset (new MainWindow (getApplicationName()));
+    }
+
+    void shutdown() override { mainWindow = nullptr; }  // deletes the window
+
+    void systemRequestedQuit() override { quit(); }
+
+    class MainWindow final : public juce::DocumentWindow
+    {
+    public:
+        explicit MainWindow (juce::String name)
+            : DocumentWindow (name, juce::Colours::lightgrey, allButtons)
+        {
+            setUsingNativeTitleBar (true);
+            setContentOwned (new MainComponent(), true);
+            setResizable (true, true);
+            centreWithSize (getWidth(), getHeight());
+            setVisible (true);   // required, or the window never appears
+        }
+
+        void closeButtonPressed() override
+        {
+            juce::JUCEApplication::getInstance()->systemRequestedQuit();
+        }
+    };
+
+private:
+    std::unique_ptr<MainWindow> mainWindow;
+};
+
+START_JUCE_APPLICATION (HelloJuceApplication)
+```
+
+This is the `Main.cpp` from tutorial 1, unchanged, and it stays unchanged for the rest of this guide.
 
 **`MainComponent.h`**
 

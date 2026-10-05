@@ -10,21 +10,23 @@ and connect the GUI, using `AudioProcessorValueTreeState`.
 
 The project below is a gain plug-in whose gain, invert, and mode controls are `AudioProcessorValueTreeState` parameters with attached GUI controls and saved state. It is the finished result of the last section, and the sections before it explain how each piece works and the hand-written alternative.
 
-This guide builds on [Audio plug-in basics](08-plugin-basics.md). Make a copy of the
-`MyPlugin` folder from that tutorial, **without** its `build` folder, and name the
-copy `ParametersPlugin`. Then replace its contents so that it holds these files (delete
-any file from tutorial 8 that is not listed):
+This guide builds on [Audio plug-in basics](08-plugin-basics.md). To skip the
+typing, download the starter project, **[ParametersPlugin.zip](downloads/ParametersPlugin.zip)**, and unzip
+it. It contains exactly the five files below. If you prefer, create a new folder
+named `ParametersPlugin` yourself and copy each file from this page:
 
 ```text
 ParametersPlugin/
-├── CMakeLists.txt        # the build configuration
-├── PluginProcessor.h     # the processor: audio, MIDI, state
-├── PluginProcessor.cpp   # the processor implementation and plug-in entry point
-├── PluginEditor.h        # the editor: the GUI
-└── PluginEditor.cpp      # the editor implementation
+├── CMakeLists.txt
+├── PluginProcessor.h
+├── PluginProcessor.cpp
+├── PluginEditor.h
+└── PluginEditor.cpp
 ```
 
-Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+Either way, replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+
+<!-- starter-zip: ParametersPlugin -->
 
 **`CMakeLists.txt`**
 

@@ -13,19 +13,21 @@ Link `juce::juce_audio_utils` and `juce::juce_dsp`.
 
 The project below is a complete three-slot channel strip. The listings in the sections that follow are its parts, so you can read them in context or type them in as you go.
 
-This guide builds on [Audio plug-in basics](08-plugin-basics.md). Make a copy of the
-`MyPlugin` folder from that tutorial, **without** its `build` folder, and name the
-copy `ChannelStrip`. Then replace its contents so that it holds these files (delete
-any file from tutorial 8 that is not listed):
+This guide builds on [Audio plug-in basics](08-plugin-basics.md). To skip the
+typing, download the starter project, **[ChannelStrip.zip](downloads/ChannelStrip.zip)**, and unzip
+it. It contains exactly the three files below. If you prefer, create a new folder
+named `ChannelStrip` yourself and copy each file from this page:
 
 ```text
 ChannelStrip/
-├── CMakeLists.txt        # the build configuration
-├── PluginProcessor.h     # the processor: audio, MIDI, state
-└── PluginProcessor.cpp   # the processor implementation and plug-in entry point
+├── CMakeLists.txt
+├── PluginProcessor.h
+└── PluginProcessor.cpp
 ```
 
-Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+Either way, replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+
+<!-- starter-zip: ChannelStrip -->
 
 **`CMakeLists.txt`**
 

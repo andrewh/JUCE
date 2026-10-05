@@ -11,7 +11,9 @@ legacy VST2 if you already hold the SDK)
 
 The project below is a complete stereo pass-through plug-in with an editor, which builds as a VST3, an Audio Unit (on macOS), and a standalone app. The snippets that follow extend it.
 
-Create a new, empty folder named `MyPlugin` containing these files:
+To skip the typing, download the starter project, **[MyPlugin.zip](downloads/MyPlugin.zip)**,
+and unzip it. It contains exactly the five files below. If you prefer, create a
+new, empty folder named `MyPlugin` yourself and copy each file from this page:
 
 ```text
 MyPlugin/
@@ -22,7 +24,9 @@ MyPlugin/
 └── PluginEditor.cpp      # the editor implementation
 ```
 
-Replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+Either way, replace `/path/to/JUCE` in `CMakeLists.txt` with the folder you cloned JUCE into.
+
+<!-- starter-zip: MyPlugin -->
 
 **`CMakeLists.txt`**
 

@@ -14,19 +14,25 @@ account-side steps.
 
 The project below shows the screen details a mobile app has to cope with (size, orientation, scale, and DPI), links every module the later sections use, and runs on desktop as well as iOS. Use the desktop build to try the in-app purchase, notification, analytics, and unlocking code that the platform allows, and a phone or tablet for the rest.
 
-This guide builds on [Getting started](01-getting-started.md). Make a copy of the
-`HelloJuce` folder from that tutorial, **without** its `build` folder, and name
-the copy `MobileServicesDemo`. Replace all four files so the folder looks like this:
+This guide builds on [Getting started](01-getting-started.md). To skip the typing,
+download the starter project, **[MobileServicesDemo.zip](downloads/MobileServicesDemo.zip)**, and unzip it. It
+contains exactly the four files below. If you prefer, create the `MobileServicesDemo` folder
+yourself and copy each file from this page. Unlike the other guides, this one
+changes tutorial 1's `Main.cpp` for mobile.
 
 ```text
 MobileServicesDemo/
-├── CMakeLists.txt      # new: renamed target, modules for this guide
-├── Main.cpp            # new: tutorial 1's, changed for mobile
-├── MainComponent.h     # new: replaces the one from tutorial 1
-└── MainComponent.cpp   # new: replaces the one from tutorial 1
+├── CMakeLists.txt
+├── Main.cpp
+├── MainComponent.h
+└── MainComponent.cpp
 ```
 
-In `CMakeLists.txt`, `/path/to/JUCE` stands for the JUCE path you already set in tutorial 1, so keep that path as it is unless JUCE has moved. This `CMakeLists.txt` renames the target to `MobileServicesDemo` and links the modules this guide needs.
+Either way, `/path/to/JUCE` in `CMakeLists.txt` stands for the JUCE path you used in
+tutorial 1, so change it to point at your copy of JUCE. This `CMakeLists.txt` names
+the target `MobileServicesDemo` and links the modules this guide needs.
+
+<!-- starter-zip: MobileServicesDemo -->
 
 **`CMakeLists.txt`**
 
