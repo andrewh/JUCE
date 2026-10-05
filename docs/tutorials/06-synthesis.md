@@ -8,9 +8,10 @@ instrument.
 
 All the sound in this guide is written into `info.buffer` between
 `info.startSample` and `info.startSample + info.numSamples`. Audio is `float`
-data where `1.0` and `-1.0` are full scale. Every step keeps its output well below
-that, at a comfortable listening level, so there is no need to turn your volume
-down before you run any of them.
+data where `1.0` and `-1.0` are full scale. The noise, sine, and wavetable sources
+stay well below that at the default settings. The one exception is the MIDI synth
+in step 5, where many keys held at once can add up past full scale, so leave the
+**Level** slider low there and see the note at the end of that step.
 
 ## Step 1: set up the project
 
