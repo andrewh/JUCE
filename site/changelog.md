@@ -10,7 +10,7 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
 
 ### 2026-10-05: Starter projects and tutorial 06
 
-- Tutorials: every tutorial that sets up a project now offers a starter-project zip to download, so you can begin from a working skeleton instead of typing it in. Twelve zips cover tutorials 2 to 14, built by a new `gen-downloads` step. ([`c1b241b`](https://github.com/andrewh/JUCE/commit/c1b241b), [`f4dfbd7`](https://github.com/andrewh/JUCE/commit/f4dfbd7))
+- Tutorials: every tutorial that sets up a project now offers a starter-project zip to download, so you can begin from a working skeleton instead of typing it in. Thirteen zips cover tutorials 2 to 14, built by a new `gen-downloads` step. ([`c1b241b`](https://github.com/andrewh/JUCE/commit/c1b241b), [`f4dfbd7`](https://github.com/andrewh/JUCE/commit/f4dfbd7))
 - Tutorials: the build and run sections target macOS and Linux and assume JUCE is cloned to `~/JUCE`. ([`24f98e3`](https://github.com/andrewh/JUCE/commit/24f98e3), [`623fb32`](https://github.com/andrewh/JUCE/commit/623fb32))
 - Tutorial 06, Synthesis: rebuilt as a six-step build-up of one runnable demo. It drains MIDI in every mode, connects MIDI after audio starts, and warns about clipping with several voices. ([`0a9a384`](https://github.com/andrewh/JUCE/commit/0a9a384), [`a66b712`](https://github.com/andrewh/JUCE/commit/a66b712), [`b0b2f12`](https://github.com/andrewh/JUCE/commit/b0b2f12))
 
