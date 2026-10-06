@@ -838,8 +838,11 @@ keyboard, it works too once the system has enabled it.
   `synth.setMinimumRenderingSubdivisionSize()` to change that.
 - The collector is drained in every mode, so notes pressed while another mode is
   active are not stored up and played in a burst later.
-- The level slider cannot protect against polyphony. Eight voices at up to 0.25
-  each can sum to 2.0, so pressing many keys hard can still clip. In a real
+- The level slider scales the whole mix, but it does not know how many voices are
+  sounding. Eight voices at up to 0.25 each can sum to 2.0 before the level is
+  applied, so at the top of the slider (-6 dB, a gain of about 0.5) eight hard
+  keys already reach full scale, and any voice still fading out can push past
+  it. At the default of -24 dB there is plenty of headroom. In a real
   instrument, scale each voice by one over the number of voices, or add a limiter.
 - Enable hardware MIDI inputs with
   `deviceManager.setMidiInputDeviceEnabled (info.identifier, true)`, for example
