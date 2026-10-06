@@ -95,17 +95,36 @@ const makeZip = (files) => {
 
 for (const dir of outDirs) mkdirSync(dir, { recursive: true })
 
+// Every file under dir (relative paths, sorted), without the example's own README.
+const listFiles = (dir, prefix = '') =>
+  readdirSync(join(dir, prefix), { withFileTypes: true })
+    .sort((a, b) => (a.name < b.name ? -1 : 1))
+    .flatMap((e) => {
+      const rel = prefix ? `${prefix}/${e.name}` : e.name
+      if (e.isDirectory()) return listFiles(dir, rel)
+      return rel === 'README.md' ? [] : [rel]
+    })
+
 let count = 0
 for (const file of readdirSync(srcDir).filter((f) => /^\d\d-.*\.md$/.test(f)).sort()) {
   const text = readFileSync(join(srcDir, file), 'utf8')
 
-  for (const m of text.matchAll(/<!-- starter-zip: (\S+) -->/g)) {
+  for (const m of text.matchAll(/<!-- starter-zip: (\S+)(?: from (\S+))? -->/g)) {
     const name = m[1]
     const rest = text.slice(m.index + m[0].length)
     const section = rest.slice(0, rest.search(/^## /m) === -1 ? undefined : rest.search(/^## /m))
 
-    const files = [...section.matchAll(/^\*\*`([^`]+)`\*\*\n+```[a-z]*\n([\s\S]*?)\n```/gm)]
-      .map(([, path, body]) => ({ name: `${name}/${path}`, data: Buffer.from(body + '\n', 'utf8') }))
+    const listed = [...section.matchAll(/^\*\*`([^`]+)`\*\*\n+```[a-z]*\n([\s\S]*?)\n```/gm)]
+      .map(([, path, body]) => [path, Buffer.from(body + '\n', 'utf8')])
+
+    const byPath = new Map()
+    if (m[2]) {
+      const folder = join(repoRoot, m[2])
+      for (const rel of listFiles(folder)) byPath.set(rel, readFileSync(join(folder, rel)))
+    }
+    for (const [path, data] of listed) byPath.set(path, data)
+
+    const files = [...byPath].map(([path, data]) => ({ name: `${name}/${path}`, data }))
 
     if (files.length === 0) throw new Error(`${file}: starter-zip "${name}" lists no files`)
 

@@ -17,18 +17,21 @@ This guide builds an app out of several source files. Rather than repeat all of
 them here, start from the finished app in the JUCE repository and read the steps
 below as a tour of how it works.
 
-Copy the example out of your JUCE checkout into a new folder, so that you can edit
-it freely:
+Download the starter project, **[PhysicsMusic.zip](downloads/PhysicsMusic.zip)**, and
+unzip it. Or copy the example out of your JUCE checkout into a new folder, so that you
+can edit it freely:
 
 ```sh
 cp -r ~/JUCE/examples/Box2DMusic PhysicsMusic
 ```
 
-The folder holds `Main.cpp`, `MainComponent.cpp`, `MainComponent.h`,
+Either way the folder holds `Main.cpp`, `MainComponent.cpp`, `MainComponent.h`,
 `PhysicsMusicWorld.cpp`, `PhysicsMusicWorld.h`, `PluckSynth.h`, and `Scales.h`.
-Replace its `CMakeLists.txt` with the version below. It is the example's own file,
+The zip already has the `CMakeLists.txt` below; if you copied the folder instead, replace its `CMakeLists.txt` with this version. It is the example's own file,
 with the line that adds JUCE (`add_subdirectory`) included, because the copy no
 longer sits inside the JUCE tree:
+
+<!-- starter-zip: PhysicsMusic from examples/Box2DMusic -->
 
 **`CMakeLists.txt`**
 
