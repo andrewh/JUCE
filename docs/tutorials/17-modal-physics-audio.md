@@ -25,8 +25,9 @@ builds something closer to a physical instrument:
 
 This guide builds on [Integrating Box2D v3](16-box2d-v3.md), and uses the same project. Start from the finished apps and read the steps below as a tour of how the `Modal` app works.
 
-Copy the `Box2DAudioV3` example out of your JUCE checkout into a new folder, so that
-you can edit it freely:
+Download the starter project, **[Box2DAudio.zip](downloads/Box2DAudio.zip)**, and unzip
+it (it is the same project as in guide 16). Or copy the `Box2DAudioV3` example out of
+your JUCE checkout into a new folder, so that you can edit it freely:
 
 ```sh
 cp -r ~/JUCE/examples/Box2DAudioV3 Box2DAudio

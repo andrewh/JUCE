@@ -17,8 +17,11 @@ not contain it, so you fetch it yourself.
 
 This guide shows how to port the app from [guide 15](15-physics-music.md) to a current Box2D. Both it and guide 17 use the same project, so start from the finished apps and read the steps below as a tour of how the code works.
 
-Copy the `Box2DAudioV3` example out of your JUCE checkout into a new folder, so that
-you can edit it freely:
+Download the starter project, **[Box2DAudio.zip](downloads/Box2DAudio.zip)**, and unzip
+it. Or copy the `Box2DAudioV3` example out of your JUCE checkout into a new folder, so
+that you can edit it freely:
+
+<!-- starter-zip: Box2DAudio from examples/Box2DAudioV3 -->
 
 ```sh
 cp -r ~/JUCE/examples/Box2DAudioV3 Box2DAudio
