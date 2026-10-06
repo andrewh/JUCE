@@ -8,6 +8,25 @@ The pages describe **JUCE 9.0.3**, read from `JUCE_MAJOR_VERSION`, `JUCE_MINOR_V
 
 ## This site
 
+### 2026-10-05: Starter projects and tutorial 06
+
+- Tutorials: every tutorial that sets up a project now offers a starter-project zip to download, so you can begin from a working skeleton instead of typing it in. Twelve zips cover tutorials 2 to 14, built by a new `gen-downloads` step. ([`c1b241b`](https://github.com/andrewh/JUCE/commit/c1b241b), [`f4dfbd7`](https://github.com/andrewh/JUCE/commit/f4dfbd7))
+- Tutorials: the build and run sections target macOS and Linux and assume JUCE is cloned to `~/JUCE`. ([`24f98e3`](https://github.com/andrewh/JUCE/commit/24f98e3), [`623fb32`](https://github.com/andrewh/JUCE/commit/623fb32))
+- Tutorial 06, Synthesis: rebuilt as a six-step build-up of one runnable demo. It drains MIDI in every mode, connects MIDI after audio starts, and warns about clipping with several voices. ([`0a9a384`](https://github.com/andrewh/JUCE/commit/0a9a384), [`a66b712`](https://github.com/andrewh/JUCE/commit/a66b712), [`b0b2f12`](https://github.com/andrewh/JUCE/commit/b0b2f12))
+
+### 2026-10-04: Self-contained tutorials and profiling guide
+
+- Tutorials: added guide 18, profiling on macOS with Instruments and dSYM files. ([`a57b949`](https://github.com/andrewh/JUCE/commit/a57b949))
+- Tutorials: made tutorials 2 to 17 self-contained, so each can be followed without finishing the earlier ones. Tutorial 1 now names its files explicitly, explains how to run the built app, and puts the build and run steps after the code. ([`beda974`](https://github.com/andrewh/JUCE/commit/beda974), [`5e726d8`](https://github.com/andrewh/JUCE/commit/5e726d8), [`32f2cbc`](https://github.com/andrewh/JUCE/commit/32f2cbc), [`c89a476`](https://github.com/andrewh/JUCE/commit/c89a476))
+- Tutorials 4 and 5: rebuilt as a single runnable demo built up in steps. Tutorial 4 now checks the result of `XmlElement::writeTo`. ([`6e0ba78`](https://github.com/andrewh/JUCE/commit/6e0ba78), [`541a81e`](https://github.com/andrewh/JUCE/commit/541a81e), [`d84639c`](https://github.com/andrewh/JUCE/commit/d84639c))
+- Tutorials: macOS builds default to arm64. Fixed Windows run paths in tutorials 16 and 17, and corrected issues found in review in tutorials 2, 8, 9, 10, 13 and 14, including a lock around graph changes in tutorial 10. ([`046db44`](https://github.com/andrewh/JUCE/commit/046db44), [`7aff618`](https://github.com/andrewh/JUCE/commit/7aff618), [`56299d2`](https://github.com/andrewh/JUCE/commit/56299d2))
+- README: added instructions for building the VitePress site locally. ([`3469c1d`](https://github.com/andrewh/JUCE/commit/3469c1d))
+- JUCE: `CGMetalLayerRenderer` no longer emits deprecation warnings for managed storage on macOS. ([`e4f4e1e`](https://github.com/andrewh/JUCE/commit/e4f4e1e))
+
+### 2026-10-02: Example browser
+
+- Added an Examples section with a nav item and sidebar. It shows 17 of JUCE's examples with full source, one page per example, syntax-highlighted at build time. It is generated from `examples/` by `gen-examples`. ([`eee5f05`](https://github.com/andrewh/JUCE/commit/eee5f05))
+
 ### 2026-10-01: Box2D tutorials
 
 - Tutorials: added three original guides to the Tutorials section, with sidebar labels. They are Markdown in `docs/tutorials/`, so the build picks them up. The home page and About page no longer call every guide a condensed adaptation of a juce.com tutorial.
