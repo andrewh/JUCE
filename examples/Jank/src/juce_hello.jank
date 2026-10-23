@@ -1,0 +1,15 @@
+;; Minimal proof of concept: call JUCE (through the bridge library) from jank.
+;; UNTESTED against a real jank build; cpp/ interop syntax follows the jank book and may need
+;; adjusting as jank's interop evolves.
+
+(ns juce-hello)
+
+(cpp/raw "#include \"JuceJankBridge.h\"")
+
+(defn -main [& _args]
+  (println "JUCE version:" (cpp/jankjuce.version))
+  (println "A4 (MIDI note 69) =" (cpp/jankjuce.midi_note_to_hz 69) "Hz")
+  (println "0.5 linear gain =" (cpp/jankjuce.gain_to_db 0.5) "dB")
+  (println "-6 dB =" (cpp/jankjuce.db_to_gain -6.0) "linear gain")
+  (println "juce::String length of \"jank\" =" (cpp/jankjuce.juce_string_length "jank"))
+  nil)
